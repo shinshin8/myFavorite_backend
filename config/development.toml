@@ -1,5 +1,7 @@
-[database]
+[Database]
 user = "my_favorite"
 password = "my_favorite"
 database = "myfavorite"
 host = "127.0.0.1"
+
+[Port]
