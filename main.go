@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"./controller"
 	"github.com/BurntSushi/toml"
 	"github.com/gorilla/mux"
 )
@@ -52,7 +53,7 @@ func main() {
 	r := mux.NewRouter()
 
 	// Login
-	r.HandleFunc(loginPath, Login).Method(post)
+	r.HandleFunc(loginPath, controller.Login).Method(post)
 
 	// listening port
 	port := config.Port.Port
