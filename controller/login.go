@@ -5,8 +5,11 @@ package controller
 
 import (
 	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"net/http"
+
+	"../model"
 )
 
 // HTTP method
@@ -32,18 +35,23 @@ type resultJSON struct {
 
 // Login function
 func Login(w http.ResponseWriter, r *http.Request) {
+
 	// judge http method
 	if r.Method == post {
 		// analyze request form
-		r.ParseForm()
 		// get username
 		username := r.PostFormValue(username)
 		// get password
 		password := r.PostFormValue(password)
+
 		// hashed password
-		hashedPassword := sha256.Sum256([]byte(password))
+		hash := sha256.New()
+		hash.Write([]byte(password))
+		hexPassword := hash.Sum(nil)
+		hashedPassword := hex.EncodeToString(hexPassword)
+
 		// get login result
-		loginBooleanResult := LoginUser(username, hashed_password)
+		loginBooleanResult := model.LoginUser(username, hashedPassword)
 
 		// response json
 		if loginBooleanResult == true {

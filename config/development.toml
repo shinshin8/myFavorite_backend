@@ -1,7 +1,9 @@
 [Database]
-user = "my_favorite"
-password = "my_favorite"
-database = "myfavorite"
-host = "127.0.0.1"
+User = "my_favorite"
+Password = "my_favorite"
+Database = "myfavorite"
+Host = "127.0.0.1"
+DbPort = "3306"
 
 [Port]
+Port = ":8080"

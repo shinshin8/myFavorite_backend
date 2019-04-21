@@ -53,7 +53,7 @@ func main() {
 	r := mux.NewRouter()
 
 	// Login
-	r.HandleFunc(loginPath, controller.Login).Method(post)
+	r.HandleFunc(loginPath, controller.Login)
 
 	// listening port
 	port := config.Port.Port
