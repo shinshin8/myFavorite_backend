@@ -35,7 +35,8 @@ var (
 
 // path
 var (
-	loginPath = "/login"
+	loginPath  = "/login"
+	signInPath = "/signIn"
 )
 
 func main() {
@@ -54,6 +55,9 @@ func main() {
 
 	// Login
 	r.HandleFunc(loginPath, controller.Login)
+
+	// Sign-In
+	r.HandleFunc(signInPath, controller.SignUp)
 
 	// listening port
 	port := config.Port.Port
