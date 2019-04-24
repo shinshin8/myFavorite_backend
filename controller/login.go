@@ -12,21 +12,6 @@ import (
 	"../model"
 )
 
-// HTTP method
-var post = "POST"
-
-// input form name
-var (
-	username = "username"
-	password = "password"
-)
-
-// header
-var (
-	contentType     = "Content-Type"
-	applicationJSON = "application/json"
-)
-
 // Login result json
 type resultJSON struct {
 	Status    int `json:"status"`
@@ -35,6 +20,21 @@ type resultJSON struct {
 
 // Login function
 func Login(w http.ResponseWriter, r *http.Request) {
+
+	// input form name
+	var (
+		username = "username"
+		password = "password"
+	)
+
+	// HTTP method
+	var post = "POST"
+
+	// header information
+	var (
+		contentType     = "Content-Type"
+		applicationJSON = "application/json"
+	)
 
 	// judge http method
 	if r.Method == post {
@@ -85,6 +85,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
+
 			// set header and defined response type for json
 			w.Header().Set(contentType, applicationJSON)
 			w.Write(res)
