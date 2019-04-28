@@ -32,5 +32,8 @@ func IsEmailAddress(emailAddress string) bool {
 // ・At least one special caracter.
 // It returns true or false.
 func IsPassword(password string) bool {
-
+	if len(password) == 0 || len(password) < 8 || len(password) > 20 {
+		return false
+	}
+	return true
 }
