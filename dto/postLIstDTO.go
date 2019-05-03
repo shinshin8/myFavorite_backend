@@ -10,8 +10,9 @@ type PostList struct {
 // Posts is a struct for listing posts.
 type Posts struct {
 	ArticleID    int    `json:article_id`
-	UserID       int    `json:user_id`
+	UserName     string `json:user_name`
 	Title        string `json:title`
+	Content      string `json:content`
 	CreatedTime  string `json:created_time`
 	ModifiedTime string `json:modified_time`
 }

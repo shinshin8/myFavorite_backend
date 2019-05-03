@@ -1,7 +1,8 @@
 [Database]
+DriverName = "mysql"
 User = "my_favorite"
 Password = "my_favorite"
-Database = "myfavorite"
+Database = "my_favorite"
 Host = "127.0.0.1"
 DbPort = "3306"
 

@@ -14,7 +14,21 @@ func GetPosts() []dto.Posts {
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax
-	getPosts := "SELECT article_id, user_id, title, created_time, modified_time FROM article_table ORDER BY created_time DESC"
+	getPosts := `SELECT 
+					article_table.article_id, 
+					user_table.user_name, 
+					article_table.title, 
+					article_table.content,
+					article_table.created_time, 
+					article_table.modified_time 
+				FROM 
+					article_table 
+				INNER JOIN 
+					user_table 
+				ON 
+					article_table.user_id = user_table.user_id 
+				ORDER BY 
+					article_table.created_time DESC`
 
 	row, err := sql.Query(getPosts)
 
@@ -27,7 +41,7 @@ func GetPosts() []dto.Posts {
 
 	for row.Next() {
 		posts := dto.Posts{}
-		if err := row.Scan(&posts.ArticleID, &posts.UserID, &posts.Title, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
+		if err := row.Scan(&posts.ArticleID, &posts.UserName, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
 			log.Fatal(err)
 		}
 
