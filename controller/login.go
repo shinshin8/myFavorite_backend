@@ -9,14 +9,10 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"../dto"
 	"../model"
+	"../utils"
 )
-
-// Login result json
-type resultJSON struct {
-	Status    int `json:"status"`
-	ErrorCode int `json:"error_code"`
-}
 
 // Login function
 func Login(w http.ResponseWriter, r *http.Request) {
@@ -27,17 +23,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		password = "password"
 	)
 
-	// HTTP method
-	var post = "POST"
-
-	// header information
-	var (
-		contentType     = "Content-Type"
-		applicationJSON = "application/json"
-	)
-
 	// judge http method
-	if r.Method == post {
+	if r.Method == utils.Post {
 		// analyze request form
 		// get username
 		username := r.PostFormValue(username)
@@ -57,7 +44,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		if loginBooleanResult == true {
 			successfulLoginCode := 0
 			// set values in structs
-			resultjson := resultJSON{
+			resultjson := dto.SimpleResutlJSON{
 				Status:    http.StatusOK,
 				ErrorCode: successfulLoginCode,
 			}
@@ -69,12 +56,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			// set header and defined response type for json
-			w.Header().Set(contentType, applicationJSON)
+			w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 			w.Write(res)
 		} else {
 			failedLoginCode := 1
 			// set values in structs
-			resultjson := resultJSON{
+			resultjson := dto.SimpleResutlJSON{
 				Status:    http.StatusOK,
 				ErrorCode: failedLoginCode,
 			}
@@ -87,13 +74,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			}
 
 			// set header and defined response type for json
-			w.Header().Set(contentType, applicationJSON)
+			w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 			w.Write(res)
 		}
 	} else {
 		wrongHTTPMethodCode := 2
 		// set values in structs
-		resultjson := resultJSON{
+		resultjson := dto.SimpleResutlJSON{
 			Status:    http.StatusNotFound,
 			ErrorCode: wrongHTTPMethodCode,
 		}
@@ -105,7 +92,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// set header and defined response type for json
-		w.Header().Set(contentType, applicationJSON)
+		w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 		w.Write(res)
 	}
 }

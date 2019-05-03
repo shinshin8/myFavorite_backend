@@ -37,7 +37,7 @@ var (
 var (
 	loginPath  = "/login"
 	signInPath = "/signIn"
-	postList   = "/postList"
+	postList   = "/"
 )
 
 func main() {

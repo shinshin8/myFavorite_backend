@@ -24,16 +24,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		confirmPassword = "confirmPassword"
 	)
 
-	// HTTP method
-	var post = "POST"
-
-	// HTTP header information
-	var (
-		contentType     = "Content-Type"
-		applicationJSON = "application/json"
-	)
-
-	if r.Method == post {
+	if r.Method == utils.Post {
 
 		// Username value
 		username := r.PostFormValue(username)
@@ -58,7 +49,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			// Set HTTP header and defined MIME type
-			w.Header().Set(contentType, applicationJSON)
+			w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 			// Response JSON
 			w.Write(res)
 			return
@@ -79,7 +70,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			// Set HTTP header and defined MIME type
-			w.Header().Set(contentType, applicationJSON)
+			w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 			// Response JSON
 			w.Write(res)
 			return
@@ -100,7 +91,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			// Set HTTP header and defined MIME type
-			w.Header().Set(contentType, applicationJSON)
+			w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 			// Response JSON
 			w.Write(res)
 			return
@@ -121,14 +112,13 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			// Set HTTP header and defined MIME type
-			w.Header().Set(contentType, applicationJSON)
+			w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 			// Response JSON
 			w.Write(res)
 			return
 		}
 
 		// Hashing password
-		// hashed password
 		hash := sha256.New()
 		hash.Write([]byte(password))
 		hexPassword := hash.Sum(nil)
@@ -148,7 +138,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Set HTTP header and defined MIME type
-		w.Header().Set(contentType, applicationJSON)
+		w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 		// Response JSON
 		w.Write(res)
 	} else {
@@ -165,7 +155,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Set HTTP header and defined MIME type
-		w.Header().Set(contentType, applicationJSON)
+		w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 		// Response JSON
 		w.Write(res)
 	}
