@@ -1,3 +1,7 @@
+/*
+	validation.go is handling validations.
+*/
+
 package utils
 
 import (

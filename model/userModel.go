@@ -5,18 +5,18 @@
 package model
 
 import (
-	"database/sql"
 	"log"
 
-	_ "github.com/go-sql-driver/mysql"
+	"../dto"
+	"../utils"
 )
 
-// configuration file
+// Config struct
 type Config struct {
 	Port DbConfig
 }
 
-// DB information in configuration file
+// DbConfig struct is the configuration for database information.
 type DbConfig struct {
 	User     string
 	Password string
@@ -27,11 +27,12 @@ type DbConfig struct {
 
 var config Config
 
+// UserName struct
 type UserName struct {
 	Username string
 }
 
-// This function judges wheather the recieved login information is corrent or not.
+// LoginUser judges wheather the recieved login information is corrent or not.
 // At first parameter, username is recieved and its type is string.
 // At second parameter, hashed password is recieved and its type is string.
 // The function return true or false.
@@ -58,11 +59,7 @@ func LoginUser(username string, hashedPassword string) bool {
 	// 	log.Fatal(err)
 	// }
 
-	sql, err := sql.Open("mysql", "my_favorite:my_favorite@tcp(127.0.0.1:3306)/my_favorite")
-
-	if err != nil {
-		log.Fatal(err)
-	}
+	sql := utils.DBInit()
 
 	// at the end, sql will be closed.
 	defer sql.Close()
@@ -72,6 +69,10 @@ func LoginUser(username string, hashedPassword string) bool {
 
 	// execute SQL manipulation
 	rows, err := sql.Query(findUserSyntax, username, hashedPassword)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	var userNameArr []UserName
 
@@ -92,10 +93,43 @@ func LoginUser(username string, hashedPassword string) bool {
 	// array's length
 	arrLength := len(userNameArr)
 
-	if arrLength == expectedLength {
-		return true
-	} else {
-		return false
+	return arrLength == expectedLength
+
+}
+
+// SignUp returns sign-up resutl in JSON format.
+// Username is in the first parameter with string type.
+// Email Address is in the second parameter with string type.
+// Password is in the third parameter with string type.
+func SignUp(username string, emailAddress string, password string) dto.SignUpResultJSON {
+	// Initalize DB Connection
+	sql := utils.DBInit()
+	// Close DB connection at the end.
+	defer sql.Close()
+	// SQL syntax
+	registerNewUser := "INSERT into user_table(user_name, password, mail_address) values(?, ?, ?)"
+	rows, err := sql.Prepare(registerNewUser)
+	httpOk := 200
+	if err != nil {
+		log.Fatal(err)
+		sqlErrorStatus := 8
+		res := dto.SignUpResultJSON{
+			Status:       httpOk,
+			ErrorCode:    sqlErrorStatus,
+			Username:     username,
+			EmailAddress: emailAddress,
+		}
+		return res
 	}
+	rows.Exec(username, password, emailAddress)
+	successStatus := 0
+
+	res := dto.SignUpResultJSON{
+		Status:       httpOk,
+		ErrorCode:    successStatus,
+		Username:     username,
+		EmailAddress: emailAddress,
+	}
+	return res
 
 }
