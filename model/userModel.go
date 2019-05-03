@@ -11,22 +11,6 @@ import (
 	"../utils"
 )
 
-// Config struct
-type Config struct {
-	Port DbConfig
-}
-
-// DbConfig struct is the configuration for database information.
-type DbConfig struct {
-	User     string
-	Password string
-	Database string
-	Hostname string
-	DbPort   string
-}
-
-var config Config
-
 // UserName struct
 type UserName struct {
 	Username string
@@ -37,27 +21,6 @@ type UserName struct {
 // At second parameter, hashed password is recieved and its type is string.
 // The function return true or false.
 func LoginUser(username string, hashedPassword string) bool {
-
-	// // configuration file
-	// configFile := "./config/development.toml"
-
-	// // decoding toml
-	// _, err := toml.DecodeFile(configFile, &config)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-
-	// driverName := "mysql"
-
-	// // dataSourceName := config.Port.User + ":" + config.Port.Password + "@tcp(" + config.Port.Hostname + ":" + config.Port.DbPort + ")/" + config.Port.Database
-
-	// dataSourceName := "my_favorite:my_favorite@tcp(127.0.0.1:3306)/myfavorite"
-
-	// // open sql
-	// sql, err := sql.Open(driverName, dataSourceName)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
 
 	sql := utils.DBInit()
 

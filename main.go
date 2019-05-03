@@ -9,44 +9,18 @@ import (
 	"net/http"
 
 	"./controller"
+	"./dto"
+	"./utils"
 	"github.com/BurntSushi/toml"
 	"github.com/gorilla/mux"
 )
 
-// configuration file
-type Config struct {
-	Port PortConfig
-}
-
-// a port part in configuration file
-type PortConfig struct {
-	Port string
-}
-
-var config Config
-
-// HTTP method
-var (
-	get    = "GET"
-	post   = "POST"
-	put    = "PUT"
-	delete = "DELETE"
-)
-
-// path
-var (
-	loginPath  = "/login"
-	signInPath = "/signIn"
-	postList   = "/"
-)
+var portConfig dto.PortConfig
 
 func main() {
 
-	// configuration file
-	configFile := "./config/development.toml"
-
 	// decoding toml
-	_, err := toml.DecodeFile(configFile, &config)
+	_, err := toml.DecodeFile(utils.ConfigFile, &portConfig)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -55,16 +29,16 @@ func main() {
 	r := mux.NewRouter()
 
 	// Login
-	r.HandleFunc(loginPath, controller.Login)
+	r.HandleFunc(utils.LoginPath, controller.Login)
 
 	// Sign-In
-	r.HandleFunc(signInPath, controller.SignUp)
+	r.HandleFunc(utils.SignInPath, controller.SignUp)
 
 	// Post list
-	r.HandleFunc(postList, controller.PostList)
+	r.HandleFunc(utils.PostList, controller.PostList)
 
 	// listening port
-	port := config.Port.Port
+	port := portConfig.Port.Port
 	// listenre
 	http.ListenAndServe(port, r)
 }

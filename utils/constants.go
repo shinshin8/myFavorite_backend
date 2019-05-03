@@ -1,13 +1,23 @@
 package utils
 
-// ContentType is a content-type of form.
-const ContentType = "Content-Type"
+// Application form type
+const (
+	ContentType     = "Content-Type"
+	ApplicationJSON = "application/json"
+)
 
-// ApplicationJSON is a form type; application/json.
-const ApplicationJSON = "application/json"
+// HTTP request method
+const (
+	Post = "POST"
+	Get  = "GET"
+)
 
-// Post is a HTTP request method type; post.
-const Post = "POST"
+// Each path
+const (
+	LoginPath  = "/login"
+	SignInPath = "/signIn"
+	PostList   = "/"
+)
 
-// Get is a HTTP request method type; get.
-const Get = "GET"
+// The directory of configuration file
+const ConfigFile = "./config/development.toml"
