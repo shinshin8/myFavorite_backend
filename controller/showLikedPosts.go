@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"../dto"
 	"../model"
@@ -11,9 +12,11 @@ import (
 
 // ShowLikedPosts returns resutls in JSON format.
 func ShowLikedPosts(w http.ResponseWriter, r *http.Request) {
+	userIDStr := r.URL.Query().Get("user_id")
+	userID, _ := strconv.Atoi(userIDStr)
 	successfulCode := 0
 	// Execute showLikedPosts model and returns json
-	likedPosts := model.ShowLikedPosts()
+	likedPosts := model.ShowLikedPosts(userID)
 
 	resStruct := dto.PostList{
 		Status:    http.StatusOK,
