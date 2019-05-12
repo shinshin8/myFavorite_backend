@@ -8,18 +8,20 @@ const (
 
 // HTTP request method
 const (
-	Post = "POST"
-	Get  = "GET"
-	Put  = "PUT"
+	Post   = "POST"
+	Get    = "GET"
+	Put    = "PUT"
+	Delete = "DELETE"
 )
 
 // Each path
 const (
-	LoginPath      = "/login"
-	SignInPath     = "/signIn"
-	PostList       = "/"
-	ShowLikedPosts = "/likedPostsList"
-	LikePost       = "/likePost"
+	LoginPath       = "/login"
+	SignInPath      = "/signIn"
+	PostList        = "/"
+	ShowLikedPosts  = "/likedPostsList"
+	LikePost        = "/likePost"
+	DeleteLikedPost = "/deleteLikedPost"
 )
 
 // The directory of configuration file
