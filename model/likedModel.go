@@ -82,3 +82,29 @@ func LikePost(userID int, articleID int) bool {
 	rows.Exec(userID, articleID)
 	return true
 }
+
+// DeleteLikedPost deletes a specific liked post record from MySQL and return boolean.
+// At the first parameter, user id will be set with int type.
+// At the second parameter, article id will be set with int type.
+func DeleteLikedPost(userID int, articleID int) bool {
+	// Initalize DB Connection
+	sql := utils.DBInit()
+	// Close DB connection at the end.
+	defer sql.Close()
+	// SQL syntax
+	delRec := `DELETE FROM 
+					liked_table 
+				WHERE 
+					user_id = ? 
+				AND 
+					article_id = ?`
+
+	rows, err := sql.Prepare(delRec)
+
+	if err != nil {
+		return false
+	}
+
+	rows.Exec(userID, articleID)
+	return true
+}
