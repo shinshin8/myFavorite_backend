@@ -10,6 +10,7 @@ const (
 const (
 	Post = "POST"
 	Get  = "GET"
+	Put  = "PUT"
 )
 
 // Each path

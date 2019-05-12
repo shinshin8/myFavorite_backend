@@ -29,19 +29,19 @@ func main() {
 	r := mux.NewRouter()
 
 	// Login
-	r.HandleFunc(utils.LoginPath, controller.Login)
+	r.HandleFunc(utils.LoginPath, controller.Login).Methods(utils.Post)
 
 	// Sign-In
-	r.HandleFunc(utils.SignInPath, controller.SignUp)
+	r.HandleFunc(utils.SignInPath, controller.SignUp).Methods(utils.Post)
 
 	// Post list
-	r.HandleFunc(utils.PostList, controller.PostList)
+	r.HandleFunc(utils.PostList, controller.PostList).Methods(utils.Get)
 
 	// Show liked post lists
 	r.HandleFunc(utils.ShowLikedPosts, controller.ShowLikedPosts).Methods(utils.Get)
 
 	// Like post
-	r.HandleFunc(utils.LikePost, controller.LikePost).Methods(utils.Post)
+	r.HandleFunc(utils.LikePost, controller.LikePost).Methods(utils.Put)
 
 	// listening port
 	port := portConfig.Port.Port
