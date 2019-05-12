@@ -38,7 +38,10 @@ func main() {
 	r.HandleFunc(utils.PostList, controller.PostList)
 
 	// Show liked post lists
-	r.HandleFunc(utils.ShowLikedPosts, controller.ShowLikedPosts).Methods("GET")
+	r.HandleFunc(utils.ShowLikedPosts, controller.ShowLikedPosts).Methods(utils.Get)
+
+	// Like post
+	r.HandleFunc(utils.LikePost, controller.LikePost).Methods(utils.Post)
 
 	// listening port
 	port := portConfig.Port.Port
