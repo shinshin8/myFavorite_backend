@@ -17,7 +17,7 @@ const (
 	LoginPath      = "/login"
 	SignInPath     = "/signIn"
 	PostList       = "/"
-	ShowLikedPosts = "/likedPostsList/:user_id"
+	ShowLikedPosts = "/likedPostsList"
 )
 
 // The directory of configuration file
