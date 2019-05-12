@@ -12,7 +12,8 @@ import (
 
 // ShowLikedPosts returns resutls in JSON format.
 func ShowLikedPosts(w http.ResponseWriter, r *http.Request) {
-	userIDStr := r.URL.Query().Get("user_id")
+	usrID := "user_id"
+	userIDStr := r.URL.Query().Get(usrID)
 	userID, _ := strconv.Atoi(userIDStr)
 	successfulCode := 0
 	// Execute showLikedPosts model and returns json
