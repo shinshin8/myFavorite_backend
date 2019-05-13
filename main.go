@@ -52,6 +52,9 @@ func main() {
 	// Create a favorite post
 	r.HandleFunc(utils.FavoritePost, controller.FavoritePost).Methods(utils.Put)
 
+	// Delete a favorite post
+	r.HandleFunc(utils.DeleteFavoritePost, controller.DeleteFavoritePost).Methods(utils.Delete)
+
 	// listening port
 	port := portConfig.Port.Port
 	// listenre
