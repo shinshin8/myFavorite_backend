@@ -14,7 +14,6 @@ func ShowLikedPosts(userID int) []dto.Posts {
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax
-
 	getLikedPosts := `SELECT 
 							article_table.article_id, 
 							user_table.user_name, 
@@ -33,7 +32,8 @@ func ShowLikedPosts(userID int) []dto.Posts {
 						ON 
 							article_table.article_id = liked_table.article_id 
 						WHERE 
-							liked_table.user_id = ?`
+							liked_table.user_id = ?
+						ORDER BY article_table.created_time DESC`
 
 	row, err := sql.Query(getLikedPosts, userID)
 
