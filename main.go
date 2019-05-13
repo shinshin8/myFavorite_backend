@@ -46,6 +46,9 @@ func main() {
 	// Delete liked post
 	r.HandleFunc(utils.DeleteLikedPost, controller.DeleteLikedPost).Methods(utils.Delete)
 
+	// Show favorite posts
+	r.HandleFunc(utils.ShowFavoritePosts, controller.ShowFavoritePosts).Methods(utils.Get)
+
 	// listening port
 	port := portConfig.Port.Port
 	// listenre
