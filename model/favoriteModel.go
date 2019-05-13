@@ -58,3 +58,29 @@ func ShowFavoritePosts(userID int, articleID int) []dto.Posts {
 
 	return favoritePostArray
 }
+
+// FavoritePost inserts a new favorite post record into MySQL.
+// At the first parameter, user id will be set with int type.
+// At the second paramtere, article id will be set with int type.
+func FavoritePost(userID int, articleID int) bool {
+	// Initalize DB Connection
+	sql := utils.DBInit()
+	// Close DB connection at the end.
+	defer sql.Close()
+
+	insertSyntax := `INSERT INTO 
+						favorite_table
+						(user_id, 
+						article_id) 
+					VALUES
+						(?,?)`
+
+	rows, err := sql.Prepare(insertSyntax)
+
+	if err != nil {
+		return false
+	}
+
+	rows.Exec(userID, articleID)
+	return true
+}

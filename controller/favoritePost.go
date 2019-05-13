@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"../dto"
+	"../model"
 	"../utils"
 )
 
@@ -21,7 +22,7 @@ func FavoritePost(w http.ResponseWriter, r *http.Request) {
 	articleID, _ := strconv.Atoi(articleIDStr)
 
 	// Execute register liked post
-	res := model.favoritePost(userID, articleID)
+	res := model.FavoritePost(userID, articleID)
 
 	if res {
 		successfulLoginCode := 0
