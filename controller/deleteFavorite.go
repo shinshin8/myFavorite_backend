@@ -10,8 +10,8 @@ import (
 	"../utils"
 )
 
-// DeleteLikedPost deals with deleting resouce and return its result in JSON format.
-func DeleteLikedPost(w http.ResponseWriter, r *http.Request) {
+// DeleteFavoritePost deletes specific favorite post resource and returns the result in JSON
+func DeleteFavoritePost(w http.ResponseWriter, r *http.Request) {
 	// Get user id from URL query paramter with string type and convert it to int.
 	usrID := "user_id"
 	usrIDStr := r.URL.Query().Get(usrID)
@@ -22,7 +22,7 @@ func DeleteLikedPost(w http.ResponseWriter, r *http.Request) {
 	articleID, _ := strconv.Atoi(atlIDStr)
 
 	// Execute delete resouce.
-	res := model.DeleteLikedPost(userID, articleID)
+	res := model.DeleteFavoritePost(userID, articleID)
 
 	if res {
 		successfulLoginCode := 0
@@ -42,7 +42,7 @@ func DeleteLikedPost(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 		w.Write(res)
 	} else {
-		failedCode := 11
+		failedCode := 13
 		// set values in structs
 		resultjson := dto.SimpleResutlJSON{
 			Status:    http.StatusOK,
