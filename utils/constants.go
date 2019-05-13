@@ -16,14 +16,15 @@ const (
 
 // Each path
 const (
-	LoginPath         = "/login"
-	SignInPath        = "/signIn"
-	PostList          = "/"
-	ShowLikedPosts    = "/likedPostsList"
-	LikePost          = "/likePost"
-	DeleteLikedPost   = "/deleteLikedPost"
-	ShowFavoritePosts = "/favoritePostsList"
-	FavoritePost      = "/favoritePost"
+	LoginPath          = "/login"
+	SignInPath         = "/signIn"
+	PostList           = "/"
+	ShowLikedPosts     = "/likedPostsList"
+	LikePost           = "/likePost"
+	DeleteLikedPost    = "/deleteLikedPost"
+	ShowFavoritePosts  = "/favoritePostsList"
+	FavoritePost       = "/favoritePost"
+	DeleteFavoritePost = "/deleteFavorite"
 )
 
 // The directory of configuration file
