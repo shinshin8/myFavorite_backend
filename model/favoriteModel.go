@@ -84,3 +84,29 @@ func FavoritePost(userID int, articleID int) bool {
 	rows.Exec(userID, articleID)
 	return true
 }
+
+// DeleteFavoritePost deletes specifiec favorite post record from MySQL.
+// At the first parameter, user id will be set with int type.
+// At the second paramtere, article id will be set with int type.
+func DeleteFavoritePost(userID int, articleID int) bool {
+	// Initalize DB Connection
+	sql := utils.DBInit()
+	// Close DB connection at the end.
+	defer sql.Close()
+	// SQL syntax
+	delRec := `DELETE FROM 
+					favorite_table 
+				WHERE 
+					user_id = ? 
+				AND 
+					article_id = ?`
+
+	rows, err := sql.Prepare(delRec)
+
+	if err != nil {
+		return false
+	}
+
+	rows.Exec(userID, articleID)
+	return true
+}
