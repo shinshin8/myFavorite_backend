@@ -25,6 +25,7 @@ const (
 	ShowFavoritePosts  = "/favoritePostsList"
 	FavoritePost       = "/favoritePost"
 	DeleteFavoritePost = "/deleteFavorite"
+	UserPostsList      = "/userPostsList"
 )
 
 // The directory of configuration file
