@@ -58,6 +58,9 @@ func main() {
 	// User's posts list
 	r.HandleFunc(utils.UserPostsList, controller.UserPostsList).Methods(utils.Get)
 
+	// Indivisual post
+	r.HandleFunc(utils.IndivisualPost, controller.IndivisualPost).Methods(utils.Get)
+
 	// listening port
 	port := portConfig.Port.Port
 	// listenre
