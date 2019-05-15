@@ -10,8 +10,8 @@ import (
 	"../utils"
 )
 
-// IndividualPost returns an individual post in JSON 
-func IndividualPost(w http.ResponseWriter, r *http.Request){
+// IndividualPost returns an individual post in JSON
+func IndividualPost(w http.ResponseWriter, r *http.Request) {
 	// Get user id from the URL query paramter in string type and conver it to int type.
 	usrID := "user_id"
 	userIDStr := r.URL.Query().Get(usrID)
@@ -36,16 +36,11 @@ func IndividualPost(w http.ResponseWriter, r *http.Request){
 	successfulCode := 0
 
 	resStruct := dto.SiglePost{
-		Status       http.StatusOK,
-		ErrorCode    successfulCode,
-		LikedFlg     likedResult,
-		FavoriteFlg  favoriteResult,
-		ArticleID    singlePost.ArticleID,
-		UserName     singlePost.UserName,
-		Title        singlePost.Title,
-		Content      singlePost.Content,
-		CreatedTime  singlePost.CreatedTime,
-		ModifiedTime singlePost.ModifiedTime,
+		Status:      http.StatusOK,
+		ErrorCode:   successfulCode,
+		LikedFlg:    likedResult,
+		FavoriteFlg: favoriteResult,
+		Post:        singlePost,
 	}
 
 	res, err := json.Marshal(resStruct)
