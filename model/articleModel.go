@@ -152,10 +152,10 @@ func FavoriteOrNot(userID int, articleID int) bool {
 	return favoriteFlg
 }
 
-// IndividualPost returns the result of a single post in JSON.
+// SinglePost returns the result of a single post in JSON.
 // At the first parameter, user id will be set with int type.
 // At the second parameter, article id will be set with int type.
-func IndividualPost(userID int, articleID int) dto.Posts {
+func SinglePost(userID int, articleID int) dto.Posts {
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.

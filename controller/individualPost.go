@@ -10,8 +10,8 @@ import (
 	"../utils"
 )
 
-// IndividualPost returns an individual post in JSON
-func IndividualPost(w http.ResponseWriter, r *http.Request) {
+// SinglePost returns an individual post in JSON
+func SinglePost(w http.ResponseWriter, r *http.Request) {
 	// Get user id from the URL query paramter in string type and conver it to int type.
 	usrID := "user_id"
 	userIDStr := r.URL.Query().Get(usrID)
@@ -32,7 +32,7 @@ func IndividualPost(w http.ResponseWriter, r *http.Request) {
 	// Otherwise, it means this post is not favorited.
 	favoriteResult := model.FavoriteOrNot(userID, articleID)
 	// Post result
-	singlePost := model.IndividualPost(userID, articleID)
+	singlePost := model.SinglePost(userID, articleID)
 	successfulCode := 0
 
 	resStruct := dto.SiglePost{
