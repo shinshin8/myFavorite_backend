@@ -99,3 +99,91 @@ func UserPostsList(userID int) []dto.Posts {
 
 	return postArray
 }
+
+// LikedOrNot returns the result if a post selected is liked.
+// At the first parameter, user id will be set with int type.
+// At the second parameter, article id will be set with int type.
+func LikedOrNot(userID int, articleID int) bool {
+	// Initalize DB Connection
+	sql := utils.DBInit()
+	// Close DB connection at the end.
+	defer sql.Close()
+	// SQL syntax
+	checkLikedOrNot := `SELECT IF
+							(COUNT(*),'true','false') 
+						AS 
+							liked_flg 
+						FROM 
+							liked_table 
+						WHERE 
+							user_id = ? AND article_id = ?`
+
+	var likedFlg bool
+	err := sql.QueryRow(checkLikedOrNot, userID, articleID).Scan(&likedFlg)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return likedFlg
+}
+
+// FavoriteOrNot returns the result if a post selected is liked.
+// At the first parameter, user id will be set with int type.
+// At the second parameter, article id will be set with int type.
+func FavoriteOrNot(userID int, articleID int) bool {
+	// Initalize DB Connection
+	sql := utils.DBInit()
+	// Close DB connection at the end.
+	defer sql.Close()
+	// SQL syntax
+	checkFavoriteOrNot := `SELECT IF
+							(COUNT(*),'true','false') 
+						AS 
+							favorite_flg 
+						FROM 
+							favorite_table 
+						WHERE 
+							user_id = ? AND article_id = ?`
+
+	var favoriteFlg bool
+	err := sql.QueryRow(checkFavoriteOrNot, userID, articleID).Scan(&favoriteFlg)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return favoriteFlg
+}
+
+// IndividualPost returns the result of a single post in JSON.
+// At the first parameter, user id will be set with int type.
+// At the second parameter, article id will be set with int type.
+func IndividualPost(userID int, articleID int) dto.Posts {
+	// Initalize DB Connection
+	sql := utils.DBInit()
+	// Close DB connection at the end.
+	defer sql.Close()
+	// SQL syntax
+	signlePost := `SELECT 
+						article_table.article_id, 
+						user_table.user_name, 
+						article_table.title, 
+						article_table.content, 
+						article_table.created_time, 
+						article_table.modified_time 
+					FROM 
+						article_table 
+					INNER JOIN 
+						user_table 
+					ON 
+						article_table.user_id = user_table.user_id 
+					WHERE 
+						article_table.user_id = ? AND article_table.article_id = ?`
+
+	var post dto.Posts
+
+	err := sql.QueryRow(signlePost, userID, articleID).Scan(&post.ArticleID, &post.UserName, &post.Title, &post.Content, &post.CreatedTime, &post.ModifiedTime)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return post
+}
