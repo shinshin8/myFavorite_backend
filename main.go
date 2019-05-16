@@ -62,7 +62,7 @@ func main() {
 	r.HandleFunc(utils.SinglePost, controller.SinglePost).Methods(utils.Get)
 
 	// Create a post
-	r.HandleFunc(utils.SinglePost, controller.CreatePost).Methods(utils.Post)
+	r.HandleFunc(utils.NewPost, controller.CreatePost).Methods(utils.Post)
 
 	// listening port
 	port := portConfig.Port.Port
