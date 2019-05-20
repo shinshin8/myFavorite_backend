@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"../dto"
+	"../model"
 	"../utils"
 )
 
@@ -30,7 +31,13 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		// Invalid user id
 		invalidUserID := 14
 		// Set values into the struct
-		resStruct := dto.NewPost{http.StatusOK, invalidUserID, userID, title, content}
+		resStruct := dto.NewPost{
+			Status:    http.StatusOK,
+			ErrorCode: invalidUserID,
+			UserID:    userID,
+			Title:     title,
+			Content:   content,
+		}
 		// convert struct to JSON
 		res, err := json.Marshal(resStruct)
 
@@ -50,7 +57,13 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		// Invalid title
 		invalidTitle := 15
 		// Set values into the struct
-		resStruct := dto.NewPost{http.StatusOK, invalidTitle, userID, title, content}
+		resStruct := dto.NewPost{
+			Status:    http.StatusOK,
+			ErrorCode: invalidTitle,
+			UserID:    userID,
+			Title:     title,
+			Content:   content,
+		}
 		// convert struct to JSON
 		res, err := json.Marshal(resStruct)
 
@@ -70,7 +83,13 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		// Invalid content
 		invalidContent := 16
 		// Set values into the struct
-		resStruct := dto.NewPost{http.StatusOK, invalidContent, userID, title, content}
+		resStruct := dto.NewPost{
+			Status:    http.StatusOK,
+			ErrorCode: invalidContent,
+			UserID:    userID,
+			Title:     title,
+			Content:   content,
+		}
 		// convert struct to JSON
 		res, err := json.Marshal(resStruct)
 
@@ -86,7 +105,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Execute insert data to DB.
-	result := model.createNewPost(userID, title, content)
+	result := model.CreateNewPost(userID, title, content)
 
 	// In the Model, the function returns JSON in other way.
 	// So in this part, just response result.

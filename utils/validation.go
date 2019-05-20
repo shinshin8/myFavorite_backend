@@ -56,7 +56,7 @@ func IsID(ID int) bool {
 // - a value's length is 1 to 50.
 // It returns a result in boolean.
 func IsTitle(title string) bool {
-	return (len(title) == 0 || len(title) <= 0 || len(title) >= 51)
+	return len(title) > 0 || len(title) <= 50
 }
 
 // IsContent checks if a value is valied content.
@@ -65,5 +65,5 @@ func IsTitle(title string) bool {
 // - a value's length is 1 to 500.
 // It returns a result in boolean.
 func IsContent(content string) bool {
-	return (len(content) == 0 || len(content) <= 0 || len(content) >= 501)
+	return len(content) > 0 || len(content) <= 500
 }

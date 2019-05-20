@@ -187,3 +187,40 @@ func SinglePost(userID int, articleID int) dto.Posts {
 
 	return post
 }
+
+// CreateNewPost inserts a new post data in DB.
+// At first parameter, user id is set in int type.
+// At second paramter, title is set in string type.
+// At third parameter, content is set in string type.
+func CreateNewPost(userID int, title string, content string) dto.SimpleResutlJSON {
+	// Initalize DB Connection
+	sql := utils.DBInit()
+	// Close DB connection at the end.
+	defer sql.Close()
+	// SQL syntax
+	insertNewPost := `INSERT INTO 
+							article_table(
+								user_id, 
+								title, 
+								content) 
+						VALUES(?,?,?);`
+	rows, err := sql.Prepare(insertNewPost)
+	httpOk := 200
+	if err != nil {
+		log.Fatal(err)
+		sqlErrorStatus := 8
+		res := dto.SimpleResutlJSON{
+			Status:    httpOk,
+			ErrorCode: sqlErrorStatus,
+		}
+		return res
+	}
+	rows.Exec(userID, title, content)
+	successStatus := 0
+
+	res := dto.SimpleResutlJSON{
+		Status:    httpOk,
+		ErrorCode: successStatus,
+	}
+	return res
+}
