@@ -108,7 +108,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Execute update data to DB.
-	result := model.EditPost(userID, title, content)
+	result := model.EditPost(userID, articleID, title, content)
 
 	// In the Model, the function returns JSON in other way.
 	// So in this part, just response result.

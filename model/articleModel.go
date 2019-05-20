@@ -224,3 +224,44 @@ func CreateNewPost(userID int, title string, content string) dto.SimpleResutlJSO
 	}
 	return res
 }
+
+// EditPost updates specific post data and return the result in JSON.
+// At first parameter, user id is set in int type.
+// At second paramter, article id is set in int type.
+// At third parameter, title is set in string type.
+// At forth parameter, content is set in string type.
+func EditPost(userID int, articleID int, title string, content string) dto.SimpleResutlJSON {
+	// Initalize DB Connection
+	sql := utils.DBInit()
+	// Close DB connection at the end.
+	defer sql.Close()
+	// Update sql syntax
+	update := `UPDATE 
+					article_table 
+				SET 
+					title = ?, 
+					content = ? 
+				WHERE 
+					user_id = ? 
+				AND 
+					article_id = ?`
+	rows, err := sql.Prepare(update)
+	httpOk := 200
+	if err != nil {
+		log.Fatal(err)
+		sqlErrorStatus := 8
+		res := dto.SimpleResutlJSON{
+			Status:    httpOk,
+			ErrorCode: sqlErrorStatus,
+		}
+		return res
+	}
+	rows.Exec(title, content, userID, articleID)
+	successStatus := 0
+
+	res := dto.SimpleResutlJSON{
+		Status:    httpOk,
+		ErrorCode: successStatus,
+	}
+	return res
+}
