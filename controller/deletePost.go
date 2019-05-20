@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"../dto"
 	"../model"
 	"../utils"
 )
@@ -22,42 +21,20 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 	articleID, _ := strconv.Atoi(atlIDStr)
 
 	// Execute delete resouce.
-	res := model.DeletePost(userID, articleID)
+	result := model.DeletePost(userID, articleID)
 
-	if res {
-		successfulLoginCode := 0
-		// set values in structs
-		resultjson := dto.SimpleResutlJSON{
-			Status:    http.StatusOK,
-			ErrorCode: successfulLoginCode,
-		}
-		// convert structs to json
-		res, err := json.Marshal(resultjson)
+	// In the Model, the function returns JSON in other way.
+	// So in this part, just response result.
 
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		// set header and defined response type for json
-		w.Header().Set(utils.ContentType, utils.ApplicationJSON)
-		w.Write(res)
-	} else {
-		failedCode := 20
-		// set values in structs
-		resultjson := dto.SimpleResutlJSON{
-			Status:    http.StatusOK,
-			ErrorCode: failedCode,
-		}
-		// convert structs to json
-		res, err := json.Marshal(resultjson)
+	// convert struct to JSON
+	res, err := json.Marshal(result)
 
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		// set header and defined response type for json
-		w.Header().Set(utils.ContentType, utils.ApplicationJSON)
-		w.Write(res)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
+	// Set HTTP header and defined MIME type
+	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
+	// Response JSON
+	w.Write(res)
 }
