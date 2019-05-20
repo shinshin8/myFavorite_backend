@@ -31,8 +31,8 @@ func main() {
 	// Login
 	r.HandleFunc(utils.LoginPath, controller.Login).Methods(utils.Post)
 
-	// Sign-In
-	r.HandleFunc(utils.SignInPath, controller.SignUp).Methods(utils.Post)
+	// Sign-Up
+	r.HandleFunc(utils.SignUpPath, controller.SignUp).Methods(utils.Post)
 
 	// Post list
 	r.HandleFunc(utils.PostList, controller.PostList).Methods(utils.Get)

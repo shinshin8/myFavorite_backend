@@ -17,7 +17,7 @@ const (
 // Each path
 const (
 	LoginPath          = "/login"
-	SignInPath         = "/signIn"
+	SignUpPath         = "/signUn"
 	PostList           = "/"
 	ShowLikedPosts     = "/likedPostsList"
 	LikePost           = "/likePost"
