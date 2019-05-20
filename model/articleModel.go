@@ -265,3 +265,39 @@ func EditPost(userID int, articleID int, title string, content string) dto.Simpl
 	}
 	return res
 }
+
+// DeletePost deletes specific post data and return the result in JSON.
+// At first parameter, user id is set in int type.
+// At second paramter, article id is set in int type.
+func DeletePost(userID int, articleID int) dto.SimpleResutlJSON {
+	// Initalize DB Connection
+	sql := utils.DBInit()
+	// Close DB connection at the end.
+	defer sql.Close()
+	// delete sql syntax
+	deleteSQL := `DELETE FROM 
+						article_table 
+					WHERE 
+						user_id = ? 
+					AND 
+						article_id = ?`
+	rows, err := sql.Prepare(deleteSQL)
+	httpOk := 200
+	if err != nil {
+		log.Fatal(err)
+		sqlErrorStatus := 8
+		res := dto.SimpleResutlJSON{
+			Status:    httpOk,
+			ErrorCode: sqlErrorStatus,
+		}
+		return res
+	}
+	rows.Exec(userID, articleID)
+	successStatus := 0
+
+	res := dto.SimpleResutlJSON{
+		Status:    httpOk,
+		ErrorCode: successStatus,
+	}
+	return res
+}
