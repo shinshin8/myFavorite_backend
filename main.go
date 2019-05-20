@@ -67,6 +67,9 @@ func main() {
 	// Edit a post
 	r.HandleFunc(utils.EditPost, controller.EditPost).Methods(utils.Put)
 
+	// Delete a post
+	r.HandleFunc(utils.DeletePost, controller.DeletePost).Methods(utils.Delete)
+
 	// listening port
 	port := portConfig.Port.Port
 	// listenre

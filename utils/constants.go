@@ -29,6 +29,7 @@ const (
 	SinglePost         = "/post"
 	NewPost            = "/newPost"
 	EditPost           = "/editPost"
+	DeletePost         = "/deletePost"
 )
 
 // The directory of configuration file
