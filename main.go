@@ -31,8 +31,8 @@ func main() {
 	// Login
 	r.HandleFunc(utils.LoginPath, controller.Login).Methods(utils.Post)
 
-	// Sign-In
-	r.HandleFunc(utils.SignInPath, controller.SignUp).Methods(utils.Post)
+	// Sign-Up
+	r.HandleFunc(utils.SignUpPath, controller.SignUp).Methods(utils.Post)
 
 	// Post list
 	r.HandleFunc(utils.PostList, controller.PostList).Methods(utils.Get)
@@ -62,7 +62,7 @@ func main() {
 	r.HandleFunc(utils.SinglePost, controller.SinglePost).Methods(utils.Get)
 
 	// Create a post
-	r.HandleFunc(utils.SinglePost, controller.CreatePost).Methods(utils.Post)
+	r.HandleFunc(utils.NewPost, controller.CreatePost).Methods(utils.Post)
 
 	// listening port
 	port := portConfig.Port.Port

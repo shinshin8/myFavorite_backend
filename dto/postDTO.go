@@ -25,3 +25,12 @@ type SiglePost struct {
 	FavoriteFlg bool  `json:favorite_flg`
 	Post        Posts `json:post`
 }
+
+// NewPost is a struct for a new post.
+type NewPost struct {
+	Status    int    `json:"status"`
+	ErrorCode int    `json:"error_code"`
+	UserID    int    `json:"user_id"`
+	Title     string `json:"title"`
+	Content   string `json:"content"`
+}

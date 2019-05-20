@@ -1,0 +1,106 @@
+package controller
+
+import (
+	"encoding/json"
+	"net/http"
+	"strconv"
+
+	"../dto"
+	"../utils"
+)
+
+// CreatePost creates a new post
+func CreatePost(w http.ResponseWriter, r *http.Request) {
+	// input form name
+	var (
+		usrID = "user_id"
+		til   = "title"
+		cont  = "content"
+	)
+	// Get user id
+	userIDStr := r.PostFormValue(usrID)
+	userID, _ := strconv.Atoi(userIDStr)
+	// Get title
+	title := r.PostFormValue(til)
+	//Get content
+	content := r.PostFormValue(cont)
+
+	// Check userID
+	if !utils.IsID(userID) {
+		// Invalid user id
+		invalidUserID := 14
+		// Set values into the struct
+		resStruct := dto.NewPost{http.StatusOK, invalidUserID, userID, title, content}
+		// convert struct to JSON
+		res, err := json.Marshal(resStruct)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		// Set HTTP header and defined MIME type
+		w.Header().Set(utils.ContentType, utils.ApplicationJSON)
+		// Response JSON
+		w.Write(res)
+		return
+	}
+
+	// Check title
+	if !utils.IsTitle(title) {
+		// Invalid title
+		invalidTitle := 15
+		// Set values into the struct
+		resStruct := dto.NewPost{http.StatusOK, invalidTitle, userID, title, content}
+		// convert struct to JSON
+		res, err := json.Marshal(resStruct)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		// Set HTTP header and defined MIME type
+		w.Header().Set(utils.ContentType, utils.ApplicationJSON)
+		// Response JSON
+		w.Write(res)
+		return
+	}
+
+	// Check content
+	if !utils.IsContent(content) {
+		// Invalid content
+		invalidContent := 16
+		// Set values into the struct
+		resStruct := dto.NewPost{http.StatusOK, invalidContent, userID, title, content}
+		// convert struct to JSON
+		res, err := json.Marshal(resStruct)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		// Set HTTP header and defined MIME type
+		w.Header().Set(utils.ContentType, utils.ApplicationJSON)
+		// Response JSON
+		w.Write(res)
+		return
+	}
+
+	// Execute insert data to DB.
+	result := model.createNewPost(userID, title, content)
+
+	// In the Model, the function returns JSON in other way.
+	// So in this part, just response result.
+
+	// convert struct to JSON
+	res, err := json.Marshal(result)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	// Set HTTP header and defined MIME type
+	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
+	// Response JSON
+	w.Write(res)
+
+}
