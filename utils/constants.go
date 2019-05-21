@@ -30,7 +30,8 @@ const (
 	NewPost            = "/newPost"
 	EditPost           = "/editPost"
 	DeletePost         = "/deletePost"
+	EditProfile        = "/editProfile"
 )
 
-// The directory of configuration file
+// ConfigFile indicate configuration file path.
 const ConfigFile = "./config/development.toml"
