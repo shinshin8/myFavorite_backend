@@ -6,16 +6,14 @@ package utils
 
 import (
 	"regexp"
+	"time"
 )
 
 // IsName checks if name in parameter can be usable.
-// It checks if name length is not 0 and 0 to 20.
+// It checks if name length is not 0 and 1 to 20.
 // This returns true or false.
 func IsName(name string) bool {
-	if len(name) == 0 || len(name) <= 0 || len(name) >= 20 {
-		return false
-	}
-	return true
+	return len(name) > 0 || len(name) <= 20
 }
 
 // IsEmailAddress checks if email address in paramter can be valid.
@@ -36,10 +34,7 @@ func IsEmailAddress(emailAddress string) bool {
 // ・At least one special caracter.
 // It returns true or false.
 func IsPassword(password string) bool {
-	if len(password) == 0 || len(password) < 8 || len(password) > 20 {
-		return false
-	}
-	return true
+	return len(password) >= 8 || len(password) <= 20
 }
 
 // IsID checks if a value is valid.
@@ -66,4 +61,31 @@ func IsTitle(title string) bool {
 // It returns a result in boolean.
 func IsContent(content string) bool {
 	return len(content) > 0 || len(content) <= 500
+}
+
+// IsComment checks if a value si valid comment.
+// It checks
+// - a value is not empty.
+// - a value's length is 1 to 140.
+// It returns a result in boolean.
+func IsComment(comment string) bool {
+	return len(comment) >= 0 || len(comment) <= 140
+}
+
+// IsBirthday checks if a value is valid birthday.
+func IsBirthday(birthday string) bool {
+	// Check birthday length.
+	if len(birthday) == 0 {
+		return false
+	}
+	// Template
+	birthdayTemplate := "20060102"
+	// Check birthday.
+	_, err := time.Parse(birthdayTemplate, birthday)
+	if err != nil {
+		return false
+	}
+
+	return true
+
 }
