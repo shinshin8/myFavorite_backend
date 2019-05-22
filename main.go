@@ -70,7 +70,10 @@ func main() {
 	// Delete a post
 	r.HandleFunc(utils.DeletePost, controller.DeletePost).Methods(utils.Delete)
 
-	// Edit a profile.
+	// Show user's profile.
+	r.HandleFunc(utils.ShowProfile, controller.ShowProfile).Methods(utils.Get)
+
+	// Edit user's profile.
 	r.HandleFunc(utils.EditProfile, controller.EditProfile).Methods(utils.Put)
 
 	// listening port
