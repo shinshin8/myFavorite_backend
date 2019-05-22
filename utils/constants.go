@@ -30,6 +30,7 @@ const (
 	NewPost            = "/newPost"
 	EditPost           = "/editPost"
 	DeletePost         = "/deletePost"
+	ShowProfile        = "/showProfile"
 	EditProfile        = "/editProfile"
 )
 
