@@ -96,3 +96,45 @@ func SignUp(username string, emailAddress string, password string) dto.SignUpRes
 	return res
 
 }
+
+// EditProfile updates user_table and return the result in JSON.
+// At first parameter, user id is set in int type.
+// At first parameter, user name is set in string type.
+// At second paramter, birthday is set in string type.
+// At third paramter, mail address is set in string type.
+// At fourth paramter, comment is set in string type.
+func EditProfile(userID int, userName, birthday, mailAddress, comment string) dto.SimpleResutlJSON {
+	// Initalize DB Connection
+	sql := utils.DBInit()
+	// Close DB connection at the end.
+	defer sql.Close()
+	// SQL syntax
+	update := `UPDATE 
+					user_table 
+				SET 
+					user_name = ?, 
+					birthday = ?, 
+					mail_address = ?, 
+					comment = ? 
+				WHERE 
+					user_id = ?`
+	rows, err := sql.Prepare(update)
+	httpOk := 200
+	if err != nil {
+		log.Fatal(err)
+		sqlErrorStatus := 8
+		res := dto.SimpleResutlJSON{
+			Status:    httpOk,
+			ErrorCode: sqlErrorStatus,
+		}
+		return res
+	}
+	rows.Exec(userName, birthday, mailAddress, comment, userID)
+	successStatus := 0
+
+	res := dto.SimpleResutlJSON{
+		Status:    httpOk,
+		ErrorCode: successStatus,
+	}
+	return res
+}
