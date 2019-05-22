@@ -74,10 +74,6 @@ func IsComment(comment string) bool {
 
 // IsBirthday checks if a value is valid birthday.
 func IsBirthday(birthday string) bool {
-	// Check birthday length.
-	if len(birthday) == 0 {
-		return false
-	}
 	// Template
 	birthdayTemplate := "20060102"
 	// Check birthday.

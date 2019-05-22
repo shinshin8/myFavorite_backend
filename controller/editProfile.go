@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"../dto"
+	"../model"
 	"../utils"
 )
 
@@ -39,6 +40,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		resStruct := dto.Profile{
 			Status:      http.StatusOK,
 			ErrorCode:   invalidUserName,
+			UserID:      userID,
 			UserName:    userName,
 			Birthday:    birthday,
 			MailAddress: mailAddress,
@@ -64,6 +66,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		resStruct := dto.Profile{
 			Status:      http.StatusOK,
 			ErrorCode:   invalidBirthday,
+			UserID:      userID,
 			UserName:    userName,
 			Birthday:    birthday,
 			MailAddress: mailAddress,
@@ -90,6 +93,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		resStruct := dto.Profile{
 			Status:      http.StatusOK,
 			ErrorCode:   invalidMailAddress,
+			UserID:      userID,
 			UserName:    userName,
 			Birthday:    birthday,
 			MailAddress: mailAddress,
@@ -115,6 +119,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		resStruct := dto.Profile{
 			Status:      http.StatusOK,
 			ErrorCode:   invalidComment,
+			UserID:      userID,
 			UserName:    userName,
 			Birthday:    birthday,
 			MailAddress: mailAddress,
@@ -135,7 +140,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Execute edit user's profile.
-	result := model.EditProfile(userName, birthday, mailAddress, comment)
+	result := model.EditProfile(userID, userName, birthday, mailAddress, comment)
 
 	// In the Model, the function returns JSON in other way.
 	// So in this part, just response result.
