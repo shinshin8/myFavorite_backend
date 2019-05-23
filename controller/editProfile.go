@@ -36,16 +36,19 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 	// Check user name
 	if !utils.IsName(userName) {
 		invalidUserName := 21
-		// Set values into the struct
-		resStruct := dto.Profile{
-			Status:      http.StatusOK,
-			ErrorCode:   invalidUserName,
+		profile := dto.Profile{
 			UserID:      userID,
-			UserName:    userName,
 			Birthday:    birthday,
 			MailAddress: mailAddress,
 			Comment:     comment,
 		}
+		// Set values into the struct
+		resStruct := dto.ProfileResult{
+			Status:    http.StatusOK,
+			ErrorCode: invalidUserName,
+			Profile:   profile,
+		}
+
 		// convert struct to JSON
 		res, err := json.Marshal(resStruct)
 
@@ -63,14 +66,16 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 	if !utils.IsBirthday(birthday) {
 		invalidBirthday := 22
 		// Set values into the struct
-		resStruct := dto.Profile{
-			Status:      http.StatusOK,
-			ErrorCode:   invalidBirthday,
+		profile := dto.Profile{
 			UserID:      userID,
-			UserName:    userName,
 			Birthday:    birthday,
 			MailAddress: mailAddress,
 			Comment:     comment,
+		}
+		resStruct := dto.ProfileResult{
+			Status:    http.StatusOK,
+			ErrorCode: invalidBirthday,
+			Profile:   profile,
 		}
 		// convert struct to JSON
 		res, err := json.Marshal(resStruct)
@@ -90,14 +95,16 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 	if !utils.IsEmailAddress(mailAddress) {
 		invalidMailAddress := 23
 		// Set values into the struct
-		resStruct := dto.Profile{
-			Status:      http.StatusOK,
-			ErrorCode:   invalidMailAddress,
+		profile := dto.Profile{
 			UserID:      userID,
-			UserName:    userName,
 			Birthday:    birthday,
 			MailAddress: mailAddress,
 			Comment:     comment,
+		}
+		resStruct := dto.ProfileResult{
+			Status:    http.StatusOK,
+			ErrorCode: invalidMailAddress,
+			Profile:   profile,
 		}
 		// convert struct to JSON
 		res, err := json.Marshal(resStruct)
@@ -116,14 +123,16 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 	if !utils.IsComment(comment) {
 		invalidComment := 24
 		// Set values into the struct
-		resStruct := dto.Profile{
-			Status:      http.StatusOK,
-			ErrorCode:   invalidComment,
+		profile := dto.Profile{
 			UserID:      userID,
-			UserName:    userName,
 			Birthday:    birthday,
 			MailAddress: mailAddress,
 			Comment:     comment,
+		}
+		resStruct := dto.ProfileResult{
+			Status:    http.StatusOK,
+			ErrorCode: invalidComment,
+			Profile:   profile,
 		}
 		// convert struct to JSON
 		res, err := json.Marshal(resStruct)
