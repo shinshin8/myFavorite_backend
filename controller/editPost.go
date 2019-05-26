@@ -12,6 +12,13 @@ import (
 
 // EditPost edits a existing post.
 func EditPost(w http.ResponseWriter, r *http.Request) {
+	// listening port
+	port := portConfig.Port.Port
+	// Set CORS
+	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
+	w.Header().Set(utils.Cors, "http://localhost"+port)
+	w.Header().Set(utils.ArrowHeader, utils.ContentType)
+	w.Header().Set(utils.Credential, utils.True)
 	// Get article id from URL query parameter and convert its type string to int.
 	atcID := "article_id"
 	articleIDStr := r.URL.Query().Get(atcID)
@@ -74,8 +81,6 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		// Set HTTP header and defined MIME type
-		w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 		// Response JSON
 		w.Write(res)
 		return
@@ -100,8 +105,6 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		// Set HTTP header and defined MIME type
-		w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 		// Response JSON
 		w.Write(res)
 		return
@@ -120,8 +123,6 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// Set HTTP header and defined MIME type
-	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 	// Response JSON
 	w.Write(res)
 }

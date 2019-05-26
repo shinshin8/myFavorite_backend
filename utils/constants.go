@@ -4,6 +4,10 @@ package utils
 const (
 	ContentType     = "Content-Type"
 	ApplicationJSON = "application/json"
+	Cors            = "Access-Control-Allow-Origin"
+	ArrowHeader     = "Access-Control-Allow-Headers"
+	Credential      = "Access-Control-Allow-Credentials"
+	True            = "true"
 )
 
 // HTTP request method

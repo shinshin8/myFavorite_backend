@@ -11,6 +11,13 @@ import (
 )
 
 func LikePost(w http.ResponseWriter, r *http.Request) {
+	// listening port
+	port := portConfig.Port.Port
+	// Set CORS
+	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
+	w.Header().Set(utils.Cors, "http://localhost"+port)
+	w.Header().Set(utils.ArrowHeader, utils.ContentType)
+	w.Header().Set(utils.Credential, utils.True)
 	// Get user id from URL query parameter and convert its type string to int.
 	usrID := "user_id"
 	userIDStr := r.URL.Query().Get(usrID)
@@ -37,8 +44,6 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		// set header and defined response type for json
-		w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 		w.Write(res)
 	} else {
 		failedLoginCode := 10
@@ -54,9 +59,6 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
-		// set header and defined response type for json
-		w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 		w.Write(res)
 	}
 }
