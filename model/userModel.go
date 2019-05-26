@@ -6,6 +6,7 @@ package model
 
 import (
 	"log"
+	"net/http"
 
 	"../dto"
 	"../utils"
@@ -64,7 +65,7 @@ func LoginUser(username string, hashedPassword string) bool {
 // Username is in the first parameter with string type.
 // Email Address is in the second parameter with string type.
 // Password is in the third parameter with string type.
-func SignUp(username string, emailAddress string, password string) dto.SignUpResultJSON {
+func SignUp(username string, emailAddress string, password string) dto.SimpleResutlJSON {
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -72,29 +73,53 @@ func SignUp(username string, emailAddress string, password string) dto.SignUpRes
 	// SQL syntax
 	registerNewUser := "INSERT into user_table(user_name, password, mail_address) values(?, ?, ?)"
 	rows, err := sql.Prepare(registerNewUser)
-	httpOk := 200
 	if err != nil {
 		log.Fatal(err)
 		sqlErrorStatus := 8
-		res := dto.SignUpResultJSON{
-			Status:       httpOk,
-			ErrorCode:    sqlErrorStatus,
-			Username:     username,
-			EmailAddress: emailAddress,
+		res := dto.SimpleResutlJSON{
+			Status:    http.StatusOK,
+			ErrorCode: sqlErrorStatus,
 		}
 		return res
 	}
 	rows.Exec(username, password, emailAddress)
 	successStatus := 0
-
-	res := dto.SignUpResultJSON{
-		Status:       httpOk,
-		ErrorCode:    successStatus,
-		Username:     username,
-		EmailAddress: emailAddress,
+	res := dto.SimpleResutlJSON{
+		Status:    http.StatusOK,
+		ErrorCode: successStatus,
 	}
 	return res
 
+}
+
+// ShowProfile gets a user's profile from user_table and return its result in JSON.
+// At the first parameter, user id is set in int type.
+func ShowProfile(userID int) dto.Profile {
+	// Initalize DB Connection
+	sql := utils.DBInit()
+	// Close DB connection at the end.
+	defer sql.Close()
+	// SQL syntax
+	selectProfile := `SELECT
+							user_id,
+							user_name, 
+							mail_address, 
+							birthday, 
+							comment 
+						FROM 
+							user_table 
+						WHERE 
+							user_id = ?`
+
+	var profile dto.Profile
+
+	err := sql.QueryRow(selectProfile, userID).Scan(&profile.UserID, &profile.UserName, &profile.MailAddress, &profile.Birthday, &profile.Comment)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return profile
 }
 
 // EditProfile updates user_table and return the result in JSON.

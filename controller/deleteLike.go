@@ -12,6 +12,13 @@ import (
 
 // DeleteLikedPost deals with deleting resouce and return its result in JSON format.
 func DeleteLikedPost(w http.ResponseWriter, r *http.Request) {
+	// listening port
+	port := portConfig.Port.Port
+	// Set CORS
+	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
+	w.Header().Set(utils.Cors, "http://localhost"+port)
+	w.Header().Set(utils.ArrowHeader, utils.ContentType)
+	w.Header().Set(utils.Credential, utils.True)
 	// Get user id from URL query paramter with string type and convert it to int.
 	usrID := "user_id"
 	usrIDStr := r.URL.Query().Get(usrID)
@@ -38,8 +45,6 @@ func DeleteLikedPost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		// set header and defined response type for json
-		w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 		w.Write(res)
 	} else {
 		failedCode := 11
@@ -55,9 +60,6 @@ func DeleteLikedPost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
-		// set header and defined response type for json
-		w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 		w.Write(res)
 	}
 }

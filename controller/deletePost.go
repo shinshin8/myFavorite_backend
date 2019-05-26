@@ -11,6 +11,13 @@ import (
 
 // DeletePost delete specific post resource.
 func DeletePost(w http.ResponseWriter, r *http.Request) {
+	// listening port
+	port := portConfig.Port.Port
+	// Set CORS
+	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
+	w.Header().Set(utils.Cors, "http://localhost"+port)
+	w.Header().Set(utils.ArrowHeader, utils.ContentType)
+	w.Header().Set(utils.Credential, utils.True)
 	// Get user id from URL query paramter with string type and convert it to int.
 	usrID := "user_id"
 	usrIDStr := r.URL.Query().Get(usrID)
@@ -33,8 +40,6 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// Set HTTP header and defined MIME type
-	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 	// Response JSON
 	w.Write(res)
 }

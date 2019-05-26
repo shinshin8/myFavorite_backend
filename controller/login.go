@@ -16,6 +16,13 @@ import (
 
 // Login function
 func Login(w http.ResponseWriter, r *http.Request) {
+	// listening port
+	port := portConfig.Port.Port
+	// Set CORS
+	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
+	w.Header().Set(utils.Cors, "http://localhost"+port)
+	w.Header().Set(utils.ArrowHeader, utils.ContentType)
+	w.Header().Set(utils.Credential, utils.True)
 
 	// input form name
 	var (
@@ -53,8 +60,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		// set header and defined response type for json
-		w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 		w.Write(res)
 	} else {
 		failedLoginCode := 1
@@ -70,9 +75,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
-		// set header and defined response type for json
-		w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 		w.Write(res)
 	}
 

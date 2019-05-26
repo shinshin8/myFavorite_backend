@@ -12,6 +12,14 @@ import (
 
 // ShowLikedPosts returns resutls in JSON format.
 func ShowLikedPosts(w http.ResponseWriter, r *http.Request) {
+	// listening port
+	port := portConfig.Port.Port
+	// Set CORS
+	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
+	w.Header().Set(utils.Cors, "http://localhost"+port)
+	w.Header().Set(utils.ArrowHeader, utils.ContentType)
+	w.Header().Set(utils.Credential, utils.True)
+
 	usrID := "user_id"
 	userIDStr := r.URL.Query().Get(usrID)
 	userID, _ := strconv.Atoi(userIDStr)
@@ -31,8 +39,6 @@ func ShowLikedPosts(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// Set HTTP header and defined MIME type
-	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 	// Response JSON
 	w.Write(res)
 }
