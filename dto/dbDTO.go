@@ -1,6 +1,6 @@
 package dto
 
-// Config struct
+// DbConfig is a struct for a configuration for database.
 type DbConfig struct {
 	Database DbInfo
 }
