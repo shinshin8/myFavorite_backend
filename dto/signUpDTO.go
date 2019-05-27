@@ -4,8 +4,8 @@ package dto
 type SignUpResultJSON struct {
 	Status       int    `json:"status"`
 	ErrorCode    int    `json:"error_code"`
-	Username     string `json:username`
-	EmailAddress string `json:email_address`
+	Username     string `json:"username"`
+	EmailAddress string `json:"email_address"`
 }
 
 // SignUpResult returns the pointer of struct; signUpResultJSON.
