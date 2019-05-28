@@ -8,8 +8,8 @@ import (
 	"log"
 	"net/http"
 
-	"../dto"
-	"../utils"
+	"github.com/shinshin8/myFavorite/dto"
+	"github.com/shinshin8/myFavorite/utils"
 )
 
 // UserName struct

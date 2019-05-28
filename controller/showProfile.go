@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"../dto"
-	"../model"
-	"../utils"
+	"github.com/shinshin8/myFavorite/dto"
+	"github.com/shinshin8/myFavorite/model"
+	"github.com/shinshin8/myFavorite/utils"
 )
 
 // ShowProfile show a user's profile.

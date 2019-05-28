@@ -9,9 +9,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"../dto"
-	"../model"
-	"../utils"
+	"github.com/shinshin8/myFavorite/dto"
+	"github.com/shinshin8/myFavorite/model"
+	"github.com/shinshin8/myFavorite/utils"
 )
 
 // SignUp returns the sign up results in JSON.

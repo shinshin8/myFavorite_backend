@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"./controller"
-	"./dto"
-	"./utils"
+	"github.com/shinshin8/myFavorite/controller"
+	"github.com/shinshin8/myFavorite/dto"
+	"github.com/shinshin8/myFavorite/utils"
 	"github.com/BurntSushi/toml"
 	"github.com/gorilla/mux"
 )

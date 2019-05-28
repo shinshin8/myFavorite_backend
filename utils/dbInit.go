@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"log"
 
-	"../dto"
+	"github.com/shinshin8/myFavorite/dto"
 	"github.com/BurntSushi/toml"
 	_ "github.com/go-sql-driver/mysql"
 )

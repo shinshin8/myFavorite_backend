@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"../model"
-	"../utils"
+	"github.com/shinshin8/myFavorite/model"
+	"github.com/shinshin8/myFavorite/utils"
 )
 
 // DeletePost delete specific post resource.
