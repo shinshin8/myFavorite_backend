@@ -1,7 +1,3 @@
-/*
-	dbInit.go is handling DB connection.
-*/
-
 package utils
 
 import (
@@ -9,9 +5,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/shinshin8/myFavorite/dto"
 	"github.com/BurntSushi/toml"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/shinshin8/myFavorite/dto"
 )
 
 var dbConfig dto.DbConfig

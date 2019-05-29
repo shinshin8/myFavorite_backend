@@ -1,7 +1,3 @@
-/*
-	This file handles CRUD for User Table.
-*/
-
 package model
 
 import (

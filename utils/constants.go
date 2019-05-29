@@ -18,6 +18,12 @@ const (
 	Delete = "DELETE"
 )
 
+// Session
+const (
+	SessionName       = "session-name"
+	ContextSessionKey = "session"
+)
+
 // Each path
 const (
 	LoginPath          = "/login"

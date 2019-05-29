@@ -1,6 +1,3 @@
-/*
-	This file handling login function.
-*/
 package controller
 
 import (
