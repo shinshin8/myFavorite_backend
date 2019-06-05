@@ -2,8 +2,10 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
+	"github.com/BurntSushi/toml"
 	"github.com/gomodule/redigo/redis"
 	"github.com/shinshin8/myFavorite/dto"
 	"github.com/shinshin8/myFavorite/model"
@@ -13,10 +15,16 @@ import (
 // EditProfile edits user's profile.
 func EditProfile(w http.ResponseWriter, r *http.Request) {
 	// listening port
-	port := portConfig.Port.Port
+	var localHostConfig dto.IPAddressConfig
+	// decoding toml
+	_, err := toml.DecodeFile(utils.ConfigFile, &localHostConfig)
+	if err != nil {
+		fmt.Println(err)
+	}
+	ipAddress := localHostConfig.IPAddress
 	// Set CORS
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
-	w.Header().Set(utils.Cors, utils.LocalHost+port)
+	w.Header().Set(utils.Cors, ipAddress)
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
 	w.Header().Set(utils.Credential, utils.True)
 	// Session
@@ -73,7 +81,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		}
 		// Set values into the struct
 		resStruct := dto.ProfileResult{
-			Status:    http.StatusOK,
+			Status:    false,
 			ErrorCode: invalidUserName,
 			Profile:   profile,
 		}
@@ -86,6 +94,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Response JSON
+		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 		return
 	}
@@ -100,7 +109,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 			Comment:     comment,
 		}
 		resStruct := dto.ProfileResult{
-			Status:    http.StatusOK,
+			Status:    false,
 			ErrorCode: invalidBirthday,
 			Profile:   profile,
 		}
@@ -112,6 +121,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Response JSON
+		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 		return
 	}
@@ -127,7 +137,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 			Comment:     comment,
 		}
 		resStruct := dto.ProfileResult{
-			Status:    http.StatusOK,
+			Status:    false,
 			ErrorCode: invalidMailAddress,
 			Profile:   profile,
 		}
@@ -139,6 +149,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Response JSON
+		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 		return
 	}
@@ -153,7 +164,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 			Comment:     comment,
 		}
 		resStruct := dto.ProfileResult{
-			Status:    http.StatusOK,
+			Status:    false,
 			ErrorCode: invalidComment,
 			Profile:   profile,
 		}
@@ -165,6 +176,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Response JSON
+		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 		return
 	}
@@ -183,5 +195,6 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Response JSON
+	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 }

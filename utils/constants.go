@@ -43,16 +43,11 @@ const (
 	ShowProfile        = "/showProfile"
 	EditProfile        = "/editProfile"
 	Logout             = "/logout"
+	DeleteAccount      = "/deleteAccount"
 )
 
-// RedisHost is access path for redis
-const RedisHost = "redis://localhost"
-
-// LocalHost is acdess path for localhost
-const LocalHost = "http://localhost"
-
 // ConfigFile indicate configuration file path.
-const ConfigFile = "./config/development.toml"
+const ConfigFile = "./config/config.toml"
 
 // Session method
 const (

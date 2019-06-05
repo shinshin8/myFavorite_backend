@@ -2,7 +2,7 @@ package dto
 
 // PostList is a struct for the DB query result JSON.
 type PostList struct {
-	Status    int     `json:"status"`
+	Status    bool    `json:"status"`
 	ErrorCode int     `json:"error_code"`
 	Posts     []Posts `json:"posts"`
 }
@@ -19,7 +19,7 @@ type Posts struct {
 
 // SiglePost saves a single post data in JSON.
 type SiglePost struct {
-	Status      int   `json:"status"`
+	Status      bool  `json:"status"`
 	ErrorCode   int   `json:"error_code"`
 	LikedFlg    bool  `json:"liked_flg"`
 	FavoriteFlg bool  `json:"favorite_flg"`
@@ -28,7 +28,7 @@ type SiglePost struct {
 
 // NewPost is a struct for a new post.
 type NewPost struct {
-	Status    int    `json:"status"`
+	Status    bool   `json:"status"`
 	ErrorCode int    `json:"error_code"`
 	UserID    int    `json:"user_id"`
 	Title     string `json:"title"`

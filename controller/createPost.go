@@ -2,23 +2,29 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
+	"github.com/BurntSushi/toml"
 	"github.com/gomodule/redigo/redis"
 	"github.com/shinshin8/myFavorite/dto"
 	"github.com/shinshin8/myFavorite/model"
 	"github.com/shinshin8/myFavorite/utils"
 )
 
-var portConfig dto.PortConfig
-
 // CreatePost creates a new post
 func CreatePost(w http.ResponseWriter, r *http.Request) {
 	// listening port
-	port := portConfig.Port.Port
+	var localHostConfig dto.IPAddressConfig
+	// decoding toml
+	_, err := toml.DecodeFile(utils.ConfigFile, &localHostConfig)
+	if err != nil {
+		fmt.Println(err)
+	}
+	ipAddress := localHostConfig.IPAddress
 	// Set CORS
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
-	w.Header().Set(utils.Cors, utils.LocalHost+port)
+	w.Header().Set(utils.Cors, ipAddress)
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
 	w.Header().Set(utils.Credential, utils.True)
 
@@ -65,7 +71,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		invalidUserID := 14
 		// Set values into the struct
 		resStruct := dto.NewPost{
-			Status:    http.StatusOK,
+			Status:    false,
 			ErrorCode: invalidUserID,
 			UserID:    userID,
 			Title:     title,
@@ -78,7 +84,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
+		w.WriteHeader(http.StatusOK)
 		// Response JSON
 		w.Write(res)
 		return
@@ -90,7 +96,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		invalidTitle := 15
 		// Set values into the struct
 		resStruct := dto.NewPost{
-			Status:    http.StatusOK,
+			Status:    false,
 			ErrorCode: invalidTitle,
 			UserID:    userID,
 			Title:     title,
@@ -114,7 +120,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		invalidContent := 16
 		// Set values into the struct
 		resStruct := dto.NewPost{
-			Status:    http.StatusOK,
+			Status:    false,
 			ErrorCode: invalidContent,
 			UserID:    userID,
 			Title:     title,
@@ -127,6 +133,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		w.WriteHeader(http.StatusOK)
 		// Response JSON
 		w.Write(res)
 		return
@@ -146,6 +153,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Response JSON
+	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 
 }

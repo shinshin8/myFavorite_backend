@@ -1,11 +1,16 @@
 package dto
 
-// configuration file
+// PortConfig is a struct for port configuration.
 type PortConfig struct {
-	Port PortInfo
+	Port string
 }
 
-// a port part in configuration file
-type PortInfo struct {
-	Port string
+// IPAddressConfig is a struct for loccal IP address.
+type IPAddressConfig struct {
+	IPAddress string
+}
+
+// RedisIPConfig is a struct for Redis IP address.
+type RedisIPConfig struct {
+	RedisIP string
 }

@@ -12,8 +12,8 @@ import (
 	"github.com/shinshin8/myFavorite/utils"
 )
 
-// ShowLikedPosts returns resutls in JSON format.
-func ShowLikedPosts(w http.ResponseWriter, r *http.Request) {
+// DeleteAccount delete loginned user's account.
+func DeleteAccount(w http.ResponseWriter, r *http.Request) {
 	// listening port
 	var localHostConfig dto.IPAddressConfig
 	// decoding toml
@@ -54,23 +54,41 @@ func ShowLikedPosts(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	successfulCode := 0
-	// Execute showLikedPosts model and returns json
-	likedPosts := model.ShowLikedPosts(userID)
 
-	resStruct := dto.PostList{
-		Status:    true,
-		ErrorCode: successfulCode,
-		Posts:     likedPosts,
+	// Execute delete user's account
+	deleteAccount := model.DeleteAccount(userID)
+
+	if deleteAccount {
+		successfulLoginCode := 0
+		// set values in structs
+		resultjson := dto.SimpleResutlJSON{
+			Status:    true,
+			ErrorCode: successfulLoginCode,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(res)
+	} else {
+		failedCode := 25
+		// set values in structs
+		resultjson := dto.SimpleResutlJSON{
+			Status:    false,
+			ErrorCode: failedCode,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(res)
 	}
-
-	res, err := json.Marshal(resStruct)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	// Response JSON
-	w.WriteHeader(http.StatusOK)
-	w.Write(res)
 }

@@ -2,8 +2,8 @@ package dto
 
 // ProfileResult saves user profile result.
 type ProfileResult struct {
-	Status    int `json:"status"`
-	ErrorCode int `json:"error_code"`
+	Status    bool `json:"status"`
+	ErrorCode int  `json:"error_code"`
 	Profile   `json:"profile"`
 }
 
