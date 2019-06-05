@@ -20,7 +20,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	port := portConfig.Port.Port
 	// Set CORS
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
-	w.Header().Set(utils.Cors, "http://localhost"+port)
+	w.Header().Set(utils.Cors, utils.LocalHost+port)
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
 	w.Header().Set(utils.Credential, utils.True)
 
@@ -48,8 +48,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// Create a new session token.
 	sessionToken := uuid.NewV4().String()
 	// Set session in the cache.
-	// Token will expire in 300 seconds.
-	_, err := utils.Cache.Do("SETEX", sessionToken, "300", loginRes.UserID)
+	// Token will expire in 1200 seconds.
+	_, err := utils.Cache.Do("SETEX", sessionToken, utils.SessionTimeOut, loginRes.UserID)
 
 	if err != nil {
 		// return an internal server error
@@ -59,9 +59,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	// Set client cookie
 	http.SetCookie(w, &http.Cookie{
-		Name:    "session_token",
+		Name:    utils.CookieName,
 		Value:   sessionToken,
-		Expires: time.Now().Add(300 * time.Second),
+		Expires: time.Now().Add(utils.SessionExpire * time.Second),
 	})
 
 	successfulLoginCode := 0

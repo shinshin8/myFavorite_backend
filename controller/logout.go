@@ -9,17 +9,17 @@ import (
 )
 
 // Logout delete session and let users logout.
-func Logout(w http.ResponseWriter, r *http.Request){
+func Logout(w http.ResponseWriter, r *http.Request) {
 	// listening port
 	port := portConfig.Port.Port
 	// Set CORS
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
-	w.Header().Set(utils.Cors, "http://localhost"+port)
+	w.Header().Set(utils.Cors, utils.LocalHost+port)
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
 	w.Header().Set(utils.Credential, utils.True)
 
 	// Session
-	c, err := r.Cookie("session_token")
+	c, err := r.Cookie(utils.CookieName)
 	if err != nil {
 		if err == http.ErrNoCookie {
 			w.WriteHeader(http.StatusUnauthorized)
@@ -31,7 +31,7 @@ func Logout(w http.ResponseWriter, r *http.Request){
 
 	sessionToken := c.Value
 
-	_, err = utils.Cache.Do("DEL", sessionToken)
+	_, err = utils.Cache.Do(utils.SessionDelete, sessionToken)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

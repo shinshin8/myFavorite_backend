@@ -45,5 +45,21 @@ const (
 	Logout             = "/logout"
 )
 
+// RedisHost is access path for redis
+const RedisHost = "redis://localhost"
+
+// LocalHost is acdess path for localhost
+const LocalHost = "http://localhost"
+
 // ConfigFile indicate configuration file path.
 const ConfigFile = "./config/development.toml"
+
+// Session method
+const (
+	SessionGet     = "GET"
+	SessionSet     = "SETEX"
+	SessionDelete  = "DEL"
+	CookieName     = "session_token"
+	SessionTimeOut = "1200"
+	SessionExpire  = 1200
+)

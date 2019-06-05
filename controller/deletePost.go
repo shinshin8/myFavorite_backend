@@ -16,11 +16,11 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 	port := portConfig.Port.Port
 	// Set CORS
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
-	w.Header().Set(utils.Cors, "http://localhost"+port)
+	w.Header().Set(utils.Cors, utils.LocalHost+port)
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
 	w.Header().Set(utils.Credential, utils.True)
 	// Session
-	c, err := r.Cookie("session_token")
+	c, err := r.Cookie(utils.CookieName)
 	if err != nil {
 		if err == http.ErrNoCookie {
 			w.WriteHeader(http.StatusUnauthorized)
@@ -33,7 +33,7 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 	sessionToken := c.Value
 
 	// Get user id from cache.
-	userIDCache, err := utils.Cache.Do("GET", sessionToken)
+	userIDCache, err := utils.Cache.Do(utils.SessionGet, sessionToken)
 	userID, _ := redis.Int(userIDCache, err)
 
 	if err != nil {

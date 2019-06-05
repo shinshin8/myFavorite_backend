@@ -8,8 +8,8 @@ import (
 var Cache redis.Conn
 
 // RedisConnection is connecting with Redis.
-func RedisConnection(){
-	conn, err := redis.DialURL("redis://localhost")
+func RedisConnection() {
+	conn, err := redis.DialURL(RedisHost)
 	if err != nil {
 		panic(err)
 	}
