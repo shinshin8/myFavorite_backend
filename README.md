@@ -1,7 +1,7 @@
 # myFavorite
 ## Overview
 
-This is a facebook-like web application.
+This is a back-end of facebook-like web application's.
 
 It offers users to share photos they took and posts they wrote with each other.
 
@@ -19,3 +19,5 @@ The main features are below.
 - Favorite post
 - List posts
 - create/edit/delete a post
+- Logout
+- Uploading images.
