@@ -5,24 +5,49 @@ import (
 	"net/http"
 	"strconv"
 
-	"../dto"
-	"../model"
-	"../utils"
+	"github.com/gomodule/redigo/redis"
+	"github.com/shinshin8/myFavorite/dto"
+	"github.com/shinshin8/myFavorite/model"
+	"github.com/shinshin8/myFavorite/utils"
 )
 
+// LikePost likes posts when user is login.
 func LikePost(w http.ResponseWriter, r *http.Request) {
 	// listening port
 	port := portConfig.Port.Port
 	// Set CORS
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
-	w.Header().Set(utils.Cors, "http://localhost"+port)
+	w.Header().Set(utils.Cors, utils.LocalHost+port)
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
 	w.Header().Set(utils.Credential, utils.True)
-	// Get user id from URL query parameter and convert its type string to int.
-	usrID := "user_id"
-	userIDStr := r.URL.Query().Get(usrID)
-	userID, _ := strconv.Atoi(userIDStr)
-	// Get article id from URL query parameter and convert its type string to int.
+
+	// Session
+	c, err := r.Cookie(utils.CookieName)
+	if err != nil {
+		if err == http.ErrNoCookie {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	sessionToken := c.Value
+
+	// Get user id from cache.
+	userIDCache, err := utils.Cache.Do(utils.SessionGet, sessionToken)
+	userID, _ := redis.Int(userIDCache, err)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if userIDCache == nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	atcID := "article_id"
 	articleIDStr := r.URL.Query().Get(atcID)
 	articleID, _ := strconv.Atoi(articleIDStr)

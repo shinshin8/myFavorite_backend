@@ -3,8 +3,8 @@ package model
 import (
 	"log"
 
-	"../dto"
-	"../utils"
+	"github.com/shinshin8/myFavorite/dto"
+	"github.com/shinshin8/myFavorite/utils"
 )
 
 // ShowLikedPosts returns the result of selected liked posts in JSON format.

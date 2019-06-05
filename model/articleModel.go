@@ -3,8 +3,8 @@ package model
 import (
 	"log"
 
-	"../dto"
-	"../utils"
+	"github.com/shinshin8/myFavorite/dto"
+	"github.com/shinshin8/myFavorite/utils"
 )
 
 // GetPosts is a function that returns an array which includes DB results with JSON format.
