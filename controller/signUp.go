@@ -8,7 +8,9 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"net/http"
+	"time"
 
+	uuid "github.com/satori/go.uuid"
 	"github.com/shinshin8/myFavorite/dto"
 	"github.com/shinshin8/myFavorite/model"
 	"github.com/shinshin8/myFavorite/utils"
@@ -124,11 +126,34 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	// In this time, method returns only int; error_code.
 	signUpRes := model.SignUp(username, emailAddress, hashedPassword)
 
-	// In the Model, the function returns JSON in other way.
-	// So in this part, just response result.
+	// Create a new session token.
+	sessionToken := uuid.NewV4().String()
+	// Set session in the cache.
+	// Token will expire in 300 seconds.
+	_, err := utils.Cache.Do("SETEX", sessionToken, "300", signUpRes)
+
+	if err != nil {
+		// return an internal server error
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// Set client cookie
+	http.SetCookie(w, &http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(300 * time.Second),
+	})
+
+	successfulLoginCode := 0
+	// set values in structs
+	resultjson := dto.SimpleResutlJSON{
+		Status:    http.StatusOK,
+		ErrorCode: successfulLoginCode,
+	}
 
 	// convert struct to JSON
-	res, err := json.Marshal(signUpRes)
+	res, err := json.Marshal(resultjson)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

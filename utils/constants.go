@@ -27,7 +27,7 @@ const (
 // Each path
 const (
 	LoginPath          = "/login"
-	SignUpPath         = "/signUn"
+	SignUpPath         = "/signUp"
 	PostList           = "/"
 	ShowLikedPosts     = "/likedPostsList"
 	LikePost           = "/likePost"
@@ -42,6 +42,7 @@ const (
 	DeletePost         = "/deletePost"
 	ShowProfile        = "/showProfile"
 	EditProfile        = "/editProfile"
+	Logout             = "/logout"
 )
 
 // ConfigFile indicate configuration file path.

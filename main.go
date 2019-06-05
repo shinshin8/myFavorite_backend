@@ -19,40 +19,43 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
+	utils.RedisConnection()
 	// initialize router
 	r := mux.NewRouter()
 	// Login
-	utils.HandlerFunc(r, utils.LoginPath, controller.Login).Methods(utils.Post)
+	r.HandleFunc(utils.LoginPath, controller.Login).Methods(utils.Post)
 	// Sign-Up
-	utils.HandlerFunc(r, utils.SignUpPath, controller.SignUp).Methods(utils.Post)
+	r.HandleFunc(utils.SignUpPath, controller.SignUp).Methods(utils.Post)
 	// Post list
-	utils.HandlerFunc(r, utils.PostList, controller.PostList).Methods(utils.Get)
+	r.HandleFunc(utils.PostList, controller.PostList).Methods(utils.Get)
 	// Show liked post lists
-	utils.HandlerFunc(r, utils.ShowLikedPosts, controller.ShowLikedPosts).Methods(utils.Get)
+	r.HandleFunc(utils.ShowLikedPosts, controller.ShowLikedPosts).Methods(utils.Get)
 	// Like post
-	utils.HandlerFunc(r, utils.LikePost, controller.LikePost).Methods(utils.Put)
+	r.HandleFunc(utils.LikePost, controller.LikePost).Methods(utils.Put)
 	// Delete liked post
-	utils.HandlerFunc(r, utils.DeleteLikedPost, controller.DeleteLikedPost).Methods(utils.Delete)
+	r.HandleFunc(utils.DeleteLikedPost, controller.DeleteLikedPost).Methods(utils.Delete)
 	// Show favorite posts
-	utils.HandlerFunc(r, utils.ShowFavoritePosts, controller.ShowFavoritePosts).Methods(utils.Get)
+	r.HandleFunc(utils.ShowFavoritePosts, controller.ShowFavoritePosts).Methods(utils.Get)
 	// Create a favorite post
-	utils.HandlerFunc(r, utils.FavoritePost, controller.FavoritePost).Methods(utils.Put)
+	r.HandleFunc(utils.FavoritePost, controller.FavoritePost).Methods(utils.Put)
 	// Delete a favorite post
-	utils.HandlerFunc(r, utils.DeleteFavoritePost, controller.DeleteFavoritePost).Methods(utils.Delete)
+	r.HandleFunc(utils.DeleteFavoritePost, controller.DeleteFavoritePost).Methods(utils.Delete)
 	// User's posts list
-	utils.HandlerFunc(r, utils.UserPostsList, controller.UserPostsList).Methods(utils.Get)
+	r.HandleFunc(utils.UserPostsList, controller.UserPostsList).Methods(utils.Get)
 	// Single post
-	utils.HandlerFunc(r, utils.SinglePost, controller.SinglePost).Methods(utils.Get)
+	r.HandleFunc(utils.SinglePost, controller.SinglePost).Methods(utils.Get)
 	// Create a post
-	utils.HandlerFunc(r, utils.NewPost, controller.CreatePost).Methods(utils.Post)
+	r.HandleFunc(utils.NewPost, controller.CreatePost).Methods(utils.Post)
 	// Edit a post
-	utils.HandlerFunc(r, utils.EditPost, controller.EditPost).Methods(utils.Put)
+	r.HandleFunc(utils.EditPost, controller.EditPost).Methods(utils.Put)
 	// Delete a post
-	utils.HandlerFunc(r, utils.DeletePost, controller.DeletePost).Methods(utils.Delete)
+	r.HandleFunc(utils.DeletePost, controller.DeletePost).Methods(utils.Delete)
 	// Show user's profile.
-	utils.HandlerFunc(r, utils.ShowProfile, controller.ShowProfile).Methods(utils.Get)
+	r.HandleFunc(utils.ShowProfile, controller.ShowProfile).Methods(utils.Get)
 	// Edit user's profile.
-	utils.HandlerFunc(r, utils.EditProfile, controller.EditProfile).Methods(utils.Put)
+	r.HandleFunc(utils.EditProfile, controller.EditProfile).Methods(utils.Put)
+	// Logout
+	r.HandleFunc(utils.Logout, controller.Logout).Methods(utils.Post)
 	// listening port
 	port := portConfig.Port.Port
 	// listener

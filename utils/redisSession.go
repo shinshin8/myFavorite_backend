@@ -1,15 +1,18 @@
 package utils
 
 import (
-	"gopkg.in/boj/redistore.v1"
+	"github.com/gomodule/redigo/redis"
 )
 
-// ResisSesssion connects Redis to handle sessions.
-func ResisSesssion() *redistore.RediStore {
-	store, err := redistore.NewRediStore(10, "tcp", ":6379", "", []byte("secret-key"))
+// Cache stores Redis connection
+var Cache redis.Conn
+
+// RedisConnection is connecting with Redis.
+func RedisConnection(){
+	conn, err := redis.DialURL("redis://localhost")
 	if err != nil {
 		panic(err)
 	}
-	store.SetMaxAge(1 * 24 * 3600)
-	return store
+	// Assign the connection to the package level `cache` variable
+	Cache = conn
 }
