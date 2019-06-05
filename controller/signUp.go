@@ -7,9 +7,11 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
+	"github.com/BurntSushi/toml"
 	uuid "github.com/satori/go.uuid"
 	"github.com/shinshin8/myFavorite/dto"
 	"github.com/shinshin8/myFavorite/model"
@@ -19,10 +21,16 @@ import (
 // SignUp returns the sign up results in JSON.
 func SignUp(w http.ResponseWriter, r *http.Request) {
 	// listening port
-	port := portConfig.Port.Port
+	var localHostConfig dto.IPAddressConfig
+	// decoding toml
+	_, err := toml.DecodeFile(utils.ConfigFile, &localHostConfig)
+	if err != nil {
+		fmt.Println(err)
+	}
+	ipAddress := localHostConfig.IPAddress
 	// Set CORS
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
-	w.Header().Set(utils.Cors, utils.LocalHost+port)
+	w.Header().Set(utils.Cors, ipAddress)
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
 	w.Header().Set(utils.Credential, utils.True)
 	// Input form name
@@ -47,7 +55,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		// Invalid username
 		invalidUsername := 3
 		// Set values into the struct
-		resStruct := dto.SignUpResult(http.StatusOK, invalidUsername, username, emailAddress)
+		resStruct := dto.SignUpResult(false, invalidUsername, username, emailAddress)
 		// convert struct to JSON
 		res, err := json.Marshal(resStruct)
 
@@ -56,6 +64,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Response JSON
+		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 		return
 
@@ -66,7 +75,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		// Invalid emailAddress
 		invalidMailAddress := 4
 		// Set values into the struct
-		resStruct := dto.SignUpResult(http.StatusOK, invalidMailAddress, username, emailAddress)
+		resStruct := dto.SignUpResult(false, invalidMailAddress, username, emailAddress)
 		// convert struct to JSON
 		res, err := json.Marshal(resStruct)
 
@@ -75,6 +84,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Response JSON
+		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 		return
 	}
@@ -84,7 +94,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		// Invalid password
 		invalidPassword := 5
 		// Set values into the struct
-		resStruct := dto.SignUpResult(http.StatusOK, invalidPassword, username, emailAddress)
+		resStruct := dto.SignUpResult(false, invalidPassword, username, emailAddress)
 
 		// convert struct to JSON
 		res, err := json.Marshal(resStruct)
@@ -94,6 +104,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Response JSON
+		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 		return
 	}
@@ -103,7 +114,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		// Password and confirm password don't match.
 		notMatchPasswords := 6
 		// Set values into the struct
-		resStruct := dto.SignUpResult(http.StatusOK, notMatchPasswords, username, emailAddress)
+		resStruct := dto.SignUpResult(false, notMatchPasswords, username, emailAddress)
 
 		// convert struct to JSON
 		res, err := json.Marshal(resStruct)
@@ -113,6 +124,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Response JSON
+		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 		return
 	}
@@ -130,9 +142,9 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	sessionToken := uuid.NewV4().String()
 	// Set session in the cache.
 	// Token will expire in 1200 seconds.
-	_, err := utils.Cache.Do("SETEX", sessionToken, utils.SessionTimeOut, signUpRes)
+	_, er := utils.Cache.Do(utils.SessionSet, sessionToken, utils.SessionTimeOut, signUpRes)
 
-	if err != nil {
+	if er != nil {
 		// return an internal server error
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -148,7 +160,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	successfulLoginCode := 0
 	// set values in structs
 	resultjson := dto.SimpleResutlJSON{
-		Status:    http.StatusOK,
+		Status:    true,
 		ErrorCode: successfulLoginCode,
 	}
 
@@ -160,6 +172,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Response JSON
+	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 
 }

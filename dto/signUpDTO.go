@@ -2,7 +2,7 @@ package dto
 
 // SignUpResultJSON struct
 type SignUpResultJSON struct {
-	Status       int    `json:"status"`
+	Status       bool   `json:"status"`
 	ErrorCode    int    `json:"error_code"`
 	Username     string `json:"username"`
 	EmailAddress string `json:"email_address"`
@@ -15,7 +15,7 @@ type SignUpResultJSON struct {
 // EmailAddress is in the forth parameter.
 // Password is in the fifth parameter.
 // ConfirmPassword is in the sixth parameter.
-func SignUpResult(status int, errorCode int, username string, emailAddress string) *SignUpResultJSON {
+func SignUpResult(status bool, errorCode int, username string, emailAddress string) *SignUpResultJSON {
 	res := new(SignUpResultJSON)
 	res.Status = status
 	res.ErrorCode = errorCode
