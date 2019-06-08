@@ -1,6 +1,3 @@
-/*
-	signUp.go is controller for sign-up manipulation.
-*/
 package controller
 
 import (
@@ -23,22 +20,24 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(utils.Cors, utils.CorsWildCard)
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
 	w.Header().Set(utils.Credential, utils.True)
-	// Input form name
-	var (
-		usernm  = "username"
-		email   = "emailAddress"
-		pwd     = "password"
-		confPwd = "confirmPassword"
-	)
+
+	var signUpBody dto.SingUpBody
+
+	err := json.NewDecoder(r.Body).Decode(&signUpBody)
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
 	// Username value
-	username := r.PostFormValue(usernm)
+	username := signUpBody.UserName
 	// Email address value
-	emailAddress := r.PostFormValue(email)
+	emailAddress := signUpBody.Email
 	// Password value
-	password := r.PostFormValue(pwd)
+	password := signUpBody.Password
 	// Confirm password value
-	confirmPassword := r.PostFormValue(confPwd)
+	confirmPassword := signUpBody.ConfirmPassword
 
 	// Validation check for username.
 	if !utils.IsName(username) {
@@ -57,7 +56,6 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 		return
-
 	}
 
 	// Validation check for email address
