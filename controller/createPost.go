@@ -10,8 +10,6 @@ import (
 	"github.com/shinshin8/myFavorite/utils"
 )
 
-var portConfig dto.PortConfig
-
 // CreatePost creates a new post
 func CreatePost(w http.ResponseWriter, r *http.Request) {
 	// Set CORS
@@ -63,7 +61,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		invalidUserID := 14
 		// Set values into the struct
 		resStruct := dto.NewPost{
-			Status:    http.StatusOK,
+			Status:    false,
 			ErrorCode: invalidUserID,
 			UserID:    userID,
 			Title:     title,
@@ -76,7 +74,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
+		w.WriteHeader(http.StatusOK)
 		// Response JSON
 		w.Write(res)
 		return
@@ -88,7 +86,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		invalidTitle := 15
 		// Set values into the struct
 		resStruct := dto.NewPost{
-			Status:    http.StatusOK,
+			Status:    false,
 			ErrorCode: invalidTitle,
 			UserID:    userID,
 			Title:     title,
@@ -112,7 +110,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		invalidContent := 16
 		// Set values into the struct
 		resStruct := dto.NewPost{
-			Status:    http.StatusOK,
+			Status:    false,
 			ErrorCode: invalidContent,
 			UserID:    userID,
 			Title:     title,
@@ -125,6 +123,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		w.WriteHeader(http.StatusOK)
 		// Response JSON
 		w.Write(res)
 		return
@@ -144,6 +143,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Response JSON
+	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 
 }

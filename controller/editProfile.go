@@ -71,7 +71,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		}
 		// Set values into the struct
 		resStruct := dto.ProfileResult{
-			Status:    http.StatusOK,
+			Status:    false,
 			ErrorCode: invalidUserName,
 			Profile:   profile,
 		}
@@ -84,6 +84,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Response JSON
+		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 		return
 	}
@@ -98,7 +99,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 			Comment:     comment,
 		}
 		resStruct := dto.ProfileResult{
-			Status:    http.StatusOK,
+			Status:    false,
 			ErrorCode: invalidBirthday,
 			Profile:   profile,
 		}
@@ -110,6 +111,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Response JSON
+		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 		return
 	}
@@ -125,7 +127,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 			Comment:     comment,
 		}
 		resStruct := dto.ProfileResult{
-			Status:    http.StatusOK,
+			Status:    false,
 			ErrorCode: invalidMailAddress,
 			Profile:   profile,
 		}
@@ -137,6 +139,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Response JSON
+		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 		return
 	}
@@ -151,7 +154,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 			Comment:     comment,
 		}
 		resStruct := dto.ProfileResult{
-			Status:    http.StatusOK,
+			Status:    false,
 			ErrorCode: invalidComment,
 			Profile:   profile,
 		}
@@ -163,6 +166,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Response JSON
+		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 		return
 	}
@@ -181,5 +185,6 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Response JSON
+	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 }

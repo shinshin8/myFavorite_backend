@@ -48,7 +48,7 @@ func UserPostsList(w http.ResponseWriter, r *http.Request) {
 	postList := model.UserPostsList(userID)
 	successfulCode := 0
 	resStruct := dto.PostList{
-		Status:    http.StatusOK,
+		Status:    true,
 		ErrorCode: successfulCode,
 		Posts:     postList,
 	}
@@ -60,5 +60,6 @@ func UserPostsList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Response JSON
+	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 }

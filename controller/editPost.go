@@ -65,7 +65,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 		invalidUserID := 17
 		// Set values into the struct
 		resStruct := dto.NewPost{
-			Status:    http.StatusOK,
+			Status:    false,
 			ErrorCode: invalidUserID,
 			UserID:    userID,
 			Title:     title,
@@ -78,8 +78,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		// Set HTTP header and defined MIME type
-		w.Header().Set(utils.ContentType, utils.ApplicationJSON)
+		w.WriteHeader(http.StatusOK)
 		// Response JSON
 		w.Write(res)
 		return
@@ -91,7 +90,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 		invalidTitle := 18
 		// Set values into the struct
 		resStruct := dto.NewPost{
-			Status:    http.StatusOK,
+			Status:    false,
 			ErrorCode: invalidTitle,
 			UserID:    userID,
 			Title:     title,
@@ -105,6 +104,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Response JSON
+		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 		return
 	}
@@ -115,7 +115,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 		invalidContent := 19
 		// Set values into the struct
 		resStruct := dto.NewPost{
-			Status:    http.StatusOK,
+			Status:    false,
 			ErrorCode: invalidContent,
 			UserID:    userID,
 			Title:     title,
@@ -129,6 +129,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Response JSON
+		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 		return
 	}
@@ -147,5 +148,6 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Response JSON
+	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 }

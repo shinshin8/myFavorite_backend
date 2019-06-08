@@ -205,12 +205,11 @@ func CreateNewPost(userID int, title string, content string) dto.SimpleResutlJSO
 								content) 
 						VALUES(?,?,?);`
 	rows, err := sql.Prepare(insertNewPost)
-	httpOk := 200
 	if err != nil {
 		log.Fatal(err)
 		sqlErrorStatus := 8
 		res := dto.SimpleResutlJSON{
-			Status:    httpOk,
+			Status:    false,
 			ErrorCode: sqlErrorStatus,
 		}
 		return res
@@ -219,7 +218,7 @@ func CreateNewPost(userID int, title string, content string) dto.SimpleResutlJSO
 	successStatus := 0
 
 	res := dto.SimpleResutlJSON{
-		Status:    httpOk,
+		Status:    true,
 		ErrorCode: successStatus,
 	}
 	return res
@@ -246,12 +245,11 @@ func EditPost(userID int, articleID int, title string, content string) dto.Simpl
 				AND 
 					article_id = ?`
 	rows, err := sql.Prepare(update)
-	httpOk := 200
 	if err != nil {
 		log.Fatal(err)
 		sqlErrorStatus := 8
 		res := dto.SimpleResutlJSON{
-			Status:    httpOk,
+			Status:    false,
 			ErrorCode: sqlErrorStatus,
 		}
 		return res
@@ -260,7 +258,7 @@ func EditPost(userID int, articleID int, title string, content string) dto.Simpl
 	successStatus := 0
 
 	res := dto.SimpleResutlJSON{
-		Status:    httpOk,
+		Status:    true,
 		ErrorCode: successStatus,
 	}
 	return res
@@ -282,12 +280,11 @@ func DeletePost(userID int, articleID int) dto.SimpleResutlJSON {
 					AND 
 						article_id = ?`
 	rows, err := sql.Prepare(deleteSQL)
-	httpOk := 200
 	if err != nil {
 		log.Fatal(err)
 		sqlErrorStatus := 8
 		res := dto.SimpleResutlJSON{
-			Status:    httpOk,
+			Status:    false,
 			ErrorCode: sqlErrorStatus,
 		}
 		return res
@@ -296,7 +293,7 @@ func DeletePost(userID int, articleID int) dto.SimpleResutlJSON {
 	successStatus := 0
 
 	res := dto.SimpleResutlJSON{
-		Status:    httpOk,
+		Status:    true,
 		ErrorCode: successStatus,
 	}
 	return res

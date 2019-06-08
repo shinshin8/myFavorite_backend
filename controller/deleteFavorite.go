@@ -58,7 +58,7 @@ func DeleteFavoritePost(w http.ResponseWriter, r *http.Request) {
 		successfulLoginCode := 0
 		// set values in structs
 		resultjson := dto.SimpleResutlJSON{
-			Status:    http.StatusOK,
+			Status:    true,
 			ErrorCode: successfulLoginCode,
 		}
 		// convert structs to json
@@ -68,12 +68,13 @@ func DeleteFavoritePost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 	} else {
 		failedCode := 13
 		// set values in structs
 		resultjson := dto.SimpleResutlJSON{
-			Status:    http.StatusOK,
+			Status:    false,
 			ErrorCode: failedCode,
 		}
 		// convert structs to json
@@ -83,6 +84,7 @@ func DeleteFavoritePost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 	}
 }

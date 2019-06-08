@@ -56,6 +56,8 @@ func main() {
 	r.HandleFunc(utils.EditProfile, controller.EditProfile).Methods(utils.Put)
 	// Logout
 	r.HandleFunc(utils.Logout, controller.Logout).Methods(utils.Post)
+	// Delete Account
+	r.HandleFunc(utils.DeleteAccount, controller.DeleteAccount).Methods(utils.Delete)
 	// listening port
 	port := portConfig.Port.Port
 	// listener

@@ -38,7 +38,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	successfulLoginCode := 0
 	// set values in structs
 	resultjson := dto.SimpleResutlJSON{
-		Status:    http.StatusOK,
+		Status:    true,
 		ErrorCode: successfulLoginCode,
 	}
 	// convert structs to json

@@ -3,7 +3,6 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 
 	"github.com/gomodule/redigo/redis"
 	"github.com/shinshin8/myFavorite/dto"
@@ -11,13 +10,14 @@ import (
 	"github.com/shinshin8/myFavorite/utils"
 )
 
-// DeleteLikedPost deals with deleting resouce and return its result in JSON format.
-func DeleteLikedPost(w http.ResponseWriter, r *http.Request) {
+// DeleteAccount delete loginned user's account.
+func DeleteAccount(w http.ResponseWriter, r *http.Request) {
 	// Set CORS
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 	w.Header().Set(utils.Cors, utils.CorsWildCard)
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
 	w.Header().Set(utils.Credential, utils.True)
+
 	// Session
 	c, err := r.Cookie(utils.CookieName)
 	if err != nil {
@@ -44,15 +44,11 @@ func DeleteLikedPost(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	// Get article id from URL query parameter with string type and convert it to int.
-	atlID := "article_id"
-	atlIDStr := r.URL.Query().Get(atlID)
-	articleID, _ := strconv.Atoi(atlIDStr)
 
-	// Execute delete resouce.
-	res := model.DeleteLikedPost(userID, articleID)
+	// Execute delete user's account
+	deleteAccount := model.DeleteAccount(userID)
 
-	if res {
+	if deleteAccount {
 		successfulLoginCode := 0
 		// set values in structs
 		resultjson := dto.SimpleResutlJSON{
@@ -69,7 +65,7 @@ func DeleteLikedPost(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 	} else {
-		failedCode := 11
+		failedCode := 25
 		// set values in structs
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,

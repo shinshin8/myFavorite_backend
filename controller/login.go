@@ -47,9 +47,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	sessionToken := uuid.NewV4().String()
 	// Set session in the cache.
 	// Token will expire in 1200 seconds.
-	_, err := utils.Cache.Do("SETEX", sessionToken, utils.SessionTimeOut, loginRes.UserID)
+	_, er := utils.Cache.Do(utils.SessionSet, sessionToken, utils.SessionTimeOut, loginRes.UserID)
 
-	if err != nil {
+	if er != nil {
 		// return an internal server error
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -65,7 +65,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	successfulLoginCode := 0
 	// set values in structs
 	resultjson := dto.SimpleResutlJSON{
-		Status:    http.StatusOK,
+		Status:    true,
 		ErrorCode: successfulLoginCode,
 	}
 	// convert structs to json
@@ -75,6 +75,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 
 }

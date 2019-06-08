@@ -49,7 +49,7 @@ func ShowLikedPosts(w http.ResponseWriter, r *http.Request) {
 	likedPosts := model.ShowLikedPosts(userID)
 
 	resStruct := dto.PostList{
-		Status:    http.StatusOK,
+		Status:    true,
 		ErrorCode: successfulCode,
 		Posts:     likedPosts,
 	}
@@ -61,5 +61,6 @@ func ShowLikedPosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Response JSON
+	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 }

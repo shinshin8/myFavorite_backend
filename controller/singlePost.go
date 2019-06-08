@@ -64,7 +64,7 @@ func SinglePost(w http.ResponseWriter, r *http.Request) {
 	successfulCode := 0
 
 	resStruct := dto.SiglePost{
-		Status:      http.StatusOK,
+		Status:      true,
 		ErrorCode:   successfulCode,
 		LikedFlg:    likedResult,
 		FavoriteFlg: favoriteResult,
@@ -78,6 +78,7 @@ func SinglePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Response JSON
+	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 
 }

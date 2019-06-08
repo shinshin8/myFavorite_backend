@@ -48,7 +48,7 @@ func ShowProfile(w http.ResponseWriter, r *http.Request) {
 	successfulCode := 0
 
 	resStruct := dto.ProfileResult{
-		Status:    http.StatusOK,
+		Status:    true,
 		ErrorCode: successfulCode,
 		Profile:   userProfile,
 	}
@@ -60,5 +60,6 @@ func ShowProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Response JSON
+	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 }

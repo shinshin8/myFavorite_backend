@@ -118,12 +118,11 @@ func EditProfile(userID int, userName, birthday, mailAddress, comment string) dt
 				WHERE 
 					user_id = ?`
 	rows, err := sql.Prepare(update)
-	httpOk := 200
 	if err != nil {
 		log.Fatal(err)
 		sqlErrorStatus := 8
 		res := dto.SimpleResutlJSON{
-			Status:    httpOk,
+			Status:    false,
 			ErrorCode: sqlErrorStatus,
 		}
 		return res
@@ -132,8 +131,31 @@ func EditProfile(userID int, userName, birthday, mailAddress, comment string) dt
 	successStatus := 0
 
 	res := dto.SimpleResutlJSON{
-		Status:    httpOk,
+		Status:    true,
 		ErrorCode: successStatus,
 	}
 	return res
+}
+
+// DeleteAccount delete user from DB
+// At first parameter, user id is set in int type.
+// The function returns result in boolean.
+func DeleteAccount(userID int) bool {
+	// Initalize DB Connection
+	sql := utils.DBInit()
+	// Close DB connection at the end.
+	defer sql.Close()
+	// SQL syntax
+	deleteUser := `DELETE FROM 
+						user_table 
+					WHERE 
+						user_id = ?`
+	rows, err := sql.Prepare(deleteUser)
+	if err != nil {
+		log.Fatal(err)
+		return false
+	}
+	rows.Exec(userID)
+
+	return true
 }

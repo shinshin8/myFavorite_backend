@@ -44,6 +44,7 @@ const (
 	ShowProfile        = "/showProfile"
 	EditProfile        = "/editProfile"
 	Logout             = "/logout"
+	DeleteAccount      = "/deleteAccount"
 )
 
 // RedisHost is access path for redis

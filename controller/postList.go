@@ -22,7 +22,7 @@ func PostList(w http.ResponseWriter, r *http.Request) {
 	dbResultArray := model.GetPosts()
 
 	resStruct := dto.PostList{
-		Status:    http.StatusOK,
+		Status:    true,
 		ErrorCode: successfulCode,
 		Posts:     dbResultArray,
 	}
@@ -34,6 +34,7 @@ func PostList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Response JSON
+	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 
 }
