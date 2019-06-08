@@ -34,3 +34,9 @@ type NewPost struct {
 	Title     string `json:"title"`
 	Content   string `json:"content"`
 }
+
+// EditPostBody is a struct for request body of create post.
+type EditPostBody struct {
+	Title string
+	Content string
+}

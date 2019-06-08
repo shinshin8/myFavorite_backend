@@ -43,22 +43,24 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	// Input forms
-	var (
-		userNameForm    = "user_name"
-		birthdayForm    = "birthday"
-		mailAddressForm = "mailAddress"
-		commentForm     = "comment"
-	)
+
+	var editProfileBody dto.EditProfileBody
+
+	er := json.NewDecoder(r.Body).Decode(&editProfileBody)
+
+	if er != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
 	// Get user name
-	userName := r.PostFormValue(userNameForm)
+	userName := editProfileBody.UserName
 	// Get birthday
-	birthday := r.PostFormValue(birthdayForm)
+	birthday := editProfileBody.Birthday
 	//Get mail address
-	mailAddress := r.PostFormValue(mailAddressForm)
+	mailAddress := editProfileBody.MailAddress
 	// Get comment
-	comment := r.PostFormValue(commentForm)
+	comment := editProfileBody.Comment
 
 	// Check user name
 	if !utils.IsName(userName) {

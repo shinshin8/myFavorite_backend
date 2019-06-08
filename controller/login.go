@@ -22,17 +22,20 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
 	w.Header().Set(utils.Credential, utils.True)
 
-	// input form name
-	var (
-		usernm = "username"
-		pwd    = "password"
-	)
+	var loginBody dto.LoginBody
+
+	err := json.NewDecoder(r.Body).Decode(&loginBody)
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
 	// analyze request form
 	// get username
-	username := r.PostFormValue(usernm)
+	username := loginBody.UserName
 	// get password
-	password := r.PostFormValue(pwd)
+	password := loginBody.Password
 
 	// hashed password
 	hash := sha256.New()

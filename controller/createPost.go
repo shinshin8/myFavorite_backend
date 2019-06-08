@@ -45,15 +45,19 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// input form name
-	var (
-		til  = "title"
-		cont = "content"
-	)
+	var editPostBody dto.EditPostBody
+
+	er := json.NewDecoder(r.Body).Decode(&editPostBody)
+
+	if er != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	// Get title
-	title := r.PostFormValue(til)
+	title := editPostBody.Title
 	//Get content
-	content := r.PostFormValue(cont)
+	content := editPostBody.Content
 
 	// Check userID
 	if !utils.IsID(userID) {
