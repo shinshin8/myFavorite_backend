@@ -13,11 +13,9 @@ import (
 
 // DeleteFavoritePost deletes specific favorite post resource and returns the result in JSON
 func DeleteFavoritePost(w http.ResponseWriter, r *http.Request) {
-	// listening port
-	port := portConfig.Port.Port
 	// Set CORS
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
-	w.Header().Set(utils.Cors, utils.LocalHost+port)
+	w.Header().Set(utils.Cors, utils.CorsWildCard)
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
 	w.Header().Set(utils.Credential, utils.True)
 

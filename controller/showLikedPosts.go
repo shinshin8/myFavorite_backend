@@ -12,11 +12,9 @@ import (
 
 // ShowLikedPosts returns resutls in JSON format.
 func ShowLikedPosts(w http.ResponseWriter, r *http.Request) {
-	// listening port
-	port := portConfig.Port.Port
 	// Set CORS
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
-	w.Header().Set(utils.Cors, utils.LocalHost+port)
+	w.Header().Set(utils.Cors, utils.CorsWildCard)
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
 	w.Header().Set(utils.Credential, utils.True)
 
