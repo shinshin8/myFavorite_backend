@@ -11,17 +11,18 @@ import (
 // Cache stores Redis connection
 var Cache redis.Conn
 
-var redisIPConfig dto.RedisIPConfig
+var redisConfig dto.RedisConfig
 
 // RedisConnection is connecting with Redis.
 func RedisConnection() {
+
 	// decoding toml
-	_, err := toml.DecodeFile(ConfigFile, &redisIPConfig)
+	_, err := toml.DecodeFile(ConfigFile, &redisConfig)
 	if err != nil {
 		fmt.Println(err)
 	}
-	redisIP := redisIPConfig.RedisIP
-	conn, err := redis.DialURL(redisIP)
+
+	conn, err := redis.DialURL(redisConfig.Redis.RedisAddress)
 	if err != nil {
 		panic(err)
 	}

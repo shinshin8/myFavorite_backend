@@ -59,7 +59,7 @@ func main() {
 	// Delete Account
 	r.HandleFunc(utils.DeleteAccount, controller.DeleteAccount).Methods(utils.Delete)
 	// listening port
-	port := portConfig.Port
+	port := portConfig.Port.Port
 	// listener
 	http.ListenAndServe(port, r)
 }

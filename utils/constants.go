@@ -8,6 +8,7 @@ const (
 	ArrowHeader     = "Access-Control-Allow-Headers"
 	Credential      = "Access-Control-Allow-Credentials"
 	True            = "true"
+	CorsWildCard    = "*"
 )
 
 // HTTP request method
@@ -45,6 +46,9 @@ const (
 	Logout             = "/logout"
 	DeleteAccount      = "/deleteAccount"
 )
+
+// RedisHost is access path for redis
+const RedisHost = "redis://localhost"
 
 // ConfigFile indicate configuration file path.
 const ConfigFile = "./config/config.toml"
