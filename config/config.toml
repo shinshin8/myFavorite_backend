@@ -8,3 +8,6 @@ DbPort = "3306"
 
 [Port]
 Port = ":8080"
+
+[Redis]
+RedisAddress = "redis://localhost"

@@ -9,3 +9,11 @@ type PortConfig struct {
 type PortInfo struct {
 	Port string
 }
+
+type RedisConfig struct {
+	Redis RedisInfo
+}
+
+type RedisInfo struct {
+	RedisAddress string
+}
