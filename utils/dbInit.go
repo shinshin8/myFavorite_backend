@@ -7,7 +7,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/shinshin8/myFavorite/dto"
+	"github.com/shinshin8/myFavorite_backend/dto"
 )
 
 var dbConfig dto.DbConfig

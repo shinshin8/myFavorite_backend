@@ -6,8 +6,8 @@ import (
 	"strconv"
 
 	"github.com/gomodule/redigo/redis"
-	"github.com/shinshin8/myFavorite/model"
-	"github.com/shinshin8/myFavorite/utils"
+	"github.com/shinshin8/myFavorite_backend/model"
+	"github.com/shinshin8/myFavorite_backend/utils"
 )
 
 // DeletePost delete specific post resource.

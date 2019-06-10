@@ -5,7 +5,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/gomodule/redigo/redis"
-	"github.com/shinshin8/myFavorite/dto"
+	"github.com/shinshin8/myFavorite_backend/dto"
 )
 
 // Cache stores Redis connection

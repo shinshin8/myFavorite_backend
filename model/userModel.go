@@ -3,8 +3,8 @@ package model
 import (
 	"log"
 
-	"github.com/shinshin8/myFavorite/dto"
-	"github.com/shinshin8/myFavorite/utils"
+	"github.com/shinshin8/myFavorite_backend/dto"
+	"github.com/shinshin8/myFavorite_backend/utils"
 )
 
 // UserID is for logined user's id.

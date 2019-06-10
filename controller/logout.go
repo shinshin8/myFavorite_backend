@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/shinshin8/myFavorite/dto"
-	"github.com/shinshin8/myFavorite/utils"
+	"github.com/shinshin8/myFavorite_backend/dto"
+	"github.com/shinshin8/myFavorite_backend/utils"
 )
 
 // Logout delete session and let users logout.

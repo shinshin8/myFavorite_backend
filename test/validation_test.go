@@ -3,7 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/shinshin8/myFavorite/utils"
+	"github.com/shinshin8/myFavorite_backend/utils"
 )
 
 func TestIsName(t *testing.T) {
