@@ -1,4 +1,4 @@
-module github.com/shinshin8/myFavorite
+module github.com/shinshin8/myFavorite_backend
 
 go 1.12
 

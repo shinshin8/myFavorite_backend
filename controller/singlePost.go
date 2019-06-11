@@ -6,9 +6,9 @@ import (
 	"strconv"
 
 	"github.com/gomodule/redigo/redis"
-	"github.com/shinshin8/myFavorite/dto"
-	"github.com/shinshin8/myFavorite/model"
-	"github.com/shinshin8/myFavorite/utils"
+	"github.com/shinshin8/myFavorite_backend/dto"
+	"github.com/shinshin8/myFavorite_backend/model"
+	"github.com/shinshin8/myFavorite_backend/utils"
 )
 
 // SinglePost returns an individual post in JSON
