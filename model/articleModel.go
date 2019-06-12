@@ -155,7 +155,7 @@ func FavoriteOrNot(userID int, articleID int) bool {
 // SinglePost returns the result of a single post in JSON.
 // At the first parameter, user id will be set with int type.
 // At the second parameter, article id will be set with int type.
-func SinglePost(userID int, articleID int) dto.Posts {
+func SinglePost(articleID int) dto.Posts {
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -175,11 +175,11 @@ func SinglePost(userID int, articleID int) dto.Posts {
 					ON 
 						article_table.user_id = user_table.user_id 
 					WHERE 
-						article_table.user_id = ? AND article_table.article_id = ?`
+						article_table.article_id = ?`
 
 	var post dto.Posts
 
-	err := sql.QueryRow(signlePost, userID, articleID).Scan(&post.ArticleID, &post.UserName, &post.Title, &post.Content, &post.CreatedTime, &post.ModifiedTime)
+	err := sql.QueryRow(signlePost, articleID).Scan(&post.ArticleID, &post.UserName, &post.Title, &post.Content, &post.CreatedTime, &post.ModifiedTime)
 
 	if err != nil {
 		log.Fatal(err)
