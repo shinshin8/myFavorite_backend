@@ -56,6 +56,7 @@ func ShowFavoritePosts(w http.ResponseWriter, r *http.Request) {
 	resStruct := dto.PostList{
 		Status:    true,
 		ErrorCode: successfulCode,
+		UserID:    userID,
 		Posts:     favoritePosts,
 	}
 

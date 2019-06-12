@@ -4,6 +4,7 @@ package dto
 type PostList struct {
 	Status    bool    `json:"status"`
 	ErrorCode int     `json:"error_code"`
+	UserID    int     `json:"user_id"`
 	Posts     []Posts `json:"posts"`
 }
 
@@ -21,6 +22,7 @@ type Posts struct {
 type SiglePost struct {
 	Status      bool  `json:"status"`
 	ErrorCode   int   `json:"error_code"`
+	UserID      int   `json:"user_id"`
 	LikedFlg    bool  `json:"liked_flg"`
 	FavoriteFlg bool  `json:"favorite_flg"`
 	Post        Posts `json:"post"`
@@ -37,6 +39,6 @@ type NewPost struct {
 
 // EditPostBody is a struct for request body of create post.
 type EditPostBody struct {
-	Title string
+	Title   string
 	Content string
 }

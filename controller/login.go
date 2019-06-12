@@ -57,7 +57,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
 	// Set client cookie
 	http.SetCookie(w, &http.Cookie{
 		Name:    utils.CookieName,
@@ -80,5 +79,4 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
-
 }
