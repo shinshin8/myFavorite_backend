@@ -1,7 +1,9 @@
 package model
 
 import (
+	"io"
 	"log"
+	"os"
 
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/utils"
@@ -9,6 +11,12 @@ import (
 
 // GetPosts is a function that returns an array which includes DB results with JSON format.
 func GetPosts() []dto.Posts {
+	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -33,6 +41,8 @@ func GetPosts() []dto.Posts {
 	row, err := sql.Query(getPosts)
 
 	if err != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
 	}
 
@@ -42,6 +52,8 @@ func GetPosts() []dto.Posts {
 	for row.Next() {
 		posts := dto.Posts{}
 		if err := row.Scan(&posts.ArticleID, &posts.UserName, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
+			log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+			log.SetFlags(log.Ldate | log.Ltime)
 			log.Fatal(err)
 		}
 
@@ -55,6 +67,12 @@ func GetPosts() []dto.Posts {
 // UserPostsList gets a specific user's posts list from DB and convert its result into JSON.
 // At the parameter, user id will be put in and its type is int.
 func UserPostsList(userID int) []dto.Posts {
+	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -81,6 +99,8 @@ func UserPostsList(userID int) []dto.Posts {
 	row, err := sql.Query(getPosts, userID)
 
 	if err != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
 	}
 
@@ -90,6 +110,8 @@ func UserPostsList(userID int) []dto.Posts {
 	for row.Next() {
 		posts := dto.Posts{}
 		if err := row.Scan(&posts.ArticleID, &posts.UserName, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
+			log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+			log.SetFlags(log.Ldate | log.Ltime)
 			log.Fatal(err)
 		}
 
@@ -104,6 +126,12 @@ func UserPostsList(userID int) []dto.Posts {
 // At the first parameter, user id will be set with int type.
 // At the second parameter, article id will be set with int type.
 func LikedOrNot(userID int, articleID int) bool {
+	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -121,6 +149,8 @@ func LikedOrNot(userID int, articleID int) bool {
 	var likedFlg bool
 	err := sql.QueryRow(checkLikedOrNot, userID, articleID).Scan(&likedFlg)
 	if err != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
 	}
 	return likedFlg
@@ -130,6 +160,12 @@ func LikedOrNot(userID int, articleID int) bool {
 // At the first parameter, user id will be set with int type.
 // At the second parameter, article id will be set with int type.
 func FavoriteOrNot(userID int, articleID int) bool {
+	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -147,6 +183,8 @@ func FavoriteOrNot(userID int, articleID int) bool {
 	var favoriteFlg bool
 	err := sql.QueryRow(checkFavoriteOrNot, userID, articleID).Scan(&favoriteFlg)
 	if err != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
 	}
 	return favoriteFlg
@@ -156,6 +194,12 @@ func FavoriteOrNot(userID int, articleID int) bool {
 // At the first parameter, user id will be set with int type.
 // At the second parameter, article id will be set with int type.
 func SinglePost(articleID int) dto.Posts {
+	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -182,6 +226,8 @@ func SinglePost(articleID int) dto.Posts {
 	err := sql.QueryRow(signlePost, articleID).Scan(&post.ArticleID, &post.UserName, &post.Title, &post.Content, &post.CreatedTime, &post.ModifiedTime)
 
 	if err != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
 	}
 
@@ -193,6 +239,12 @@ func SinglePost(articleID int) dto.Posts {
 // At second paramter, title is set in string type.
 // At third parameter, content is set in string type.
 func CreateNewPost(userID int, title string, content string) dto.SimpleResutlJSON {
+	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -206,13 +258,9 @@ func CreateNewPost(userID int, title string, content string) dto.SimpleResutlJSO
 						VALUES(?,?,?);`
 	rows, err := sql.Prepare(insertNewPost)
 	if err != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
-		sqlErrorStatus := 8
-		res := dto.SimpleResutlJSON{
-			Status:    false,
-			ErrorCode: sqlErrorStatus,
-		}
-		return res
 	}
 	rows.Exec(userID, title, content)
 	successStatus := 0
@@ -230,6 +278,12 @@ func CreateNewPost(userID int, title string, content string) dto.SimpleResutlJSO
 // At third parameter, title is set in string type.
 // At forth parameter, content is set in string type.
 func EditPost(userID int, articleID int, title string, content string) dto.SimpleResutlJSON {
+	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -246,13 +300,9 @@ func EditPost(userID int, articleID int, title string, content string) dto.Simpl
 					article_id = ?`
 	rows, err := sql.Prepare(update)
 	if err != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
-		sqlErrorStatus := 8
-		res := dto.SimpleResutlJSON{
-			Status:    false,
-			ErrorCode: sqlErrorStatus,
-		}
-		return res
 	}
 	rows.Exec(title, content, userID, articleID)
 	successStatus := 0
@@ -268,6 +318,12 @@ func EditPost(userID int, articleID int, title string, content string) dto.Simpl
 // At first parameter, user id is set in int type.
 // At second paramter, article id is set in int type.
 func DeletePost(userID int, articleID int) dto.SimpleResutlJSON {
+	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -281,13 +337,9 @@ func DeletePost(userID int, articleID int) dto.SimpleResutlJSON {
 						article_id = ?`
 	rows, err := sql.Prepare(deleteSQL)
 	if err != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
-		sqlErrorStatus := 8
-		res := dto.SimpleResutlJSON{
-			Status:    false,
-			ErrorCode: sqlErrorStatus,
-		}
-		return res
 	}
 	rows.Exec(userID, articleID)
 	successStatus := 0

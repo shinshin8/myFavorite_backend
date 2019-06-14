@@ -2,8 +2,9 @@ package utils
 
 import (
 	"database/sql"
-	"fmt"
+	"io"
 	"log"
+	"os"
 
 	"github.com/BurntSushi/toml"
 	_ "github.com/go-sql-driver/mysql"
@@ -15,10 +16,18 @@ var dbConfig dto.DbConfig
 // DBInit initialize MySQL connection.
 func DBInit() *sql.DB {
 
+	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+
 	// decoding toml
 	_, err := toml.DecodeFile(ConfigFile, &dbConfig)
 	if err != nil {
-		fmt.Println(err)
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(err)
 	}
 
 	dataSourceName := dbConfig.Database.User + ":" + dbConfig.Database.Password + "@tcp(" + dbConfig.Database.Host + ":" + dbConfig.Database.DbPort + ")/" + dbConfig.Database.Database
@@ -26,6 +35,8 @@ func DBInit() *sql.DB {
 	sql, err := sql.Open(dbConfig.Database.DriverName, dataSourceName)
 
 	if err != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
 	}
 
