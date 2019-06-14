@@ -1,7 +1,9 @@
 package model
 
 import (
+	"io"
 	"log"
+	"os"
 
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/utils"
@@ -17,6 +19,11 @@ type UserID struct {
 // At second parameter, hashed password is recieved and its type is string.
 // The function return true or false.
 func LoginUser(username string, hashedPassword string) UserID {
+	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
 
 	sql := utils.DBInit()
 
@@ -31,6 +38,8 @@ func LoginUser(username string, hashedPassword string) UserID {
 	err := sql.QueryRow(findUserSyntax, username, hashedPassword).Scan(&userID.UserID)
 
 	if err != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
 	}
 
@@ -43,6 +52,12 @@ func LoginUser(username string, hashedPassword string) UserID {
 // Email Address is in the second parameter with string type.
 // Password is in the third parameter with string type.
 func SignUp(username string, emailAddress string, password string) int64 {
+	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -53,13 +68,17 @@ func SignUp(username string, emailAddress string, password string) int64 {
 	res, err := sql.Exec(registerNewUser, username, password, emailAddress)
 
 	if err != nil {
-		println("Exec err:", err.Error())
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(err)
 	}
 
 	id, err := res.LastInsertId()
 
 	if err != nil {
-		println("Error:", err.Error())
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(err)
 	}
 
 	return id
@@ -69,6 +88,12 @@ func SignUp(username string, emailAddress string, password string) int64 {
 // ShowProfile gets a user's profile from user_table and return its result in JSON.
 // At the first parameter, user id is set in int type.
 func ShowProfile(userID int) dto.Profile {
+	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -90,6 +115,8 @@ func ShowProfile(userID int) dto.Profile {
 	err := sql.QueryRow(selectProfile, userID).Scan(&profile.UserID, &profile.UserName, &profile.MailAddress, &profile.Birthday, &profile.Comment)
 
 	if err != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
 	}
 
@@ -103,6 +130,12 @@ func ShowProfile(userID int) dto.Profile {
 // At third paramter, mail address is set in string type.
 // At fourth paramter, comment is set in string type.
 func EditProfile(userID int, userName, birthday, mailAddress, comment string) dto.SimpleResutlJSON {
+	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -119,13 +152,9 @@ func EditProfile(userID int, userName, birthday, mailAddress, comment string) dt
 					user_id = ?`
 	rows, err := sql.Prepare(update)
 	if err != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
-		sqlErrorStatus := 8
-		res := dto.SimpleResutlJSON{
-			Status:    false,
-			ErrorCode: sqlErrorStatus,
-		}
-		return res
 	}
 	rows.Exec(userName, birthday, mailAddress, comment, userID)
 	successStatus := 0
@@ -141,6 +170,12 @@ func EditProfile(userID int, userName, birthday, mailAddress, comment string) dt
 // At first parameter, user id is set in int type.
 // The function returns result in boolean.
 func DeleteAccount(userID int) bool {
+	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -152,8 +187,9 @@ func DeleteAccount(userID int) bool {
 						user_id = ?`
 	rows, err := sql.Prepare(deleteUser)
 	if err != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
-		return false
 	}
 	rows.Exec(userID)
 

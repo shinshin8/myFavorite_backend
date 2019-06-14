@@ -1,7 +1,9 @@
 package model
 
 import (
+	"io"
 	"log"
+	"os"
 
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/utils"
@@ -11,6 +13,12 @@ import (
 // At the first parameter, user id will be set with int type.
 // At the second paramtere, article id will be set with int type.
 func ShowFavoritePosts(userID int, articleID int) []dto.Posts {
+	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -40,6 +48,8 @@ func ShowFavoritePosts(userID int, articleID int) []dto.Posts {
 	row, err := sql.Query(getFavoritePosts, userID)
 
 	if err != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
 	}
 
@@ -49,6 +59,8 @@ func ShowFavoritePosts(userID int, articleID int) []dto.Posts {
 	for row.Next() {
 		posts := dto.Posts{}
 		if err := row.Scan(&posts.ArticleID, &posts.UserName, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
+			log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+			log.SetFlags(log.Ldate | log.Ltime)
 			log.Fatal(err)
 		}
 
@@ -63,6 +75,12 @@ func ShowFavoritePosts(userID int, articleID int) []dto.Posts {
 // At the first parameter, user id will be set with int type.
 // At the second paramtere, article id will be set with int type.
 func FavoritePost(userID int, articleID int) bool {
+	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -78,7 +96,9 @@ func FavoritePost(userID int, articleID int) bool {
 	rows, err := sql.Prepare(insertSyntax)
 
 	if err != nil {
-		return false
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(err)
 	}
 
 	rows.Exec(userID, articleID)
@@ -89,6 +109,12 @@ func FavoritePost(userID int, articleID int) bool {
 // At the first parameter, user id will be set with int type.
 // At the second paramtere, article id will be set with int type.
 func DeleteFavoritePost(userID int, articleID int) bool {
+	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -104,7 +130,9 @@ func DeleteFavoritePost(userID int, articleID int) bool {
 	rows, err := sql.Prepare(delRec)
 
 	if err != nil {
-		return false
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(err)
 	}
 
 	rows.Exec(userID, articleID)
