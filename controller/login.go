@@ -50,7 +50,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	sessionToken := uuid.NewV4().String()
 	// Set session in the cache.
 	// Token will expire in 1200 seconds.
-	_, er := utils.Cache.Do(utils.SessionSet, sessionToken, utils.SessionTimeOut, loginRes.UserID)
+	_, er := utils.Cache.Do(utils.SessionSet, sessionToken, utils.SessionTimeOut, loginRes)
 
 	if er != nil {
 		// return an internal server error

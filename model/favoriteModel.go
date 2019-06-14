@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/BurntSushi/toml"
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/utils"
 )
@@ -13,7 +14,13 @@ import (
 // At the first parameter, user id will be set with int type.
 // At the second paramtere, article id will be set with int type.
 func ShowFavoritePosts(userID int, articleID int) []dto.Posts {
-	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// decoding toml
+	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
@@ -75,12 +82,17 @@ func ShowFavoritePosts(userID int, articleID int) []dto.Posts {
 // At the first parameter, user id will be set with int type.
 // At the second paramtere, article id will be set with int type.
 func FavoritePost(userID int, articleID int) bool {
-	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// decoding toml
+	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
 	defer logfile.Close()
-
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -109,7 +121,13 @@ func FavoritePost(userID int, articleID int) bool {
 // At the first parameter, user id will be set with int type.
 // At the second paramtere, article id will be set with int type.
 func DeleteFavoritePost(userID int, articleID int) bool {
-	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// decoding toml
+	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}

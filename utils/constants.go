@@ -47,9 +47,6 @@ const (
 	DeleteAccount      = "/deleteAccount"
 )
 
-// RedisHost is access path for redis
-const RedisHost = "redis://localhost"
-
 // ConfigFile indicate configuration file path.
 const ConfigFile = "./config/config.toml"
 
