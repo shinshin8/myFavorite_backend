@@ -2,11 +2,13 @@ package utils
 
 // Application form type
 const (
-	ContentType     = "Content-Type"
-	ApplicationJSON = "application/json"
+	ContentType     = "Content-Type,Content-Length, Authorization, Accept,X-Requested-With"
+	ApplicationJSON = "application/json;charset=utf-8"
 	Cors            = "Access-Control-Allow-Origin"
 	ArrowHeader     = "Access-Control-Allow-Headers"
 	Credential      = "Access-Control-Allow-Credentials"
+	ArrowMethods    = "Access-Control-Allow-Methods"
+	Methods         = "PUT,POST,GET,DELETE,OPTIONS"
 	True            = "true"
 	CorsWildCard    = "*"
 )

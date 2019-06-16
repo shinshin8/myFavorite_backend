@@ -19,6 +19,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 	w.Header().Set(utils.Cors, utils.CorsWildCard)
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
+	w.Header().Set(utils.ArrowMethods, utils.Methods)
 	w.Header().Set(utils.Credential, utils.True)
 
 	var signUpBody dto.SingUpBody
