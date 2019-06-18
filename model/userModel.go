@@ -40,9 +40,7 @@ func LoginUser(username string, hashedPassword string) int {
 	err := sql.QueryRow(findUserSyntax, username, hashedPassword).Scan(&userID)
 
 	if err != nil {
-		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
-		log.SetFlags(log.Ldate | log.Ltime)
-		log.Fatal(err)
+		return 0
 	}
 
 	return userID

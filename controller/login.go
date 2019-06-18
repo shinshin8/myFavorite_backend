@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -17,26 +18,33 @@ import (
 // Login function
 func Login(w http.ResponseWriter, r *http.Request) {
 	// Set CORS
-	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
-	w.Header().Set(utils.Cors, utils.CorsWildCard)
-	w.Header().Set(utils.ArrowHeader, utils.ContentType)
-	w.Header().Set(utils.ArrowMethods, utils.Methods)
-	w.Header().Set(utils.Credential, utils.True)
+	// w.Header().Set(utils.ContentType, utils.ApplicationJSON)
+	// w.Header().Set(utils.Cors, utils.CorsWildCard)
+	// w.Header().Set(utils.ArrowHeader, utils.ContentType)
+	// w.Header().Set(utils.ArrowMethods, utils.Methods)
+	// w.Header().Set(utils.Credential, utils.True)
 
-	var loginBody dto.LoginBody
+	// r.ParseForm()
 
-	err := json.NewDecoder(r.Body).Decode(&loginBody)
+	username := r.PostFormValue("username")
+	password := r.PostFormValue("password")
+	// var loginBody dto.LoginBody
 
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
+	// err := json.NewDecoder(r.Body).Decode(&loginBody)
 
-	// analyze request form
-	// get username
-	username := loginBody.UserName
-	// get password
-	password := loginBody.Password
+	// if err != nil {
+	// 	w.WriteHeader(http.StatusBadRequest)
+	// 	return
+	// }
+
+	// // analyze request form
+	// // get username
+	// username := loginBody.UserName
+	// // get password
+	// password := loginBody.Password
+
+	fmt.Println(username)
+	fmt.Println(password)
 
 	// hashed password
 	hash := sha256.New()
@@ -47,37 +55,57 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// get login result
 	loginRes := model.LoginUser(username, hashedPassword)
 
-	// Create a new session token.
-	sessionToken := uuid.NewV4().String()
-	// Set session in the cache.
-	// Token will expire in 1200 seconds.
-	_, er := utils.Cache.Do(utils.SessionSet, sessionToken, utils.SessionTimeOut, loginRes)
+	fmt.Println(loginRes)
 
-	if er != nil {
-		// return an internal server error
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	// Set client cookie
-	http.SetCookie(w, &http.Cookie{
-		Name:    utils.CookieName,
-		Value:   sessionToken,
-		Expires: time.Now().Add(utils.SessionExpire * time.Second),
-	})
+	if loginRes == 0 {
+		wrongUserNamePassword := 1
+		// set values in structs
+		resultjson := dto.SimpleResutlJSON{
+			Status:    false,
+			ErrorCode: wrongUserNamePassword,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
 
-	successfulLoginCode := 0
-	// set values in structs
-	resultjson := dto.SimpleResutlJSON{
-		Status:    true,
-		ErrorCode: successfulLoginCode,
-	}
-	// convert structs to json
-	res, err := json.Marshal(resultjson)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(res)
+	} else {
+		// Create a new session token.
+		sessionToken := uuid.NewV4().String()
+		// Set session in the cache.
+		// Token will expire in 1200 seconds.
+		_, er := utils.Cache.Do(utils.SessionSet, sessionToken, utils.SessionTimeOut, loginRes)
 
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		if er != nil {
+			// return an internal server error
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		// Set client cookie
+		http.SetCookie(w, &http.Cookie{
+			Name:    utils.CookieName,
+			Value:   sessionToken,
+			Expires: time.Now().Add(utils.SessionExpire * time.Second),
+		})
+
+		successfulLoginCode := 0
+		// set values in structs
+		resultjson := dto.SimpleResutlJSON{
+			Status:    true,
+			ErrorCode: successfulLoginCode,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(res)
 	}
-	w.WriteHeader(http.StatusOK)
-	w.Write(res)
 }
