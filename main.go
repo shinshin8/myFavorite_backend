@@ -6,6 +6,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 	"github.com/shinshin8/myFavorite_backend/controller"
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/utils"
@@ -58,8 +59,18 @@ func main() {
 	r.HandleFunc(utils.Logout, controller.Logout).Methods(utils.Post)
 	// Delete Account
 	r.HandleFunc(utils.DeleteAccount, controller.DeleteAccount).Methods(utils.Delete)
+
+	c := cors.New(cors.Options{
+		AllowCredentials: true,
+		AllowedMethods:   []string{"GET", "HEAD", "POST", "PUT", "OPTIONS"},
+		AllowedHeaders:   []string{"Content-Type"},
+		AllowedOrigins:   []string{"http://localhost:3000"},
+	})
+
+	handler := c.Handler(r)
+
 	// listening port
 	port := portConfig.Port.Port
 	// listener
-	http.ListenAndServe(port, r)
+	http.ListenAndServe(port, handler)
 }

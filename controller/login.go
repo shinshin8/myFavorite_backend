@@ -20,6 +20,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 	w.Header().Set(utils.Cors, utils.CorsWildCard)
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
+	w.Header().Set(utils.ArrowMethods, utils.Methods)
 	w.Header().Set(utils.Credential, utils.True)
 
 	var loginBody dto.LoginBody
@@ -46,37 +47,55 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// get login result
 	loginRes := model.LoginUser(username, hashedPassword)
 
-	// Create a new session token.
-	sessionToken := uuid.NewV4().String()
-	// Set session in the cache.
-	// Token will expire in 1200 seconds.
-	_, er := utils.Cache.Do(utils.SessionSet, sessionToken, utils.SessionTimeOut, loginRes.UserID)
+	if loginRes == 0 {
+		wrongUserNamePassword := 1
+		// set values in structs
+		resultjson := dto.SimpleResutlJSON{
+			Status:    false,
+			ErrorCode: wrongUserNamePassword,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
 
-	if er != nil {
-		// return an internal server error
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	// Set client cookie
-	http.SetCookie(w, &http.Cookie{
-		Name:    utils.CookieName,
-		Value:   sessionToken,
-		Expires: time.Now().Add(utils.SessionExpire * time.Second),
-	})
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(res)
+	} else {
+		// Create a new session token.
+		sessionToken := uuid.NewV4().String()
+		// Set session in the cache.
+		// Token will expire in 1200 seconds.
+		_, er := utils.Cache.Do(utils.SessionSet, sessionToken, utils.SessionTimeOut, loginRes)
 
-	successfulLoginCode := 0
-	// set values in structs
-	resultjson := dto.SimpleResutlJSON{
-		Status:    true,
-		ErrorCode: successfulLoginCode,
-	}
-	// convert structs to json
-	res, err := json.Marshal(resultjson)
+		if er != nil {
+			// return an internal server error
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		// Set client cookie
+		http.SetCookie(w, &http.Cookie{
+			Name:    utils.CookieName,
+			Value:   sessionToken,
+			Expires: time.Now().Add(utils.SessionExpire * time.Second),
+		})
 
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		successfulLoginCode := 0
+		// set values in structs
+		resultjson := dto.SimpleResutlJSON{
+			Status:    true,
+			ErrorCode: successfulLoginCode,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(res)
 	}
-	w.WriteHeader(http.StatusOK)
-	w.Write(res)
 }

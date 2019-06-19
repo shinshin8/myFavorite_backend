@@ -5,21 +5,23 @@ import (
 	"log"
 	"os"
 
+	"github.com/BurntSushi/toml"
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/utils"
 )
-
-// UserID is for logined user's id.
-type UserID struct {
-	UserID int
-}
 
 // LoginUser judges wheather the recieved login information is corrent or not.
 // At first parameter, username is recieved and its type is string.
 // At second parameter, hashed password is recieved and its type is string.
 // The function return true or false.
-func LoginUser(username string, hashedPassword string) UserID {
-	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+func LoginUser(username string, hashedPassword string) int {
+	// decoding toml
+	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
@@ -33,14 +35,12 @@ func LoginUser(username string, hashedPassword string) UserID {
 	// SQL syntax
 	findUserSyntax := "SELECT user_id FROM user_table WHERE user_name = ? AND password = ?;"
 
-	var userID UserID
+	var userID int
 
-	err := sql.QueryRow(findUserSyntax, username, hashedPassword).Scan(&userID.UserID)
+	err := sql.QueryRow(findUserSyntax, username, hashedPassword).Scan(&userID)
 
 	if err != nil {
-		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
-		log.SetFlags(log.Ldate | log.Ltime)
-		log.Fatal(err)
+		return 0
 	}
 
 	return userID
@@ -52,7 +52,13 @@ func LoginUser(username string, hashedPassword string) UserID {
 // Email Address is in the second parameter with string type.
 // Password is in the third parameter with string type.
 func SignUp(username string, emailAddress string, password string) int64 {
-	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// decoding toml
+	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
@@ -88,7 +94,13 @@ func SignUp(username string, emailAddress string, password string) int64 {
 // ShowProfile gets a user's profile from user_table and return its result in JSON.
 // At the first parameter, user id is set in int type.
 func ShowProfile(userID int) dto.Profile {
-	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// decoding toml
+	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
@@ -130,7 +142,13 @@ func ShowProfile(userID int) dto.Profile {
 // At third paramter, mail address is set in string type.
 // At fourth paramter, comment is set in string type.
 func EditProfile(userID int, userName, birthday, mailAddress, comment string) dto.SimpleResutlJSON {
-	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// decoding toml
+	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
@@ -170,7 +188,13 @@ func EditProfile(userID int, userName, birthday, mailAddress, comment string) dt
 // At first parameter, user id is set in int type.
 // The function returns result in boolean.
 func DeleteAccount(userID int) bool {
-	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// decoding toml
+	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}

@@ -5,13 +5,23 @@ import (
 	"log"
 	"os"
 
+	"github.com/BurntSushi/toml"
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/utils"
 )
 
+var logFileConfig dto.LogConfig
+
 // GetPosts is a function that returns an array which includes DB results with JSON format.
 func GetPosts() []dto.Posts {
-	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+
+	// decoding toml
+	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
@@ -67,7 +77,13 @@ func GetPosts() []dto.Posts {
 // UserPostsList gets a specific user's posts list from DB and convert its result into JSON.
 // At the parameter, user id will be put in and its type is int.
 func UserPostsList(userID int) []dto.Posts {
-	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// decoding toml
+	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
@@ -126,7 +142,13 @@ func UserPostsList(userID int) []dto.Posts {
 // At the first parameter, user id will be set with int type.
 // At the second parameter, article id will be set with int type.
 func LikedOrNot(userID int, articleID int) bool {
-	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// decoding toml
+	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
@@ -160,7 +182,13 @@ func LikedOrNot(userID int, articleID int) bool {
 // At the first parameter, user id will be set with int type.
 // At the second parameter, article id will be set with int type.
 func FavoriteOrNot(userID int, articleID int) bool {
-	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// decoding toml
+	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
@@ -194,12 +222,17 @@ func FavoriteOrNot(userID int, articleID int) bool {
 // At the first parameter, user id will be set with int type.
 // At the second parameter, article id will be set with int type.
 func SinglePost(articleID int) dto.Posts {
-	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// decoding toml
+	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
 	defer logfile.Close()
-
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -239,7 +272,13 @@ func SinglePost(articleID int) dto.Posts {
 // At second paramter, title is set in string type.
 // At third parameter, content is set in string type.
 func CreateNewPost(userID int, title string, content string) dto.SimpleResutlJSON {
-	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// decoding toml
+	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
@@ -278,7 +317,13 @@ func CreateNewPost(userID int, title string, content string) dto.SimpleResutlJSO
 // At third parameter, title is set in string type.
 // At forth parameter, content is set in string type.
 func EditPost(userID int, articleID int, title string, content string) dto.SimpleResutlJSON {
-	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// decoding toml
+	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
@@ -318,7 +363,13 @@ func EditPost(userID int, articleID int, title string, content string) dto.Simpl
 // At first parameter, user id is set in int type.
 // At second paramter, article id is set in int type.
 func DeletePost(userID int, articleID int) dto.SimpleResutlJSON {
-	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// decoding toml
+	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}

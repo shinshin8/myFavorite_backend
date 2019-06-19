@@ -17,6 +17,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 	w.Header().Set(utils.Cors, utils.CorsWildCard)
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
+	w.Header().Set(utils.ArrowMethods, utils.Methods)
 	w.Header().Set(utils.Credential, utils.True)
 	// Get article id from URL query parameter and convert its type string to int.
 	atcID := "article_id"

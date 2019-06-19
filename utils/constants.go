@@ -3,10 +3,12 @@ package utils
 // Application form type
 const (
 	ContentType     = "Content-Type"
-	ApplicationJSON = "application/json"
+	ApplicationJSON = "application/json;charset=utf-8"
 	Cors            = "Access-Control-Allow-Origin"
 	ArrowHeader     = "Access-Control-Allow-Headers"
 	Credential      = "Access-Control-Allow-Credentials"
+	ArrowMethods    = "Access-Control-Allow-Methods"
+	Methods         = "PUT,POST,GET,DELETE,OPTIONS"
 	True            = "true"
 	CorsWildCard    = "*"
 )
@@ -46,9 +48,6 @@ const (
 	Logout             = "/logout"
 	DeleteAccount      = "/deleteAccount"
 )
-
-// RedisHost is access path for redis
-const RedisHost = "redis://localhost"
 
 // ConfigFile indicate configuration file path.
 const ConfigFile = "./config/config.toml"

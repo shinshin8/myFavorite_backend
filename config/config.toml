@@ -11,3 +11,6 @@ Port = ":8080"
 
 [Redis]
 RedisAddress = "redis://localhost"
+
+[LogFile]
+LogFile = "./all-the-logs.log"

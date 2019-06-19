@@ -5,13 +5,20 @@ import (
 	"log"
 	"os"
 
+	"github.com/BurntSushi/toml"
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/utils"
 )
 
 // ShowLikedPosts returns the result of selected liked posts in JSON format.
 func ShowLikedPosts(userID int) []dto.Posts {
-	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// decoding toml
+	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
@@ -73,7 +80,13 @@ func ShowLikedPosts(userID int) []dto.Posts {
 // In the first parameter, user-id will be set with int type.
 // In the second paraeter, article-id will be set witn int type.
 func LikePost(userID int, articleID int) bool {
-	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// decoding toml
+	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
@@ -107,7 +120,13 @@ func LikePost(userID int, articleID int) bool {
 // At the first parameter, user id will be set with int type.
 // At the second parameter, article id will be set with int type.
 func DeleteLikedPost(userID int, articleID int) bool {
-	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// decoding toml
+	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
