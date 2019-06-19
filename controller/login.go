@@ -4,7 +4,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -18,33 +17,26 @@ import (
 // Login function
 func Login(w http.ResponseWriter, r *http.Request) {
 	// Set CORS
-	// w.Header().Set(utils.ContentType, utils.ApplicationJSON)
-	// w.Header().Set(utils.Cors, utils.CorsWildCard)
-	// w.Header().Set(utils.ArrowHeader, utils.ContentType)
-	// w.Header().Set(utils.ArrowMethods, utils.Methods)
-	// w.Header().Set(utils.Credential, utils.True)
+	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
+	w.Header().Set(utils.Cors, utils.CorsWildCard)
+	w.Header().Set(utils.ArrowHeader, utils.ContentType)
+	w.Header().Set(utils.ArrowMethods, utils.Methods)
+	w.Header().Set(utils.Credential, utils.True)
 
-	// r.ParseForm()
+	var loginBody dto.LoginBody
 
-	username := r.PostFormValue("username")
-	password := r.PostFormValue("password")
-	// var loginBody dto.LoginBody
+	err := json.NewDecoder(r.Body).Decode(&loginBody)
 
-	// err := json.NewDecoder(r.Body).Decode(&loginBody)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
-	// if err != nil {
-	// 	w.WriteHeader(http.StatusBadRequest)
-	// 	return
-	// }
-
-	// // analyze request form
-	// // get username
-	// username := loginBody.UserName
-	// // get password
-	// password := loginBody.Password
-
-	fmt.Println(username)
-	fmt.Println(password)
+	// analyze request form
+	// get username
+	username := loginBody.UserName
+	// get password
+	password := loginBody.Password
 
 	// hashed password
 	hash := sha256.New()
@@ -54,8 +46,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	// get login result
 	loginRes := model.LoginUser(username, hashedPassword)
-
-	fmt.Println(loginRes)
 
 	if loginRes == 0 {
 		wrongUserNamePassword := 1

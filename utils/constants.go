@@ -2,7 +2,7 @@ package utils
 
 // Application form type
 const (
-	ContentType     = "Content-Type,Content-Length, Authorization, Accept,X-Requested-With"
+	ContentType     = "Content-Type"
 	ApplicationJSON = "application/json;charset=utf-8"
 	Cors            = "Access-Control-Allow-Origin"
 	ArrowHeader     = "Access-Control-Allow-Headers"
