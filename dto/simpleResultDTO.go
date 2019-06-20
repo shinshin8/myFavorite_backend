@@ -5,3 +5,9 @@ type SimpleResutlJSON struct {
 	Status    bool `json:"status"`
 	ErrorCode int  `json:"error_code"`
 }
+
+type LoginResult struct {
+	Status    bool   `json:"status"`
+	ErrorCode int    `json:"error_code"`
+	Cookie    string `json:"cookie"`
+}
