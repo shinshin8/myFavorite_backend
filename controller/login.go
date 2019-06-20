@@ -16,9 +16,10 @@ import (
 
 // Login function
 func Login(w http.ResponseWriter, r *http.Request) {
+
 	// Set CORS
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
-	w.Header().Set(utils.Cors, utils.CorsWildCard)
+	w.Header().Set(utils.Cors, "http://localhost:3000")
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
 	w.Header().Set(utils.ArrowMethods, utils.Methods)
 	w.Header().Set(utils.Credential, utils.True)
@@ -83,10 +84,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		})
 
 		successfulLoginCode := 0
-		// set values in structs
-		resultjson := dto.SimpleResutlJSON{
+
+		resultjson := dto.LoginResult{
 			Status:    true,
 			ErrorCode: successfulLoginCode,
+			Cookie:    sessionToken,
 		}
 		// convert structs to json
 		res, err := json.Marshal(resultjson)
