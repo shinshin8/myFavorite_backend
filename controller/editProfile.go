@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/gomodule/redigo/redis"
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/model"
 	"github.com/shinshin8/myFavorite_backend/utils"
@@ -18,31 +17,23 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
 	w.Header().Set(utils.ArrowMethods, utils.Methods)
 	w.Header().Set(utils.Credential, utils.True)
-	// Session
-	c, err := r.Cookie(utils.CookieName)
-	if err != nil {
-		if err == http.ErrNoCookie {
-			w.WriteHeader(http.StatusUnauthorized)
+	// Get jwt from header.
+	reqToken := r.Header.Get(utils.Authorization)
+	// Check if jwt is verified.
+	userID := utils.VerifyToken(reqToken)
+	if userID == 0 {
+		resultjson := dto.SimpleResutlJSON{
+			Status:    false,
+			ErrorCode: utils.InvalidToken,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	sessionToken := c.Value
-
-	// Get user id from cache.
-	userIDCache, err := utils.Cache.Do(utils.SessionGet, sessionToken)
-	userID, _ := redis.Int(userIDCache, err)
-
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	if userIDCache == nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
+		w.WriteHeader(http.StatusOK)
+		w.Write(res)
 	}
 
 	var editProfileBody dto.EditProfileBody
@@ -65,7 +56,6 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 
 	// Check user name
 	if !utils.IsName(userName) {
-		invalidUserName := 21
 		profile := dto.Profile{
 			UserID:      userID,
 			Birthday:    birthday,
@@ -75,7 +65,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		// Set values into the struct
 		resStruct := dto.ProfileResult{
 			Status:    false,
-			ErrorCode: invalidUserName,
+			ErrorCode: utils.InvalidEditProfileUserName,
 			Profile:   profile,
 		}
 
@@ -93,7 +83,6 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 	}
 	// Check birthday
 	if !utils.IsBirthday(birthday) {
-		invalidBirthday := 22
 		// Set values into the struct
 		profile := dto.Profile{
 			UserID:      userID,
@@ -103,7 +92,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		}
 		resStruct := dto.ProfileResult{
 			Status:    false,
-			ErrorCode: invalidBirthday,
+			ErrorCode: utils.InvalidEditProfileBirthday,
 			Profile:   profile,
 		}
 		// convert struct to JSON
@@ -121,7 +110,6 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 
 	// Check mail address
 	if !utils.IsEmailAddress(mailAddress) {
-		invalidMailAddress := 23
 		// Set values into the struct
 		profile := dto.Profile{
 			UserID:      userID,
@@ -131,7 +119,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		}
 		resStruct := dto.ProfileResult{
 			Status:    false,
-			ErrorCode: invalidMailAddress,
+			ErrorCode: utils.InvalidEditProfileMailAddress,
 			Profile:   profile,
 		}
 		// convert struct to JSON
@@ -148,7 +136,6 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 	}
 	// Check comment
 	if !utils.IsComment(comment) {
-		invalidComment := 24
 		// Set values into the struct
 		profile := dto.Profile{
 			UserID:      userID,
@@ -158,7 +145,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		}
 		resStruct := dto.ProfileResult{
 			Status:    false,
-			ErrorCode: invalidComment,
+			ErrorCode: utils.InvalidEditProfileComment,
 			Profile:   profile,
 		}
 		// convert struct to JSON
@@ -177,17 +164,35 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 	// Execute edit user's profile.
 	result := model.EditProfile(userID, userName, birthday, mailAddress, comment)
 
-	// In the Model, the function returns JSON in other way.
-	// So in this part, just response result.
+	if result {
+		// set values in structs
+		resultjson := dto.SimpleResutlJSON{
+			Status:    true,
+			ErrorCode: utils.SuccessCode,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
 
-	// convert struct to JSON
-	res, err := json.Marshal(result)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(res)
+	} else {
+		// set values in structs
+		resultjson := dto.SimpleResutlJSON{
+			Status:    true,
+			ErrorCode: utils.FailedEditProfile,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
 
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(res)
 	}
-	// Response JSON
-	w.WriteHeader(http.StatusOK)
-	w.Write(res)
 }

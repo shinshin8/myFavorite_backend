@@ -316,7 +316,7 @@ func CreateNewPost(userID int, title string, content string) dto.SimpleResutlJSO
 // At second paramter, article id is set in int type.
 // At third parameter, title is set in string type.
 // At forth parameter, content is set in string type.
-func EditPost(userID int, articleID int, title string, content string) dto.SimpleResutlJSON {
+func EditPost(userID int, articleID int, title string, content string) bool {
 	// decoding toml
 	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
 	if ers != nil {
@@ -349,20 +349,18 @@ func EditPost(userID int, articleID int, title string, content string) dto.Simpl
 		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
 	}
-	rows.Exec(title, content, userID, articleID)
-	successStatus := 0
+	res, err := rows.Exec(title, content, userID, articleID)
 
-	res := dto.SimpleResutlJSON{
-		Status:    true,
-		ErrorCode: successStatus,
+	if res == nil || err != nil {
+		return false
 	}
-	return res
+	return true
 }
 
 // DeletePost deletes specific post data and return the result in JSON.
 // At first parameter, user id is set in int type.
 // At second paramter, article id is set in int type.
-func DeletePost(userID int, articleID int) dto.SimpleResutlJSON {
+func DeletePost(userID int, articleID int) bool {
 	// decoding toml
 	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
 	if ers != nil {
@@ -392,12 +390,11 @@ func DeletePost(userID int, articleID int) dto.SimpleResutlJSON {
 		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
 	}
-	rows.Exec(userID, articleID)
-	successStatus := 0
+	res, err := rows.Exec(userID, articleID)
 
-	res := dto.SimpleResutlJSON{
-		Status:    true,
-		ErrorCode: successStatus,
+	if err != nil || res == nil {
+		return false
 	}
-	return res
+
+	return true
 }

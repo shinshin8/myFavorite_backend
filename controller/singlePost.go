@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/gomodule/redigo/redis"
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/model"
 	"github.com/shinshin8/myFavorite_backend/utils"
@@ -19,21 +18,23 @@ func SinglePost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
 	w.Header().Set(utils.ArrowMethods, utils.Methods)
 	w.Header().Set(utils.Credential, utils.True)
-	// Session
-	c, err := r.Cookie(utils.CookieName)
 
-	if c == nil {
+	// Get jwt from header.
+	reqToken := r.Header.Get(utils.Authorization)
+	// Check if jwt is verified.
+	userID := utils.VerifyToken(reqToken)
+
+	if userID == 0 {
 		// Get article id from the URL query parameter in string type and conver it to int type.
 		atlID := "article_id"
 		articleIDStr := r.URL.Query().Get(atlID)
 		articleID, _ := strconv.Atoi(articleIDStr)
 
 		singlePost := model.SinglePost(articleID)
-		successfulCode := 0
 
 		resStruct := dto.SiglePost{
 			Status:      true,
-			ErrorCode:   successfulCode,
+			ErrorCode:   utils.SuccessCode,
 			UserID:      0,
 			LikedFlg:    false,
 			FavoriteFlg: false,
@@ -50,30 +51,6 @@ func SinglePost(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 	} else {
-		if err != nil {
-			if err == http.ErrNoCookie {
-				w.WriteHeader(http.StatusUnauthorized)
-				return
-			}
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-
-		sessionToken := c.Value
-
-		// Get user id from cache.
-		userIDCache, err := utils.Cache.Do(utils.SessionGet, sessionToken)
-		userID, _ := redis.Int(userIDCache, err)
-
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-		if userIDCache == nil {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
 		// Get article id from the URL query parameter in string type and conver it to int type.
 		atlID := "article_id"
 		articleIDStr := r.URL.Query().Get(atlID)
@@ -91,11 +68,10 @@ func SinglePost(w http.ResponseWriter, r *http.Request) {
 		favoriteResult := model.FavoriteOrNot(userID, articleID)
 		// Post result
 		singlePost := model.SinglePost(articleID)
-		successfulCode := 0
 
 		resStruct := dto.SiglePost{
 			Status:      true,
-			ErrorCode:   successfulCode,
+			ErrorCode:   utils.SuccessCode,
 			UserID:      userID,
 			LikedFlg:    likedResult,
 			FavoriteFlg: favoriteResult,
@@ -103,7 +79,6 @@ func SinglePost(w http.ResponseWriter, r *http.Request) {
 		}
 
 		res, err := json.Marshal(resStruct)
-
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

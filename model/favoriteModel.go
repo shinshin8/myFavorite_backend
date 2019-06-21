@@ -113,7 +113,10 @@ func FavoritePost(userID int, articleID int) bool {
 		log.Fatal(err)
 	}
 
-	rows.Exec(userID, articleID)
+	res, err := rows.Exec(userID, articleID)
+	if res == nil || err != nil {
+		return false
+	}
 	return true
 }
 

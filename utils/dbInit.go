@@ -16,7 +16,13 @@ var dbConfig dto.DbConfig
 // DBInit initialize MySQL connection.
 func DBInit() *sql.DB {
 
-	logfile, er := os.OpenFile("./all-the-logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// decoding toml
+	_, ers := toml.DecodeFile(ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(ConfigFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}

@@ -14,6 +14,14 @@ type SingUpBody struct {
 	ConfirmPassword string
 }
 
+// SignUpResultJSON struct
+type SignUpResultJSON struct {
+	Status       bool   `json:"status"`
+	ErrorCode    int    `json:"error_code"`
+	Username     string `json:"username"`
+	EmailAddress string `json:"email_address"`
+}
+
 // EditProfileBody is a struct for request body of edit profile.
 type EditProfileBody struct {
 	UserName    string

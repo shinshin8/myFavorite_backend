@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/gomodule/redigo/redis"
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/model"
 	"github.com/shinshin8/myFavorite_backend/utils"
@@ -19,37 +19,36 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(utils.ArrowMethods, utils.Methods)
 	w.Header().Set(utils.Credential, utils.True)
 
-	// Session
-	c, err := r.Cookie(utils.CookieName)
-	if err != nil {
-		if err == http.ErrNoCookie {
-			w.WriteHeader(http.StatusUnauthorized)
+	// Get jwt from header.
+	reqToken := r.Header.Get(utils.Authorization)
+	// Check if jwt is verified.
+	token, _ := jwt.Parse(reqToken, func(token *jwt.Token) (interface{}, error) {
+		return []byte("boobar"), nil
+	})
+	if token == nil {
+		// set values in structs
+		resultjson := dto.SimpleResutlJSON{
+			Status:    false,
+			ErrorCode: utils.InvalidToken,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		w.WriteHeader(http.StatusBadRequest)
-		return
+		w.WriteHeader(http.StatusOK)
+		w.Write(res)
 	}
-
-	sessionToken := c.Value
-
-	// Get user id from cache.
-	userIDCache, err := utils.Cache.Do(utils.SessionGet, sessionToken)
-	userID, _ := redis.Int(userIDCache, err)
-
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	if userIDCache == nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
+	// Get user id from jwt.
+	claims := token.Claims.(jwt.MapClaims)
+	userIDkey := "user_id"
+	userIDFloat64, _ := claims[userIDkey]
+	userID := int(userIDFloat64.(float64))
 
 	var editPostBody dto.EditPostBody
 
 	er := json.NewDecoder(r.Body).Decode(&editPostBody)
-
 	if er != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -60,46 +59,18 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	//Get content
 	content := editPostBody.Content
 
-	// Check userID
-	if !utils.IsID(userID) {
-		// Invalid user id
-		invalidUserID := 14
-		// Set values into the struct
-		resStruct := dto.NewPost{
-			Status:    false,
-			ErrorCode: invalidUserID,
-			UserID:    userID,
-			Title:     title,
-			Content:   content,
-		}
-		// convert struct to JSON
-		res, err := json.Marshal(resStruct)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-		// Response JSON
-		w.Write(res)
-		return
-	}
-
 	// Check title
 	if !utils.IsTitle(title) {
-		// Invalid title
-		invalidTitle := 15
 		// Set values into the struct
 		resStruct := dto.NewPost{
 			Status:    false,
-			ErrorCode: invalidTitle,
+			ErrorCode: utils.InvalidCreateTitle,
 			UserID:    userID,
 			Title:     title,
 			Content:   content,
 		}
 		// convert struct to JSON
 		res, err := json.Marshal(resStruct)
-
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -111,19 +82,16 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 
 	// Check content
 	if !utils.IsContent(content) {
-		// Invalid content
-		invalidContent := 16
 		// Set values into the struct
 		resStruct := dto.NewPost{
 			Status:    false,
-			ErrorCode: invalidContent,
+			ErrorCode: utils.InvalidCreateContent,
 			UserID:    userID,
 			Title:     title,
 			Content:   content,
 		}
 		// convert struct to JSON
 		res, err := json.Marshal(resStruct)
-
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -133,16 +101,10 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
-
 	// Execute insert data to DB.
 	result := model.CreateNewPost(userID, title, content)
-
-	// In the Model, the function returns JSON in other way.
-	// So in this part, just response result.
-
 	// convert struct to JSON
 	res, err := json.Marshal(result)
-
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
