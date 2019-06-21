@@ -51,7 +51,7 @@ func LoginUser(username string, hashedPassword string) int {
 // Username is in the first parameter with string type.
 // Email Address is in the second parameter with string type.
 // Password is in the third parameter with string type.
-func SignUp(username string, emailAddress string, password string) int64 {
+func SignUp(username string, emailAddress string, password string) int {
 	// decoding toml
 	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
 	if ers != nil {
@@ -87,7 +87,7 @@ func SignUp(username string, emailAddress string, password string) int64 {
 		log.Fatal(err)
 	}
 
-	return id
+	return int(id)
 
 }
 
@@ -141,7 +141,7 @@ func ShowProfile(userID int) dto.Profile {
 // At second paramter, birthday is set in string type.
 // At third paramter, mail address is set in string type.
 // At fourth paramter, comment is set in string type.
-func EditProfile(userID int, userName, birthday, mailAddress, comment string) dto.SimpleResutlJSON {
+func EditProfile(userID int, userName, birthday, mailAddress, comment string) bool {
 	// decoding toml
 	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
 	if ers != nil {
@@ -174,14 +174,21 @@ func EditProfile(userID int, userName, birthday, mailAddress, comment string) dt
 		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
 	}
-	rows.Exec(userName, birthday, mailAddress, comment, userID)
-	successStatus := 0
+	res, err := rows.Exec(userName, birthday, mailAddress, comment, userID)
 
-	res := dto.SimpleResutlJSON{
-		Status:    true,
-		ErrorCode: successStatus,
+	if res == nil || err != nil {
+		return false
 	}
-	return res
+
+	return true
+
+	// successStatus := 0
+
+	// res := dto.SimpleResutlJSON{
+	// 	Status:    true,
+	// 	ErrorCode: successStatus,
+	// }
+	// return res
 }
 
 // DeleteAccount delete user from DB

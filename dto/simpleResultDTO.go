@@ -9,5 +9,5 @@ type SimpleResutlJSON struct {
 type LoginResult struct {
 	Status    bool   `json:"status"`
 	ErrorCode int    `json:"error_code"`
-	Cookie    string `json:"cookie"`
+	Token     string `json:"token"`
 }

@@ -5,9 +5,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"net/http"
-	"time"
-
-	uuid "github.com/satori/go.uuid"
 
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/model"
@@ -33,13 +30,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// analyze request form
 	// get username
 	username := loginBody.UserName
 	// get password
 	password := loginBody.Password
 
-	// hashed password
+	// Hashing password
 	hash := sha256.New()
 	hash.Write([]byte(password))
 	hexPassword := hash.Sum(nil)
@@ -49,11 +45,10 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	loginRes := model.LoginUser(username, hashedPassword)
 
 	if loginRes == 0 {
-		wrongUserNamePassword := 1
 		// set values in structs
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,
-			ErrorCode: wrongUserNamePassword,
+			ErrorCode: utils.WrongUserNamePassword,
 		}
 		// convert structs to json
 		res, err := json.Marshal(resultjson)
@@ -65,30 +60,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 	} else {
-		// Create a new session token.
-		sessionToken := uuid.NewV4().String()
-		// Set session in the cache.
-		// Token will expire in 1200 seconds.
-		_, er := utils.Cache.Do(utils.SessionSet, sessionToken, utils.SessionTimeOut, loginRes)
-
-		if er != nil {
-			// return an internal server error
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		// Set client cookie
-		http.SetCookie(w, &http.Cookie{
-			Name:    utils.CookieName,
-			Value:   sessionToken,
-			Expires: time.Now().Add(utils.SessionExpire * time.Second),
-		})
-
-		successfulLoginCode := 0
-
+		// Creating jwt
+		token := utils.CreateToken(loginRes)
 		resultjson := dto.LoginResult{
 			Status:    true,
-			ErrorCode: successfulLoginCode,
-			Cookie:    sessionToken,
+			ErrorCode: utils.SuccessCode,
+			Token:     token,
 		}
 		// convert structs to json
 		res, err := json.Marshal(resultjson)

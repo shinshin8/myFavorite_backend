@@ -20,7 +20,6 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	utils.RedisConnection()
 	// initialize router
 	r := mux.NewRouter()
 	// Login
@@ -55,8 +54,6 @@ func main() {
 	r.HandleFunc(utils.ShowProfile, controller.ShowProfile).Methods(utils.Get)
 	// Edit user's profile.
 	r.HandleFunc(utils.EditProfile, controller.EditProfile).Methods(utils.Put)
-	// Logout
-	r.HandleFunc(utils.Logout, controller.Logout).Methods(utils.Post)
 	// Delete Account
 	r.HandleFunc(utils.DeleteAccount, controller.DeleteAccount).Methods(utils.Delete)
 

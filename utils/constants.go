@@ -11,6 +11,7 @@ const (
 	Methods         = "PUT,POST,GET,DELETE,OPTIONS"
 	True            = "true"
 	CorsWildCard    = "*"
+	Authorization   = "Authorization"
 )
 
 // HTTP request method
@@ -21,17 +22,11 @@ const (
 	Delete = "DELETE"
 )
 
-// Session
-const (
-	SessionName       = "session-name"
-	ContextSessionKey = "session"
-)
-
 // Each path
 const (
+	PostList           = "/"
 	LoginPath          = "/login"
 	SignUpPath         = "/signUp"
-	PostList           = "/"
 	ShowLikedPosts     = "/likedPostsList"
 	LikePost           = "/likePost"
 	DeleteLikedPost    = "/deleteLikedPost"
@@ -52,12 +47,29 @@ const (
 // ConfigFile indicate configuration file path.
 const ConfigFile = "./config/config.toml"
 
-// Session method
+// Error code
 const (
-	SessionGet     = "GET"
-	SessionSet     = "SETEX"
-	SessionDelete  = "DEL"
-	CookieName     = "session_token"
-	SessionTimeOut = "1200"
-	SessionExpire  = 1200
+	SuccessCode                   = 0
+	WrongUserNamePassword         = 1
+	InvalidToken                  = 2
+	InvalidSignUpUsername         = 3
+	InvalidSignUpMailAddress      = 4
+	InvalidSignUpPassword         = 5
+	NotMatchPasswords             = 6
+	FailedLoginCode               = 7
+	FailedDeleteLike              = 8
+	FailedFavoritePost            = 9
+	FailedDeleteFavorite          = 10
+	FailedDeletePost              = 11
+	InvalidCreateTitle            = 12
+	InvalidCreateContent          = 13
+	InvalidEditTitle              = 14
+	InvalidEditContent            = 15
+	InvalidEditProfileUserName    = 16
+	InvalidEditProfileBirthday    = 17
+	InvalidEditProfileMailAddress = 18
+	InvalidEditProfileComment     = 19
+	FailedDeleteAccount           = 20
+	FailedEditProfile             = 21
+	FailedEditPost                = 22
 )

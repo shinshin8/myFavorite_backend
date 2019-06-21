@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/gomodule/redigo/redis"
+	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/model"
 	"github.com/shinshin8/myFavorite_backend/utils"
 )
@@ -18,31 +18,23 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
 	w.Header().Set(utils.ArrowMethods, utils.Methods)
 	w.Header().Set(utils.Credential, utils.True)
-	// Session
-	c, err := r.Cookie(utils.CookieName)
-	if err != nil {
-		if err == http.ErrNoCookie {
-			w.WriteHeader(http.StatusUnauthorized)
+	// Get jwt from header.
+	reqToken := r.Header.Get(utils.Authorization)
+	// Check if jwt is verified.
+	userID := utils.VerifyToken(reqToken)
+	if userID == 0 {
+		resultjson := dto.SimpleResutlJSON{
+			Status:    false,
+			ErrorCode: utils.InvalidToken,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	sessionToken := c.Value
-
-	// Get user id from cache.
-	userIDCache, err := utils.Cache.Do(utils.SessionGet, sessionToken)
-	userID, _ := redis.Int(userIDCache, err)
-
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	if userIDCache == nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
+		w.WriteHeader(http.StatusOK)
+		w.Write(res)
 	}
 	// Get article id from URL query parameter with string type and convert it to int.
 	atlID := "article_id"
@@ -52,17 +44,35 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 	// Execute delete resouce.
 	result := model.DeletePost(userID, articleID)
 
-	// In the Model, the function returns JSON in other way.
-	// So in this part, just response result.
+	if result {
+		// set values in structs
+		resultjson := dto.SimpleResutlJSON{
+			Status:    true,
+			ErrorCode: utils.SuccessCode,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
 
-	// convert struct to JSON
-	res, err := json.Marshal(result)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(res)
+	} else {
+		// set values in structs
+		resultjson := dto.SimpleResutlJSON{
+			Status:    true,
+			ErrorCode: utils.FailedDeletePost,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
 
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(res)
 	}
-	// Response JSON
-	w.WriteHeader(http.StatusOK)
-	w.Write(res)
 }

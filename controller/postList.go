@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/gomodule/redigo/redis"
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/model"
 	"github.com/shinshin8/myFavorite_backend/utils"
@@ -18,20 +17,18 @@ func PostList(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
 	w.Header().Set(utils.ArrowMethods, utils.Methods)
 	w.Header().Set(utils.Credential, utils.True)
-
-	// Session
-	c, err := r.Cookie(utils.CookieName)
-
-	// In case user is not logged in.
-	if c == nil {
-		successfulCode := 0
+	// Get jwt from header.
+	reqToken := r.Header.Get(utils.Authorization)
+	// Check if jwt is verified.
+	userID := utils.VerifyToken(reqToken)
+	if userID == 0 {
 		// DB result array
 		dbResultArray := model.GetPosts()
 
 		resStruct := dto.PostList{
 			Status:    true,
 			UserID:    0,
-			ErrorCode: successfulCode,
+			ErrorCode: utils.SuccessCode,
 			Posts:     dbResultArray,
 		}
 
@@ -45,40 +42,13 @@ func PostList(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 	} else {
-		// In case user is logged in.
-		if err != nil {
-			if err == http.ErrNoCookie {
-				w.WriteHeader(http.StatusUnauthorized)
-				return
-			}
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-
-		sessionToken := c.Value
-
-		// Get user id from cache.
-		userIDCache, err := utils.Cache.Do(utils.SessionGet, sessionToken)
-		userID, _ := redis.Int(userIDCache, err)
-
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-		if userIDCache == nil {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-
-		successfulCode := 0
 		// DB result array
 		dbResultArray := model.GetPosts()
 
 		resStruct := dto.PostList{
 			Status:    true,
 			UserID:    userID,
-			ErrorCode: successfulCode,
+			ErrorCode: utils.SuccessCode,
 			Posts:     dbResultArray,
 		}
 

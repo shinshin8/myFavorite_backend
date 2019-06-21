@@ -5,9 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"net/http"
-	"time"
 
-	uuid "github.com/satori/go.uuid"
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/model"
 	"github.com/shinshin8/myFavorite_backend/utils"
@@ -42,10 +40,13 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 
 	// Validation check for username.
 	if !utils.IsName(username) {
-		// Invalid username
-		invalidUsername := 3
 		// Set values into the struct
-		resStruct := dto.SignUpResult(false, invalidUsername, username, emailAddress)
+		resStruct := dto.SignUpResultJSON{
+			Status:       false,
+			ErrorCode:    utils.InvalidSignUpUsername,
+			Username:     username,
+			EmailAddress: emailAddress,
+		}
 		// convert struct to JSON
 		res, err := json.Marshal(resStruct)
 
@@ -61,10 +62,13 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 
 	// Validation check for email address
 	if !utils.IsEmailAddress(emailAddress) {
-		// Invalid emailAddress
-		invalidMailAddress := 4
 		// Set values into the struct
-		resStruct := dto.SignUpResult(false, invalidMailAddress, username, emailAddress)
+		resStruct := dto.SignUpResultJSON{
+			Status:       false,
+			ErrorCode:    utils.InvalidSignUpMailAddress,
+			Username:     username,
+			EmailAddress: emailAddress,
+		}
 		// convert struct to JSON
 		res, err := json.Marshal(resStruct)
 
@@ -80,10 +84,13 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 
 	// Validation check for password
 	if !utils.IsPassword(password) {
-		// Invalid password
-		invalidPassword := 5
 		// Set values into the struct
-		resStruct := dto.SignUpResult(false, invalidPassword, username, emailAddress)
+		resStruct := dto.SignUpResultJSON{
+			Status:       false,
+			ErrorCode:    utils.InvalidSignUpPassword,
+			Username:     username,
+			EmailAddress: emailAddress,
+		}
 
 		// convert struct to JSON
 		res, err := json.Marshal(resStruct)
@@ -100,10 +107,13 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 
 	// Check whether or not the both values: password and confrim password are equal.
 	if password != confirmPassword {
-		// Password and confirm password don't match.
-		notMatchPasswords := 6
 		// Set values into the struct
-		resStruct := dto.SignUpResult(false, notMatchPasswords, username, emailAddress)
+		resStruct := dto.SignUpResultJSON{
+			Status:       false,
+			ErrorCode:    utils.NotMatchPasswords,
+			Username:     username,
+			EmailAddress: emailAddress,
+		}
 
 		// convert struct to JSON
 		res, err := json.Marshal(resStruct)
@@ -127,30 +137,12 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	// In this time, method returns only int; error_code.
 	signUpRes := model.SignUp(username, emailAddress, hashedPassword)
 
-	// Create a new session token.
-	sessionToken := uuid.NewV4().String()
-	// Set session in the cache.
-	// Token will expire in 1200 seconds.
-	_, er := utils.Cache.Do(utils.SessionSet, sessionToken, utils.SessionTimeOut, signUpRes)
-
-	if er != nil {
-		// return an internal server error
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	// Set client cookie
-	http.SetCookie(w, &http.Cookie{
-		Name:    utils.CookieName,
-		Value:   sessionToken,
-		Expires: time.Now().Add(utils.SessionExpire * time.Second),
-	})
-
-	successfulLoginCode := 0
-	// set values in structs
-	resultjson := dto.SimpleResutlJSON{
+	// Creating jwt
+	token := utils.CreateToken(signUpRes)
+	resultjson := dto.LoginResult{
 		Status:    true,
-		ErrorCode: successfulLoginCode,
+		ErrorCode: utils.SuccessCode,
+		Token:     token,
 	}
 
 	// convert struct to JSON
