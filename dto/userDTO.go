@@ -9,7 +9,7 @@ type LoginBody struct {
 // SingUpBody is a sturct for request body of sign up.
 type SingUpBody struct {
 	UserName        string
-	Email           string
+	EmailAddress    string
 	Password        string
 	ConfirmPassword string
 }

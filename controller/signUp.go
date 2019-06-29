@@ -32,7 +32,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	// Username value
 	username := signUpBody.UserName
 	// Email address value
-	emailAddress := signUpBody.Email
+	emailAddress := signUpBody.EmailAddress
 	// Password value
 	password := signUpBody.Password
 	// Confirm password value
@@ -59,7 +59,6 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
-
 	// Validation check for email address
 	if !utils.IsEmailAddress(emailAddress) {
 		// Set values into the struct
