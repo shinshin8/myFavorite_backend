@@ -35,6 +35,7 @@ func ShowFavoritePosts(w http.ResponseWriter, r *http.Request) {
 		}
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
+		return
 	}
 	// Get article id from the URL query parameter in string type and conver it to int type.
 	atlID := "article_id"

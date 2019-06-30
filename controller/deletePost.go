@@ -35,6 +35,7 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 		}
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
+		return
 	}
 	// Get article id from URL query parameter with string type and convert it to int.
 	atlID := "article_id"

@@ -35,6 +35,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 		}
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
+		return
 	}
 	// Get article id from URL query parameter and convert its type string to int.
 	atcID := "article_id"

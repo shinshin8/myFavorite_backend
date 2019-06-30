@@ -35,6 +35,7 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 		}
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
+		return
 	}
 
 	atcID := "article_id"

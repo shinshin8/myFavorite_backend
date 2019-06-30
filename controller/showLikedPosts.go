@@ -34,6 +34,7 @@ func ShowLikedPosts(w http.ResponseWriter, r *http.Request) {
 		}
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
+		return
 	}
 	// Execute showLikedPosts model and returns json
 	likedPosts := model.ShowLikedPosts(userID)

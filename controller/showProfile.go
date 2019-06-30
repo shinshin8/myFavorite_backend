@@ -34,6 +34,7 @@ func ShowProfile(w http.ResponseWriter, r *http.Request) {
 		}
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
+		return
 	}
 	// Get profile.
 	userProfile := model.ShowProfile(userID)

@@ -38,6 +38,7 @@ func DeleteAccount(w http.ResponseWriter, r *http.Request) {
 		}
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
+		return
 	}
 	// Get user id from jwt.
 	claims := token.Claims.(jwt.MapClaims)
