@@ -24,7 +24,7 @@ const (
 
 // Each path
 const (
-	PostList           = "/"
+	Timeline           = "/timeline"
 	LoginPath          = "/login"
 	SignUpPath         = "/signUp"
 	LikePost           = "/likePost"
