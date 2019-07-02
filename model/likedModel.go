@@ -6,75 +6,8 @@ import (
 	"os"
 
 	"github.com/BurntSushi/toml"
-	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/utils"
 )
-
-// ShowLikedPosts returns the result of selected liked posts in JSON format.
-func ShowLikedPosts(userID int) []dto.Posts {
-	// decoding toml
-	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
-	if ers != nil {
-		panic(ers.Error())
-	}
-
-	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-	if er != nil {
-		panic(er.Error())
-	}
-	defer logfile.Close()
-
-	// Initalize DB Connection
-	sql := utils.DBInit()
-	// Close DB connection at the end.
-	defer sql.Close()
-	// SQL syntax
-	getLikedPosts := `SELECT 
-							article_table.article_id, 
-							user_table.user_name, 
-							article_table.title, 
-							article_table.content, 
-							article_table.created_time, 
-							article_table.modified_time 
-						FROM 
-							(liked_table 
-						INNER JOIN 
-							user_table 
-						ON 
-							user_table.user_id = liked_table.user_id) 
-						INNER JOIN 
-							article_table 
-						ON 
-							article_table.article_id = liked_table.article_id 
-						WHERE 
-							liked_table.user_id = ?
-						ORDER BY article_table.created_time DESC`
-
-	row, err := sql.Query(getLikedPosts, userID)
-
-	if err != nil {
-		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
-		log.SetFlags(log.Ldate | log.Ltime)
-		log.Fatal(err)
-	}
-
-	// Prepare an array which save JSON results.
-	var postArray []dto.Posts
-
-	for row.Next() {
-		posts := dto.Posts{}
-		if err := row.Scan(&posts.ArticleID, &posts.UserName, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
-			log.SetOutput(io.MultiWriter(logfile, os.Stdout))
-			log.SetFlags(log.Ldate | log.Ltime)
-			log.Fatal(err)
-		}
-
-		// Appending JSON in array.
-		postArray = append(postArray, posts)
-	}
-
-	return postArray
-}
 
 // LikePost create new like post record in MySQL and returns the result in boolean.
 // In the first parameter, user-id will be set with int type.

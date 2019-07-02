@@ -28,8 +28,6 @@ func main() {
 	r.HandleFunc(utils.SignUpPath, controller.SignUp).Methods(utils.Post)
 	// Post list
 	r.HandleFunc(utils.PostList, controller.PostList).Methods(utils.Get)
-	// Show liked post lists
-	r.HandleFunc(utils.ShowLikedPosts, controller.ShowLikedPosts).Methods(utils.Get)
 	// Like post
 	r.HandleFunc(utils.LikePost, controller.LikePost).Methods(utils.Put)
 	// Delete liked post
