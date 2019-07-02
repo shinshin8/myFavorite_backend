@@ -12,8 +12,8 @@ import (
 
 var logFileConfig dto.LogConfig
 
-// GetPosts is a function that returns an array which includes DB results with JSON format.
-func GetPosts() []dto.Posts {
+// Timeline is a function that returns an array which includes DB results with JSON format.
+func Timeline() []dto.Posts {
 
 	// decoding toml
 	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)

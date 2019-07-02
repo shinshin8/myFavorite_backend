@@ -9,8 +9,8 @@ import (
 	"github.com/shinshin8/myFavorite_backend/utils"
 )
 
-// PostList is controller file for get all post with JSON format.
-func PostList(w http.ResponseWriter, r *http.Request) {
+// Timeline is controller file for get all post with JSON format.
+func Timeline(w http.ResponseWriter, r *http.Request) {
 	// Set CORS
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 	w.Header().Set(utils.Cors, utils.CorsWildCard)
@@ -23,7 +23,7 @@ func PostList(w http.ResponseWriter, r *http.Request) {
 	userID := utils.VerifyToken(reqToken)
 	if userID == 0 {
 		// DB result array
-		dbResultArray := model.GetPosts()
+		dbResultArray := model.Timeline()
 
 		resStruct := dto.PostList{
 			Status:    true,
@@ -43,7 +43,7 @@ func PostList(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 	} else {
 		// DB result array
-		dbResultArray := model.GetPosts()
+		dbResultArray := model.Timeline()
 
 		resStruct := dto.PostList{
 			Status:    true,

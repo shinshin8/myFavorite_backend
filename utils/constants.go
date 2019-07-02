@@ -24,10 +24,9 @@ const (
 
 // Each path
 const (
-	PostList           = "/"
+	Timeline           = "/timeline"
 	LoginPath          = "/login"
 	SignUpPath         = "/signUp"
-	ShowLikedPosts     = "/likedPostsList"
 	LikePost           = "/likePost"
 	DeleteLikedPost    = "/deleteLikedPost"
 	ShowFavoritePosts  = "/favoritePostsList"
@@ -40,7 +39,6 @@ const (
 	DeletePost         = "/deletePost"
 	ShowProfile        = "/showProfile"
 	EditProfile        = "/editProfile"
-	Logout             = "/logout"
 	DeleteAccount      = "/deleteAccount"
 )
 
