@@ -74,6 +74,80 @@ func Timeline() []dto.Posts {
 	return postArray
 }
 
+// Trending returns an array which includes DB results with JSON format.
+func Trending() []dto.TrendingPosts {
+
+	// decoding toml
+	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
+	if ers != nil {
+		panic(ers.Error())
+	}
+
+	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+
+	// Initalize DB Connection
+	sql := utils.DBInit()
+	// Close DB connection at the end.
+	defer sql.Close()
+	// SQL syntax
+	getPosts := `SELECT 
+						liked_table.article_id, 
+						user_table.user_name, 
+					COUNT(
+						liked_table.user_id
+						) 
+					AS 
+						liked_sum, 
+						article_table.title, 
+						article_table.content, 
+						article_table.created_time, 
+						article_table.modified_time 
+					FROM 
+						(
+							article_table 
+						INNER JOIN 
+							user_table 
+						ON 
+							article_table.user_id = user_table.user_id
+						) 
+					INNER JOIN 
+						liked_table 
+					ON 
+						article_table.article_id = liked_table.article_id 
+					GROUP BY 
+						liked_table.article_id 
+					ORDER BY liked_sum DESC`
+
+	row, err := sql.Query(getPosts)
+
+	if err != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(err)
+	}
+
+	// Prepare an array which save JSON results.
+	var postArray []dto.TrendingPosts
+
+	for row.Next() {
+		posts := dto.TrendingPosts{}
+		if err := row.Scan(&posts.ArticleID, &posts.UserName, &posts.LikedSum, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
+			log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+			log.SetFlags(log.Ldate | log.Ltime)
+			log.Fatal(err)
+		}
+
+		// Appending JSON in array.
+		postArray = append(postArray, posts)
+	}
+
+	return postArray
+}
+
 // UserPostsList gets a specific user's posts list from DB and convert its result into JSON.
 // At the parameter, user id will be put in and its type is int.
 func UserPostsList(userID int) []dto.Posts {

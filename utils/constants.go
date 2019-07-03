@@ -24,6 +24,7 @@ const (
 
 // Each path
 const (
+	Trending = "/"
 	Timeline           = "/timeline"
 	LoginPath          = "/login"
 	SignUpPath         = "/signUp"

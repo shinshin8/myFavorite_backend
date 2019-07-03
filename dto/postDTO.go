@@ -18,6 +18,25 @@ type Posts struct {
 	ModifiedTime string `json:"modified_time"`
 }
 
+// TrendingPostList is a struct for showing a trending post list.
+type TrendingPostList struct {
+	Status        bool            `json:"status"`
+	ErrorCode     int             `json:"error_code"`
+	UserID        int             `json:"user_id"`
+	TrendingPosts []TrendingPosts `json:"trendins_posts"`
+}
+
+// TrendingPosts is a struct for showing a trending post.
+type TrendingPosts struct {
+	ArticleID    int    `json:"article_id"`
+	UserName     string `json:"user_name"`
+	LikedSum     int    `json:"liked_sum"`
+	Title        string `json:"title"`
+	Content      string `json:"content"`
+	CreatedTime  string `json:"created_time"`
+	ModifiedTime string `json:"modified_time"`
+}
+
 // SiglePost saves a single post data in JSON.
 type SiglePost struct {
 	Status      bool  `json:"status"`
