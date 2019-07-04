@@ -25,14 +25,6 @@ type PortInfo struct {
 	Port string
 }
 
-type RedisConfig struct {
-	Redis RedisInfo
-}
-
-type RedisInfo struct {
-	RedisAddress string
-}
-
 // LogConfig is a struct for configuration of a log file path.
 type LogConfig struct {
 	LogFile LogFile
@@ -41,4 +33,14 @@ type LogConfig struct {
 // LogFile is a sturct for a log file path.
 type LogFile struct {
 	LogFile string
+}
+
+// TokenStringConfig is a struct for configuration of a toke string.
+type TokenStringConfig struct {
+	TokenString TokenString
+}
+
+// TokenString is a struct for token string.
+type TokenString struct {
+	TokenString string
 }

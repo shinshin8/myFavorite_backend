@@ -16,15 +16,16 @@ const (
 
 // HTTP request method
 const (
-	Post   = "POST"
-	Get    = "GET"
-	Put    = "PUT"
-	Delete = "DELETE"
+	Post    = "POST"
+	Get     = "GET"
+	Put     = "PUT"
+	Delete  = "DELETE"
+	Options = "OPTIONS"
 )
 
 // Each path
 const (
-	Trending = "/"
+	Trending           = "/"
 	Timeline           = "/timeline"
 	LoginPath          = "/login"
 	SignUpPath         = "/signUp"

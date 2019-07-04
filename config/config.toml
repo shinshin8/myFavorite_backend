@@ -11,3 +11,6 @@ Port = ":8080"
 
 [LogFile]
 LogFile = "./all-the-logs.log"
+
+[TokenString]
+TokenString = "98d69b24b593dd2c04039ec2a724961b0393ed2cdf96e80cb6231614515f45cd"
