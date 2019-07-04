@@ -9,6 +9,7 @@ import (
 	"github.com/shinshin8/myFavorite_backend/utils"
 )
 
+// Trending returns trending posts in a list.
 func Trending(w http.ResponseWriter, r *http.Request) {
 	// Set CORS
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
