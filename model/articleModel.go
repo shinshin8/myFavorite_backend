@@ -34,19 +34,30 @@ func Timeline() []dto.Posts {
 	// SQL syntax
 	getPosts := `SELECT 
 					article_table.article_id, 
+				COALESCE(
+					COUNT(liked_table.user_id), 0) 
+				AS 
+					liked_sum, 
 					user_table.user_name, 
 					article_table.title, 
-					article_table.content,
+					article_table.content, 
 					article_table.created_time, 
 					article_table.modified_time 
-				FROM 
-					article_table 
-				INNER JOIN 
-					user_table 
-				ON 
-					article_table.user_id = user_table.user_id 
-				ORDER BY 
-					article_table.created_time DESC`
+					FROM(
+							article_table 
+						INNER JOIN 
+							user_table 
+						ON 
+							article_table.user_id = user_table.user_id
+						) 
+					LEFT JOIN 
+						liked_table 
+					ON 
+						article_table.article_id = liked_table.article_id 
+					GROUP BY 
+						article_table.article_id 
+					ORDER BY 
+						article_table.created_time DESC`
 
 	row, err := sql.Query(getPosts)
 
@@ -61,7 +72,7 @@ func Timeline() []dto.Posts {
 
 	for row.Next() {
 		posts := dto.Posts{}
-		if err := row.Scan(&posts.ArticleID, &posts.UserName, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
+		if err := row.Scan(&posts.ArticleID, &posts.LikedSum, &posts.UserName, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
 			log.SetOutput(io.MultiWriter(logfile, os.Stdout))
 			log.SetFlags(log.Ldate | log.Ltime)
 			log.Fatal(err)
@@ -75,7 +86,7 @@ func Timeline() []dto.Posts {
 }
 
 // Trending returns an array which includes DB results with JSON format.
-func Trending() []dto.TrendingPosts {
+func Trending() []dto.Posts {
 
 	// decoding toml
 	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
@@ -95,32 +106,31 @@ func Trending() []dto.TrendingPosts {
 	defer sql.Close()
 	// SQL syntax
 	getPosts := `SELECT 
-						liked_table.article_id, 
-						user_table.user_name, 
-					COUNT(
-						liked_table.user_id
-						) 
-					AS 
-						liked_sum, 
-						article_table.title, 
-						article_table.content, 
-						article_table.created_time, 
-						article_table.modified_time 
-					FROM 
-						(
+					article_table.article_id, 
+				COALESCE(
+					COUNT(liked_table.user_id), 0) 
+				AS 
+					liked_sum, 
+					user_table.user_name, 
+					article_table.title, 
+					article_table.content, 
+					article_table.created_time, 
+					article_table.modified_time 
+					FROM(
 							article_table 
 						INNER JOIN 
 							user_table 
 						ON 
 							article_table.user_id = user_table.user_id
 						) 
-					INNER JOIN 
+					LEFT JOIN 
 						liked_table 
 					ON 
 						article_table.article_id = liked_table.article_id 
 					GROUP BY 
-						liked_table.article_id 
-					ORDER BY liked_sum DESC`
+						article_table.article_id 
+					ORDER BY 
+						liked_sum DESC`
 
 	row, err := sql.Query(getPosts)
 
@@ -131,11 +141,11 @@ func Trending() []dto.TrendingPosts {
 	}
 
 	// Prepare an array which save JSON results.
-	var postArray []dto.TrendingPosts
+	var postArray []dto.Posts
 
 	for row.Next() {
-		posts := dto.TrendingPosts{}
-		if err := row.Scan(&posts.ArticleID, &posts.UserName, &posts.LikedSum, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
+		posts := dto.Posts{}
+		if err := row.Scan(&posts.ArticleID, &posts.LikedSum, &posts.UserName, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
 			log.SetOutput(io.MultiWriter(logfile, os.Stdout))
 			log.SetFlags(log.Ldate | log.Ltime)
 			log.Fatal(err)
@@ -169,22 +179,31 @@ func UserPostsList(userID int) []dto.Posts {
 	defer sql.Close()
 	// SQL syntax
 	getPosts := `SELECT 
-					article_table.article_id, 
-					user_table.user_name, 
-					article_table.title, 
-					article_table.content,
-					article_table.created_time, 
-					article_table.modified_time 
-				FROM 
-					article_table 
-				INNER JOIN 
-					user_table 
-				ON 
-					article_table.user_id = user_table.user_id
-				WHERE
-					user_table.user_id = ?
-				ORDER BY 
-					article_table.created_time DESC`
+						article_table.article_id, 
+					COALESCE(
+						COUNT(liked_table.user_id), 0) 
+					AS 
+						liked_sum, 
+						user_table.user_name, 
+						article_table.title, 
+						article_table.content, 
+						article_table.created_time, 
+						article_table.modified_time 
+					FROM (
+							article_table 
+						INNER JOIN 
+							user_table 
+						ON 
+							article_table.user_id = user_table.user_id
+						) 
+					LEFT JOIN 
+						liked_table 
+					ON 
+						article_table.article_id = liked_table.article_id 
+					WHERE 
+						user_table.user_id = ? 
+					GROUP BY 
+						article_table.article_id;`
 
 	row, err := sql.Query(getPosts, userID)
 
@@ -199,7 +218,7 @@ func UserPostsList(userID int) []dto.Posts {
 
 	for row.Next() {
 		posts := dto.Posts{}
-		if err := row.Scan(&posts.ArticleID, &posts.UserName, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
+		if err := row.Scan(&posts.ArticleID, &posts.LikedSum, &posts.UserName, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
 			log.SetOutput(io.MultiWriter(logfile, os.Stdout))
 			log.SetFlags(log.Ldate | log.Ltime)
 			log.Fatal(err)
@@ -314,23 +333,36 @@ func SinglePost(articleID int) dto.Posts {
 	// SQL syntax
 	signlePost := `SELECT 
 						article_table.article_id, 
+					COALESCE(
+						COUNT(liked_table.user_id), 0) 
+					AS 
+						liked_sum, 
 						user_table.user_name, 
 						article_table.title, 
 						article_table.content, 
 						article_table.created_time, 
 						article_table.modified_time 
-					FROM 
-						article_table 
-					INNER JOIN 
-						user_table 
+					FROM(
+							article_table 
+						INNER JOIN 
+							user_table 
+						ON 
+							article_table.user_id = user_table.user_id
+						) 
+					LEFT JOIN 
+						liked_table 
 					ON 
-						article_table.user_id = user_table.user_id 
+						article_table.article_id = liked_table.article_id 
 					WHERE 
-						article_table.article_id = ?`
+						user_table.user_id = ? 
+					AND 
+						article_table.article_id = ? 
+					GROUP BY 
+						article_table.article_id`
 
 	var post dto.Posts
 
-	err := sql.QueryRow(signlePost, articleID).Scan(&post.ArticleID, &post.UserName, &post.Title, &post.Content, &post.CreatedTime, &post.ModifiedTime)
+	err := sql.QueryRow(signlePost, articleID).Scan(&post.ArticleID, &post.LikedSum, &post.UserName, &post.Title, &post.Content, &post.CreatedTime, &post.ModifiedTime)
 
 	if err != nil {
 		log.SetOutput(io.MultiWriter(logfile, os.Stdout))

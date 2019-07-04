@@ -25,11 +25,11 @@ func Trending(w http.ResponseWriter, r *http.Request) {
 		// DB result array
 		dbResultArray := model.Trending()
 
-		resStruct := dto.TrendingPostList{
-			Status:        true,
-			UserID:        0,
-			ErrorCode:     utils.SuccessCode,
-			TrendingPosts: dbResultArray,
+		resStruct := dto.PostList{
+			Status:    true,
+			UserID:    0,
+			ErrorCode: utils.SuccessCode,
+			Posts:     dbResultArray,
 		}
 
 		res, err := json.Marshal(resStruct)
@@ -45,11 +45,11 @@ func Trending(w http.ResponseWriter, r *http.Request) {
 		// DB result array
 		dbResultArray := model.Trending()
 
-		resStruct := dto.TrendingPostList{
-			Status:        true,
-			UserID:        userID,
-			ErrorCode:     utils.SuccessCode,
-			TrendingPosts: dbResultArray,
+		resStruct := dto.PostList{
+			Status:    true,
+			UserID:    userID,
+			ErrorCode: utils.SuccessCode,
+			Posts:     dbResultArray,
 		}
 
 		res, err := json.Marshal(resStruct)

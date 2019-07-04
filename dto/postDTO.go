@@ -8,29 +8,11 @@ type PostList struct {
 	Posts     []Posts `json:"posts"`
 }
 
-// Posts is a struct for listing posts.
+// Posts is a struct for showing a trending post.
 type Posts struct {
 	ArticleID    int    `json:"article_id"`
-	UserName     string `json:"user_name"`
-	Title        string `json:"title"`
-	Content      string `json:"content"`
-	CreatedTime  string `json:"created_time"`
-	ModifiedTime string `json:"modified_time"`
-}
-
-// TrendingPostList is a struct for showing a trending post list.
-type TrendingPostList struct {
-	Status        bool            `json:"status"`
-	ErrorCode     int             `json:"error_code"`
-	UserID        int             `json:"user_id"`
-	TrendingPosts []TrendingPosts `json:"trendins_posts"`
-}
-
-// TrendingPosts is a struct for showing a trending post.
-type TrendingPosts struct {
-	ArticleID    int    `json:"article_id"`
-	UserName     string `json:"user_name"`
 	LikedSum     int    `json:"liked_sum"`
+	UserName     string `json:"user_name"`
 	Title        string `json:"title"`
 	Content      string `json:"content"`
 	CreatedTime  string `json:"created_time"`
