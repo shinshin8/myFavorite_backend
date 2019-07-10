@@ -42,6 +42,7 @@ const (
 	ShowProfile        = "/showProfile"
 	EditProfile        = "/editProfile"
 	DeleteAccount      = "/deleteAccount"
+	UploadingImage     = "/uploadImage"
 )
 
 // ConfigFile indicate configuration file path.
