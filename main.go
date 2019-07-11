@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/BurntSushi/toml"
@@ -69,5 +70,9 @@ func main() {
 	// listening port
 	port := portConfig.Port.Port
 	// listener
-	http.ListenAndServe(port, handler)
+	// serverError := http.ListenAndServeTLS(port, "/etc/letsencrypt/live/www.findmyfavorite.com/fullchain.pem", "/etc/letsencrypt/live/www.findmyfavorite.com/privkey.pem", handler)
+	serverError := http.ListenAndServe(port, handler)
+	if serverError != nil {
+		log.Fatal("ListenServer: ", serverError)
+	}
 }
