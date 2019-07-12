@@ -20,7 +20,7 @@ func UploadIconToS3(s *session.Session, file multipart.File, fileHeader *multipa
 	buffer := make([]byte, size)
 	file.Read(buffer)
 	// create a unique file name for the file
-	tempFileName := bson.NewObjectId().Hex() + filepath.Ext(fileHeader.Filename)
+	tempFileName := "icon/" + bson.NewObjectId().Hex() + filepath.Ext(fileHeader.Filename)
 	// config settings: this is where you choose the bucket,
 	// filename, content-type and storage class of the file
 	// you're uploading
