@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/model"
 	"github.com/shinshin8/myFavorite_backend/utils"
@@ -21,11 +20,8 @@ func DeleteAccount(w http.ResponseWriter, r *http.Request) {
 	// Get jwt from header.
 	reqToken := r.Header.Get(utils.Authorization)
 	// Check if jwt is verified.
-	token, _ := jwt.Parse(reqToken, func(token *jwt.Token) (interface{}, error) {
-		return []byte("boobar"), nil
-	})
-	if token == nil {
-		// set values in structs
+	userID := utils.VerifyToken(reqToken)
+	if userID == 0 {
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,
 			ErrorCode: utils.InvalidToken,
@@ -40,12 +36,6 @@ func DeleteAccount(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
-	// Get user id from jwt.
-	claims := token.Claims.(jwt.MapClaims)
-	userIDkey := "user_id"
-	userIDFloat64, _ := claims[userIDkey]
-	userID := int(userIDFloat64.(float64))
-
 	// Execute delete user's account
 	deleteAccount := model.DeleteAccount(userID)
 
