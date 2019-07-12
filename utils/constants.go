@@ -46,16 +46,6 @@ const (
 )
 
 // AWS S3
-const (
-	Region     = "ap-northeast-1"
-	ID         = "AKIAZPETPWJ4C4SJX36W"
-	Key        = "+6pJHW+KxMHDse1rO3kZf06/B2X4ripoVVa4jmvS"
-	BucketName = "findmyfavorite"
-	ACLSetting = "public-read"
-	Attachment = "attachment"
-	Encryption = "AES256"
-	Storage    = "INTELLIGENT_TIERING"
-)
 
 // ConfigFile indicate configuration file path.
 const ConfigFile = "./config/config.toml"
