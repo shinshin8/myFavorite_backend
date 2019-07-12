@@ -55,7 +55,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Response JSON
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write(res)
 		return
 	}
@@ -76,7 +76,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Response JSON
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write(res)
 		return
 	}
@@ -99,7 +99,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Response JSON
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write(res)
 		return
 	}
@@ -122,7 +122,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Response JSON
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write(res)
 		return
 	}

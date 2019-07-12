@@ -33,7 +33,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write(res)
 		return
 	}
@@ -74,7 +74,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Response JSON
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write(res)
 		return
 	}
@@ -97,11 +97,10 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Response JSON
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write(res)
 		return
 	}
-
 	// Execute update data to DB.
 	result := model.EditPost(userID, articleID, title, content)
 
@@ -123,7 +122,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 	} else {
 		// set values in structs
 		resultjson := dto.SimpleResutlJSON{
-			Status:    true,
+			Status:    false,
 			ErrorCode: utils.FailedEditPost,
 		}
 		// convert structs to json
@@ -133,7 +132,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write(res)
 	}
 }

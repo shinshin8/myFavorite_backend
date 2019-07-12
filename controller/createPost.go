@@ -17,7 +17,6 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(utils.ArrowHeader, utils.ContentType)
 	w.Header().Set(utils.ArrowMethods, utils.Methods)
 	w.Header().Set(utils.Credential, utils.True)
-
 	// Get jwt from header.
 	reqToken := r.Header.Get(utils.Authorization)
 	// Check if jwt is verified.
@@ -34,7 +33,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write(res)
 		return
 	}
@@ -46,12 +45,10 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
 	// Get title
 	title := editPostBody.Title
 	//Get content
 	content := editPostBody.Content
-
 	// Check title
 	if !utils.IsTitle(title) {
 		// Set values into the struct
@@ -68,6 +65,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		w.WriteHeader(http.StatusBadRequest)
 		// Response JSON
 		w.Write(res)
 		return
@@ -89,7 +87,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusBadRequest)
 		// Response JSON
 		w.Write(res)
 		return
