@@ -33,7 +33,7 @@ func DeleteFavoritePost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write(res)
 		return
 	}
@@ -41,7 +41,6 @@ func DeleteFavoritePost(w http.ResponseWriter, r *http.Request) {
 	atlID := "article_id"
 	atlIDStr := r.URL.Query().Get(atlID)
 	articleID, _ := strconv.Atoi(atlIDStr)
-
 	// Execute delete resouce.
 	res := model.DeleteFavoritePost(userID, articleID)
 
@@ -71,7 +70,7 @@ func DeleteFavoritePost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write(res)
 	}
 }

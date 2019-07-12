@@ -13,7 +13,6 @@ import (
 
 // Login function
 func Login(w http.ResponseWriter, r *http.Request) {
-
 	// Set CORS
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 	w.Header().Set(utils.Cors, "http://localhost:3000")
