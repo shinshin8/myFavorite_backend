@@ -42,26 +42,25 @@ func Timeline(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 		return
-	} else {
-		// DB result array
-		dbResultArray := model.Timeline()
+	}
+	// DB result array
+	dbResultArray := model.Timeline()
 
-		resStruct := dto.PostList{
-			Status:    true,
-			UserID:    userID,
-			ErrorCode: utils.SuccessCode,
-			Posts:     dbResultArray,
-		}
+	resStruct := dto.PostList{
+		Status:    true,
+		UserID:    userID,
+		ErrorCode: utils.SuccessCode,
+		Posts:     dbResultArray,
+	}
 
-		res, err := json.Marshal(resStruct)
+	res, err := json.Marshal(resStruct)
 
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		// Response JSON
-		w.WriteHeader(http.StatusOK)
-		w.Write(res)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	// Response JSON
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
+	return
 }

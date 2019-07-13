@@ -59,23 +59,22 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 		return
-	} else {
-		// Creating jwt
-		token := utils.CreateToken(loginRes)
-		resultjson := dto.LoginResult{
-			Status:    true,
-			ErrorCode: utils.SuccessCode,
-			Token:     token,
-		}
-		// convert structs to json
-		res, err := json.Marshal(resultjson)
+	}
+	// Creating jwt
+	token := utils.CreateToken(loginRes)
+	resultjson := dto.LoginResult{
+		Status:    true,
+		ErrorCode: utils.SuccessCode,
+		Token:     token,
+	}
+	// convert structs to json
+	res, err := json.Marshal(resultjson)
 
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-		w.Write(res)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
+	return
 }
