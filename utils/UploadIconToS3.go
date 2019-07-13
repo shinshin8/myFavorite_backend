@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"mime/multipart"
 	"net/http"
+	"os"
 	"path/filepath"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -25,15 +26,15 @@ func UploadIconToS3(s *session.Session, file multipart.File, fileHeader *multipa
 	// filename, content-type and storage class of the file
 	// you're uploading
 	_, err := s3.New(s).PutObject(&s3.PutObjectInput{
-		Bucket:               aws.String(BucketName),
+		Bucket:               aws.String(os.Getenv("BUCKET_NAME")),
 		Key:                  aws.String(tempFileName),
-		ACL:                  aws.String(ACLSetting), // could be private if you want it to be access by only authorized users
+		ACL:                  aws.String(os.Getenv("ACL_SETTING")), // could be private if you want it to be access by only authorized users
 		Body:                 bytes.NewReader(buffer),
 		ContentLength:        aws.Int64(int64(size)),
 		ContentType:          aws.String(http.DetectContentType(buffer)),
-		ContentDisposition:   aws.String(Attachment),
-		ServerSideEncryption: aws.String(Encryption),
-		StorageClass:         aws.String(Storage),
+		ContentDisposition:   aws.String(os.Getenv("ATTACHEMENT")),
+		ServerSideEncryption: aws.String(os.Getenv("ENCRYPTION")),
+		StorageClass:         aws.String(os.Getenv("STORAGE")),
 	})
 	if err != nil {
 		return "", err

@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -86,10 +87,10 @@ func UploadingIcon(w http.ResponseWriter, r *http.Request) {
 	// create an AWS session which can be
 	// reused if we're uploading many files
 	s, err := session.NewSession(&aws.Config{
-		Region: aws.String(utils.Region),
+		Region: aws.String(os.Getenv("REGION")),
 		Credentials: credentials.NewStaticCredentials(
-			utils.ID,
-			utils.Key,
+			os.Getenv("ID"),
+			os.Getenv("KEY"),
 			""),
 	})
 	if err != nil {

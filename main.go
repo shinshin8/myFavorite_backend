@@ -1,11 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
+	"os"
 
-	"github.com/BurntSushi/toml"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 	"github.com/shinshin8/myFavorite_backend/controller"
@@ -16,11 +15,6 @@ import (
 var portConfig dto.PortConfig
 
 func main() {
-	// decoding toml
-	_, err := toml.DecodeFile(utils.ConfigFile, &portConfig)
-	if err != nil {
-		fmt.Println(err)
-	}
 	// initialize router
 	r := mux.NewRouter()
 	// Login
@@ -70,7 +64,7 @@ func main() {
 	handler := c.Handler(r)
 
 	// listening port
-	port := portConfig.Port.Port
+	port := os.Getenv("PORT")
 	// listener
 	// serverError := http.ListenAndServeTLS(port, "/etc/letsencrypt/live/www.findmyfavorite.com/fullchain.pem", "/etc/letsencrypt/live/www.findmyfavorite.com/privkey.pem", handler)
 	serverError := http.ListenAndServe(port, handler)

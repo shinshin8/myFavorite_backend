@@ -5,28 +5,17 @@ import (
 	"log"
 	"os"
 
-	"github.com/BurntSushi/toml"
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/utils"
 )
 
-var logFileConfig dto.LogConfig
-
 // Timeline is a function that returns an array which includes DB results with JSON format.
 func Timeline() []dto.Posts {
-
-	// decoding toml
-	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
-	if ers != nil {
-		panic(ers.Error())
-	}
-
-	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
 	defer logfile.Close()
-
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -87,19 +76,11 @@ func Timeline() []dto.Posts {
 
 // Trending returns an array which includes DB results with JSON format.
 func Trending() []dto.Posts {
-
-	// decoding toml
-	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
-	if ers != nil {
-		panic(ers.Error())
-	}
-
-	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
 	defer logfile.Close()
-
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -139,7 +120,6 @@ func Trending() []dto.Posts {
 		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
 	}
-
 	// Prepare an array which save JSON results.
 	var postArray []dto.Posts
 
@@ -150,7 +130,6 @@ func Trending() []dto.Posts {
 			log.SetFlags(log.Ldate | log.Ltime)
 			log.Fatal(err)
 		}
-
 		// Appending JSON in array.
 		postArray = append(postArray, posts)
 	}
@@ -161,18 +140,11 @@ func Trending() []dto.Posts {
 // UserPostsList gets a specific user's posts list from DB and convert its result into JSON.
 // At the parameter, user id will be put in and its type is int.
 func UserPostsList(userID int) []dto.Posts {
-	// decoding toml
-	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
-	if ers != nil {
-		panic(ers.Error())
-	}
-
-	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
 	defer logfile.Close()
-
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -212,7 +184,6 @@ func UserPostsList(userID int) []dto.Posts {
 		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
 	}
-
 	// Prepare an array which save JSON results.
 	var postArray []dto.Posts
 
@@ -223,7 +194,6 @@ func UserPostsList(userID int) []dto.Posts {
 			log.SetFlags(log.Ldate | log.Ltime)
 			log.Fatal(err)
 		}
-
 		// Appending JSON in array.
 		postArray = append(postArray, posts)
 	}
@@ -235,18 +205,11 @@ func UserPostsList(userID int) []dto.Posts {
 // At the first parameter, user id will be set with int type.
 // At the second parameter, article id will be set with int type.
 func LikedOrNot(userID int, articleID int) bool {
-	// decoding toml
-	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
-	if ers != nil {
-		panic(ers.Error())
-	}
-
-	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
 	defer logfile.Close()
-
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -275,18 +238,11 @@ func LikedOrNot(userID int, articleID int) bool {
 // At the first parameter, user id will be set with int type.
 // At the second parameter, article id will be set with int type.
 func FavoriteOrNot(userID int, articleID int) bool {
-	// decoding toml
-	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
-	if ers != nil {
-		panic(ers.Error())
-	}
-
-	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
 	defer logfile.Close()
-
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -315,13 +271,7 @@ func FavoriteOrNot(userID int, articleID int) bool {
 // At the first parameter, user id will be set with int type.
 // At the second parameter, article id will be set with int type.
 func SinglePost(articleID int) dto.Posts {
-	// decoding toml
-	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
-	if ers != nil {
-		panic(ers.Error())
-	}
-
-	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
@@ -378,18 +328,11 @@ func SinglePost(articleID int) dto.Posts {
 // At second paramter, title is set in string type.
 // At third parameter, content is set in string type.
 func CreateNewPost(userID int, title string, content string) dto.SimpleResutlJSON {
-	// decoding toml
-	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
-	if ers != nil {
-		panic(ers.Error())
-	}
-
-	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
 	defer logfile.Close()
-
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -423,18 +366,11 @@ func CreateNewPost(userID int, title string, content string) dto.SimpleResutlJSO
 // At third parameter, title is set in string type.
 // At forth parameter, content is set in string type.
 func EditPost(userID int, articleID int, title string, content string) bool {
-	// decoding toml
-	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
-	if ers != nil {
-		panic(ers.Error())
-	}
-
-	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
 	defer logfile.Close()
-
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -467,18 +403,11 @@ func EditPost(userID int, articleID int, title string, content string) bool {
 // At first parameter, user id is set in int type.
 // At second paramter, article id is set in int type.
 func DeletePost(userID int, articleID int) bool {
-	// decoding toml
-	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
-	if ers != nil {
-		panic(ers.Error())
-	}
-
-	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
 	defer logfile.Close()
-
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.

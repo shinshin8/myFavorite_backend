@@ -50,6 +50,9 @@ const (
 // ConfigFile indicate configuration file path.
 const ConfigFile = "./config/config.toml"
 
+// LogFile is the Log file path
+const LogFile = "./all-the-logs.log"
+
 // Error code
 const (
 	SuccessCode                   = 0

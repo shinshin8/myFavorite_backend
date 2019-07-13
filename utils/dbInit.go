@@ -8,10 +8,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/shinshin8/myFavorite_backend/dto"
 )
-
-var dbConfig dto.DbConfig
 
 // DBInit initialize MySQL connection.
 func DBInit() *sql.DB {
@@ -28,17 +25,16 @@ func DBInit() *sql.DB {
 	}
 	defer logfile.Close()
 
-	// decoding toml
-	_, err := toml.DecodeFile(ConfigFile, &dbConfig)
-	if err != nil {
-		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
-		log.SetFlags(log.Ldate | log.Ltime)
-		log.Fatal(err)
-	}
+	dbUser := os.Getenv("USER")
+	dbPassword := os.Getenv("PASSWORD")
+	dbHost := os.Getenv("HOST")
+	dbPort := os.Getenv("DB_PORT")
+	database := os.Getenv("DATABASE")
+	dbDriver := os.Getenv("DRIVER_NAME")
 
-	dataSourceName := dbConfig.Database.User + ":" + dbConfig.Database.Password + "@tcp(" + dbConfig.Database.Host + ":" + dbConfig.Database.DbPort + ")/" + dbConfig.Database.Database
+	dataSourceName := dbUser + ":" + dbPassword + "@tcp(" + dbHost + ":" + dbPort + ")/" + database
 
-	sql, err := sql.Open(dbConfig.Database.DriverName, dataSourceName)
+	sql, err := sql.Open(dbDriver, dataSourceName)
 
 	if err != nil {
 		log.SetOutput(io.MultiWriter(logfile, os.Stdout))

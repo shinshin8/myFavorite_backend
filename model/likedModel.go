@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/BurntSushi/toml"
 	"github.com/shinshin8/myFavorite_backend/utils"
 )
 
@@ -13,18 +12,11 @@ import (
 // In the first parameter, user-id will be set with int type.
 // In the second paraeter, article-id will be set witn int type.
 func LikePost(userID int, articleID int) bool {
-	// decoding toml
-	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
-	if ers != nil {
-		panic(ers.Error())
-	}
-
-	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
 	defer logfile.Close()
-
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -53,18 +45,11 @@ func LikePost(userID int, articleID int) bool {
 // At the first parameter, user id will be set with int type.
 // At the second parameter, article id will be set with int type.
 func DeleteLikedPost(userID int, articleID int) bool {
-	// decoding toml
-	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
-	if ers != nil {
-		panic(ers.Error())
-	}
-
-	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
 	defer logfile.Close()
-
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.

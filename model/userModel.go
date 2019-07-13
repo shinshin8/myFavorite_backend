@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/BurntSushi/toml"
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/utils"
 )
@@ -15,13 +14,7 @@ import (
 // At second parameter, hashed password is recieved and its type is string.
 // The function return true or false.
 func LoginUser(username string, hashedPassword string) int {
-	// decoding toml
-	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
-	if ers != nil {
-		panic(ers.Error())
-	}
-
-	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
@@ -52,18 +45,11 @@ func LoginUser(username string, hashedPassword string) int {
 // Email Address is in the second parameter with string type.
 // Password is in the third parameter with string type.
 func SignUp(username string, emailAddress string, password string) int {
-	// decoding toml
-	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
-	if ers != nil {
-		panic(ers.Error())
-	}
-
-	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
 	defer logfile.Close()
-
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -94,18 +80,11 @@ func SignUp(username string, emailAddress string, password string) int {
 // ShowProfile gets a user's profile from user_table and return its result in JSON.
 // At the first parameter, user id is set in int type.
 func ShowProfile(userID int) dto.Profile {
-	// decoding toml
-	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
-	if ers != nil {
-		panic(ers.Error())
-	}
-
-	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
 	defer logfile.Close()
-
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -142,18 +121,11 @@ func ShowProfile(userID int) dto.Profile {
 // At third paramter, mail address is set in string type.
 // At fourth paramter, comment is set in string type.
 func EditProfile(userID int, userName, birthday, mailAddress, comment string) bool {
-	// decoding toml
-	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
-	if ers != nil {
-		panic(ers.Error())
-	}
-
-	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
 	defer logfile.Close()
-
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
@@ -181,32 +153,17 @@ func EditProfile(userID int, userName, birthday, mailAddress, comment string) bo
 	}
 
 	return true
-
-	// successStatus := 0
-
-	// res := dto.SimpleResutlJSON{
-	// 	Status:    true,
-	// 	ErrorCode: successStatus,
-	// }
-	// return res
 }
 
 // DeleteAccount delete user from DB
 // At first parameter, user id is set in int type.
 // The function returns result in boolean.
 func DeleteAccount(userID int) bool {
-	// decoding toml
-	_, ers := toml.DecodeFile(utils.ConfigFile, &logFileConfig)
-	if ers != nil {
-		panic(ers.Error())
-	}
-
-	logfile, er := os.OpenFile(logFileConfig.LogFile.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}
 	defer logfile.Close()
-
 	// Initalize DB Connection
 	sql := utils.DBInit()
 	// Close DB connection at the end.
