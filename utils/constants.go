@@ -42,7 +42,8 @@ const (
 	ShowProfile        = "/showProfile"
 	EditProfile        = "/editProfile"
 	DeleteAccount      = "/deleteAccount"
-	UploadingImage     = "/uploadIcon"
+	UploadingIcon      = "/uploadIcon"
+	ChangeIcon         = "/changeIcon"
 )
 
 // AWS S3
@@ -81,4 +82,6 @@ const (
 	OverSizeIcon                  = 23
 	NoIconSelected                = 24
 	FailedRegisterIcon            = 25
+	FailedDeleteIconFromS3        = 26
+	FailedUpdateIcon              = 27
 )

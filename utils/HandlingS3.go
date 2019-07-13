@@ -13,8 +13,8 @@ import (
 	"github.com/globalsign/mgo/bson"
 )
 
-// UploadIconToS3 saves a file to aws bucket and returns the url to the file and an error if there's any
-func UploadIconToS3(s *session.Session, file multipart.File, fileHeader *multipart.FileHeader) (string, error) {
+// UploadIcon saves a file to aws bucket and returns the url to the file and an error if there's any
+func UploadIcon(s *session.Session, file multipart.File, fileHeader *multipart.FileHeader) (string, error) {
 	// get the file size and read
 	// the file content into a buffer
 	size := fileHeader.Size
@@ -40,4 +40,23 @@ func UploadIconToS3(s *session.Session, file multipart.File, fileHeader *multipa
 		return "", err
 	}
 	return tempFileName, err
+}
+
+// DeleteIcon delete icon from aws bucket.
+func DeleteIcon(s *session.Session, icon string) bool {
+	_, deleteErr := s3.New(s).DeleteObject(&s3.DeleteObjectInput{
+		Bucket: aws.String(os.Getenv("BUCKET_NAME")),
+		Key:    aws.String(icon),
+	})
+	if deleteErr != nil {
+		return false
+	}
+	clearingErr := s3.New(s).WaitUntilObjectNotExists(&s3.HeadObjectInput{
+		Bucket: aws.String(os.Getenv("BUCKET_NAME")),
+		Key:    aws.String(icon),
+	})
+	if clearingErr != nil {
+		return false
+	}
+	return true
 }

@@ -6,22 +6,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/BurntSushi/toml"
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/shinshin8/myFavorite_backend/dto"
 )
-
-var logFileConfig dto.LogConfig
 
 // CreateToken creates JWT.
 func CreateToken(userID int) string {
-
-	// decoding toml
-	_, ers := toml.DecodeFile(ConfigFile, &logFileConfig)
-	if ers != nil {
-		panic(ers.Error())
-	}
-
 	logfile, er := os.OpenFile(ConfigFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())

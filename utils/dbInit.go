@@ -6,19 +6,11 @@ import (
 	"log"
 	"os"
 
-	"github.com/BurntSushi/toml"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 // DBInit initialize MySQL connection.
 func DBInit() *sql.DB {
-
-	// decoding toml
-	_, ers := toml.DecodeFile(ConfigFile, &logFileConfig)
-	if ers != nil {
-		panic(ers.Error())
-	}
-
 	logfile, er := os.OpenFile(ConfigFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())

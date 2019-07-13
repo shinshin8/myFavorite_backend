@@ -109,7 +109,7 @@ func UploadingIcon(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Uploading icon to AWS S3.
-	iconPath, uploadError := utils.UploadIconToS3(s, file, fileHeader)
+	iconPath, uploadError := utils.UploadIcon(s, file, fileHeader)
 	if uploadError != nil {
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,
@@ -126,7 +126,7 @@ func UploadingIcon(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Icon URL
-	iconURL := "https://findmyfavorite.s3-ap-northeast-1.amazonaws.com/" + iconPath
+	iconURL := os.Getenv("S3_URL") + iconPath
 	//Insert DB
 	res := model.RegisterIcon(iconURL, articleID)
 

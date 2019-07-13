@@ -48,8 +48,10 @@ func main() {
 	r.HandleFunc(utils.EditProfile, controller.EditProfile).Methods(utils.Put)
 	// Delete Account
 	r.HandleFunc(utils.DeleteAccount, controller.DeleteAccount).Methods(utils.Delete)
-	// Uploading images
-	r.HandleFunc(utils.UploadingImage, controller.UploadingIcon).Methods(utils.Post)
+	// Uploading icon
+	r.HandleFunc(utils.UploadingIcon, controller.UploadingIcon).Methods(utils.Post)
+	// Change icon
+	r.HandleFunc(utils.ChangeIcon, controller.ChangeIcon).Methods(utils.Put)
 
 	c := cors.New(cors.Options{
 		AllowCredentials: true,
