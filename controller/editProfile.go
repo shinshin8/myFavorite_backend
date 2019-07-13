@@ -45,7 +45,6 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
 	// Get user name
 	userName := editProfileBody.UserName
 	// Get birthday
@@ -54,7 +53,6 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 	mailAddress := editProfileBody.MailAddress
 	// Get comment
 	comment := editProfileBody.Comment
-
 	// Check user name
 	if !utils.IsName(userName) {
 		profile := dto.Profile{
@@ -160,26 +158,10 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
-
 	// Execute edit user's profile.
-	result := model.EditProfile(userID, userName, birthday, mailAddress, comment)
+	editProfile := model.EditProfile(userID, userName, birthday, mailAddress, comment)
 
-	if result {
-		// set values in structs
-		resultjson := dto.SimpleResutlJSON{
-			Status:    true,
-			ErrorCode: utils.SuccessCode,
-		}
-		// convert structs to json
-		res, err := json.Marshal(resultjson)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-		w.Write(res)
-	} else {
+	if !editProfile {
 		// set values in structs
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,
@@ -194,5 +176,21 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		}
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(res)
+		return
 	}
+	// set values in structs
+	resultjson := dto.SimpleResutlJSON{
+		Status:    true,
+		ErrorCode: utils.SuccessCode,
+	}
+	// convert structs to json
+	res, err := json.Marshal(resultjson)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
+	return
 }

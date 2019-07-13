@@ -128,22 +128,9 @@ func UploadingIcon(w http.ResponseWriter, r *http.Request) {
 	// Icon URL
 	iconURL := os.Getenv("S3_URL") + iconPath
 	//Insert DB
-	res := model.RegisterIcon(iconURL, articleID)
+	RegisterIconInDB := model.RegisterIcon(iconURL, articleID)
 
-	if res {
-		resultjson := dto.SimpleResutlJSON{
-			Status:    true,
-			ErrorCode: utils.SuccessCode,
-		}
-		// convert structs to json
-		res, err := json.Marshal(resultjson)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-		w.Write(res)
-	} else {
+	if !RegisterIconInDB {
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,
 			ErrorCode: utils.FailedRegisterIcon,
@@ -156,5 +143,20 @@ func UploadingIcon(w http.ResponseWriter, r *http.Request) {
 		}
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(res)
+		return
 	}
+
+	resultjson := dto.SimpleResutlJSON{
+		Status:    true,
+		ErrorCode: utils.SuccessCode,
+	}
+	// convert structs to json
+	res, err := json.Marshal(resultjson)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
+	return
 }

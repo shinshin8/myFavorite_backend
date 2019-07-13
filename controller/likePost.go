@@ -42,22 +42,8 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 	articleIDStr := r.URL.Query().Get(atcID)
 	articleID, _ := strconv.Atoi(articleIDStr)
 	// Execute register liked post
-	res := model.LikePost(userID, articleID)
-	if res {
-		// set values in structs
-		resultjson := dto.SimpleResutlJSON{
-			Status:    false,
-			ErrorCode: utils.SuccessCode,
-		}
-		// convert structs to json
-		res, err := json.Marshal(resultjson)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-		w.Write(res)
-	} else {
+	likePostDB := model.LikePost(userID, articleID)
+	if !likePostDB {
 		// set values in structs
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,
@@ -71,5 +57,21 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 		}
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(res)
+		return
 	}
+
+	resultjson := dto.SimpleResutlJSON{
+		Status:    false,
+		ErrorCode: utils.SuccessCode,
+	}
+	// convert structs to json
+	res, err := json.Marshal(resultjson)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
+	return
+
 }

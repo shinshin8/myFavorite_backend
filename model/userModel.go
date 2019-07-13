@@ -12,7 +12,7 @@ import (
 // LoginUser judges wheather the recieved login information is corrent or not.
 // At first parameter, username is recieved and its type is string.
 // At second parameter, hashed password is recieved and its type is string.
-// The function return true or false.
+// The function return userID or 0.
 func LoginUser(username string, hashedPassword string) int {
 	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
@@ -26,7 +26,11 @@ func LoginUser(username string, hashedPassword string) int {
 	defer sql.Close()
 
 	// SQL syntax
-	findUserSyntax := "SELECT user_id FROM user_table WHERE user_name = ? AND password = ?;"
+	findUserSyntax := `SELECT 
+							user_id 
+						FROM 
+							user_table 
+						WHERE user_name = ? AND password = ?`
 
 	var userID int
 

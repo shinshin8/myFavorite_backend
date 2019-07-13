@@ -70,7 +70,6 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
-
 	// Check content
 	if !utils.IsContent(content) {
 		// Set values into the struct
@@ -103,5 +102,5 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	// Response JSON
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
-
+	return
 }

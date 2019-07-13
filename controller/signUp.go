@@ -28,7 +28,6 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
 	// Username value
 	username := signUpBody.UserName
 	// Email address value
@@ -37,7 +36,6 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	password := signUpBody.Password
 	// Confirm password value
 	confirmPassword := signUpBody.ConfirmPassword
-
 	// Validation check for username.
 	if !utils.IsName(username) {
 		// Set values into the struct
@@ -80,7 +78,6 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
-
 	// Validation check for password
 	if !utils.IsPassword(password) {
 		// Set values into the struct
@@ -90,7 +87,6 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 			Username:     username,
 			EmailAddress: emailAddress,
 		}
-
 		// convert struct to JSON
 		res, err := json.Marshal(resStruct)
 
@@ -103,7 +99,6 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
-
 	// Check whether or not the both values: password and confrim password are equal.
 	if password != confirmPassword {
 		// Set values into the struct
@@ -113,7 +108,6 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 			Username:     username,
 			EmailAddress: emailAddress,
 		}
-
 		// convert struct to JSON
 		res, err := json.Marshal(resStruct)
 
@@ -132,10 +126,8 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	hash.Write([]byte(password))
 	hexPassword := hash.Sum(nil)
 	hashedPassword := hex.EncodeToString(hexPassword)
-
 	// In this time, method returns only int; error_code.
 	signUpRes := model.SignUp(username, emailAddress, hashedPassword)
-
 	// Creating jwt
 	token := utils.CreateToken(signUpRes)
 	resultjson := dto.LoginResult{
@@ -143,7 +135,6 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		ErrorCode: utils.SuccessCode,
 		Token:     token,
 	}
-
 	// convert struct to JSON
 	res, err := json.Marshal(resultjson)
 
@@ -154,5 +145,5 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	// Response JSON
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
-
+	return
 }

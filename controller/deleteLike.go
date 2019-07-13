@@ -43,24 +43,9 @@ func DeleteLikedPost(w http.ResponseWriter, r *http.Request) {
 	articleID, _ := strconv.Atoi(atlIDStr)
 
 	// Execute delete resouce.
-	res := model.DeleteLikedPost(userID, articleID)
+	deleteLikePostFromDB := model.DeleteLikedPost(userID, articleID)
 
-	if res {
-		// set values in structs
-		resultjson := dto.SimpleResutlJSON{
-			Status:    true,
-			ErrorCode: utils.SuccessCode,
-		}
-		// convert structs to json
-		res, err := json.Marshal(resultjson)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-		w.Write(res)
-	} else {
+	if !deleteLikePostFromDB {
 		// set values in structs
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,
@@ -75,5 +60,20 @@ func DeleteLikedPost(w http.ResponseWriter, r *http.Request) {
 		}
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(res)
+		return
 	}
+	resultjson := dto.SimpleResutlJSON{
+		Status:    true,
+		ErrorCode: utils.SuccessCode,
+	}
+	// convert structs to json
+	res, err := json.Marshal(resultjson)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
+	return
 }

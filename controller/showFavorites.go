@@ -60,4 +60,5 @@ func ShowFavoritePosts(w http.ResponseWriter, r *http.Request) {
 	// Response JSON
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
+	return
 }

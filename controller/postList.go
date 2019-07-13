@@ -41,6 +41,7 @@ func Timeline(w http.ResponseWriter, r *http.Request) {
 		// Response JSON
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
+		return
 	} else {
 		// DB result array
 		dbResultArray := model.Timeline()
@@ -61,5 +62,6 @@ func Timeline(w http.ResponseWriter, r *http.Request) {
 		// Response JSON
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
+		return
 	}
 }

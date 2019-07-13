@@ -41,26 +41,10 @@ func FavoritePost(w http.ResponseWriter, r *http.Request) {
 	atcID := "article_id"
 	articleIDStr := r.URL.Query().Get(atcID)
 	articleID, _ := strconv.Atoi(articleIDStr)
-
 	// Execute register liked post
-	res := model.FavoritePost(userID, articleID)
+	favoritePostDB := model.FavoritePost(userID, articleID)
 
-	if res {
-		// set values in structs
-		resultjson := dto.SimpleResutlJSON{
-			Status:    true,
-			ErrorCode: utils.SuccessCode,
-		}
-		// convert structs to json
-		res, err := json.Marshal(resultjson)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-		w.Write(res)
-	} else {
+	if !favoritePostDB {
 		// set values in structs
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,
@@ -75,5 +59,20 @@ func FavoritePost(w http.ResponseWriter, r *http.Request) {
 		}
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(res)
+		return
 	}
+	resultjson := dto.SimpleResutlJSON{
+		Status:    true,
+		ErrorCode: utils.SuccessCode,
+	}
+	// convert structs to json
+	res, err := json.Marshal(resultjson)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
+	return
 }
