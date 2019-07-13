@@ -8,11 +8,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 	"github.com/shinshin8/myFavorite_backend/controller"
-	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/utils"
 )
-
-var portConfig dto.PortConfig
 
 func main() {
 	// initialize router
