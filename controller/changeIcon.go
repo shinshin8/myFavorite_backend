@@ -40,94 +40,20 @@ func ChangeIcon(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write(res)
 		return
-	} else {
-		// create an AWS session which can be
-		// reused if we're uploading many files
-		s, err := session.NewSession(&aws.Config{
-			Region: aws.String(os.Getenv("REGION")),
-			Credentials: credentials.NewStaticCredentials(
-				os.Getenv("ID"),
-				os.Getenv("KEY"),
-				""),
-		})
-		if err != nil {
-			resultjson := dto.SimpleResutlJSON{
-				Status:    false,
-				ErrorCode: utils.NoIconSelected,
-			}
-			// convert structs to json
-			res, err := json.Marshal(resultjson)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write(res)
-			return
-		}
-		// Get user's icon url.
-		var ProfileIcon dto.ProfileIcon
-		// TODO: delete baseURL
-		iconURL := ProfileIcon.Icon
-		// TODO: delete user's icon
-		deleteIcon := utils.DeleteIcon(s, iconURL)
-		if !deleteIcon {
-			resultjson := dto.SimpleResutlJSON{
-				Status:    false,
-				ErrorCode: utils.FailedDeleteIconFromS3,
-			}
-			// convert structs to json
-			res, err := json.Marshal(resultjson)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write(res)
-			return
-		}
-		// Field name of profile icon.
-		fieldName := "profile_icon"
-		file, fileHeader, err := r.FormFile(fieldName)
-		// Uploading icon to AWS S3.
-		iconPath, uploadError := utils.UploadIcon(s, file, fileHeader)
-		if uploadError != nil {
-			resultjson := dto.SimpleResutlJSON{
-				Status:    false,
-				ErrorCode: utils.NoIconSelected,
-			}
-			// convert structs to json
-			res, err := json.Marshal(resultjson)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write(res)
-			return
-		}
-		// Icon URL
-		newIconURL := os.Getenv("S3_URL") + iconPath
-		// Delete icon url from DB.
-		deleteIconFromDB := model.UpdateIcon(newIconURL, userID)
-		if !deleteIconFromDB {
-			resultjson := dto.SimpleResutlJSON{
-				Status:    false,
-				ErrorCode: utils.FailedUpdateIcon,
-			}
-			// convert structs to json
-			res, err := json.Marshal(resultjson)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write(res)
-			return
-		}
+	}
+	// create an AWS session which can be
+	// reused if we're uploading many files
+	s, err := session.NewSession(&aws.Config{
+		Region: aws.String(os.Getenv("REGION")),
+		Credentials: credentials.NewStaticCredentials(
+			os.Getenv("ID"),
+			os.Getenv("KEY"),
+			""),
+	})
+	if err != nil {
 		resultjson := dto.SimpleResutlJSON{
-			Status:    true,
-			ErrorCode: utils.SuccessCode,
+			Status:    false,
+			ErrorCode: utils.NoIconSelected,
 		}
 		// convert structs to json
 		res, err := json.Marshal(resultjson)
@@ -135,8 +61,81 @@ func ChangeIcon(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write(res)
 		return
 	}
+	// Get user's icon url.
+	var ProfileIcon dto.ProfileIcon
+	// TODO: delete baseURL
+	iconURL := ProfileIcon.Icon
+	// TODO: delete user's icon
+	deleteIcon := utils.DeleteIcon(s, iconURL)
+	if !deleteIcon {
+		resultjson := dto.SimpleResutlJSON{
+			Status:    false,
+			ErrorCode: utils.FailedDeleteIconFromS3,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(res)
+		return
+	}
+	// Field name of profile icon.
+	fieldName := "profile_icon"
+	file, fileHeader, err := r.FormFile(fieldName)
+	// Uploading icon to AWS S3.
+	iconPath, uploadError := utils.UploadIcon(s, file, fileHeader)
+	if uploadError != nil {
+		resultjson := dto.SimpleResutlJSON{
+			Status:    false,
+			ErrorCode: utils.NoIconSelected,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(res)
+		return
+	}
+	// Icon URL
+	newIconURL := os.Getenv("S3_URL") + iconPath
+	// Delete icon url from DB.
+	deleteIconFromDB := model.UpdateIcon(newIconURL, userID)
+	if !deleteIconFromDB {
+		resultjson := dto.SimpleResutlJSON{
+			Status:    false,
+			ErrorCode: utils.FailedUpdateIcon,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(res)
+		return
+	}
+	resultjson := dto.SimpleResutlJSON{
+		Status:    true,
+		ErrorCode: utils.SuccessCode,
+	}
+	// convert structs to json
+	res, err := json.Marshal(resultjson)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
+	return
 }
