@@ -44,12 +44,8 @@ const (
 	DeleteAccount      = "/deleteAccount"
 	UploadingIcon      = "/uploadIcon"
 	ChangeIcon         = "/changeIcon"
+	UploadingImages    = "/uploadingImages"
 )
-
-// AWS S3
-
-// ConfigFile indicate configuration file path.
-const ConfigFile = "./config/config.toml"
 
 // LogFile is the Log file path
 const LogFile = "./all-the-logs.log"
@@ -84,4 +80,6 @@ const (
 	FailedRegisterIcon            = 25
 	FailedDeleteIconFromS3        = 26
 	FailedUpdateIcon              = 27
+	FailedGenerateAWSSession      = 28
+	FailedUploadImages            = 29
 )

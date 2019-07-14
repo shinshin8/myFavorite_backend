@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"os"
-	"strconv"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -42,10 +41,6 @@ func UploadingIcon(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
-	atcID := "article_id"
-	articleIDStr := r.URL.Query().Get(atcID)
-	articleID, _ := strconv.Atoi(articleIDStr)
-
 	// allow only 1MB of file size
 	maxSize := int64(1024000)
 	err := r.ParseMultipartForm(maxSize)
@@ -86,7 +81,7 @@ func UploadingIcon(w http.ResponseWriter, r *http.Request) {
 	defer file.Close()
 	// create an AWS session which can be
 	// reused if we're uploading many files
-	s, err := session.NewSession(&aws.Config{
+	session, err := session.NewSession(&aws.Config{
 		Region: aws.String(os.Getenv("REGION")),
 		Credentials: credentials.NewStaticCredentials(
 			os.Getenv("ID"),
@@ -96,7 +91,7 @@ func UploadingIcon(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,
-			ErrorCode: utils.NoIconSelected,
+			ErrorCode: utils.FailedGenerateAWSSession,
 		}
 		// convert structs to json
 		res, err := json.Marshal(resultjson)
@@ -109,7 +104,7 @@ func UploadingIcon(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Uploading icon to AWS S3.
-	iconPath, uploadError := utils.UploadIcon(s, file, fileHeader)
+	iconPath, uploadError := utils.UploadingToS3(session, file, fileHeader)
 	if uploadError != nil {
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,
@@ -128,7 +123,7 @@ func UploadingIcon(w http.ResponseWriter, r *http.Request) {
 	// Icon URL
 	iconURL := os.Getenv("S3_URL") + iconPath
 	//Insert DB
-	RegisterIconInDB := model.RegisterIcon(iconURL, articleID)
+	RegisterIconInDB := model.RegisterIcon(iconURL, userID)
 
 	if !RegisterIconInDB {
 		resultjson := dto.SimpleResutlJSON{

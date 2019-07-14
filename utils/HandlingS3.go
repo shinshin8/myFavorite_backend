@@ -13,15 +13,15 @@ import (
 	"github.com/globalsign/mgo/bson"
 )
 
-// UploadIcon saves a file to aws bucket and returns the url to the file and an error if there's any
-func UploadIcon(s *session.Session, file multipart.File, fileHeader *multipart.FileHeader) (string, error) {
+// UploadingToS3 saves a file to aws bucket and returns the url to the file and an error if there's any
+func UploadingToS3(s *session.Session, file multipart.File, fileHeader *multipart.FileHeader) (string, error) {
 	// get the file size and read
 	// the file content into a buffer
 	size := fileHeader.Size
 	buffer := make([]byte, size)
 	file.Read(buffer)
 	// create a unique file name for the file
-	tempFileName := "icon/" + bson.NewObjectId().Hex() + filepath.Ext(fileHeader.Filename)
+	tempFileName := bson.NewObjectId().Hex() + filepath.Ext(fileHeader.Filename)
 	// config settings: this is where you choose the bucket,
 	// filename, content-type and storage class of the file
 	// you're uploading

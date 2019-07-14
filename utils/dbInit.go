@@ -11,7 +11,7 @@ import (
 
 // DBInit initialize MySQL connection.
 func DBInit() *sql.DB {
-	logfile, er := os.OpenFile(ConfigFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logfile, er := os.OpenFile(LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
 	}

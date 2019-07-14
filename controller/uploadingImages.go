@@ -2,8 +2,10 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -14,8 +16,8 @@ import (
 	"github.com/shinshin8/myFavorite_backend/utils"
 )
 
-// ChangeIcon changes a picture of user's profile
-func ChangeIcon(w http.ResponseWriter, r *http.Request) {
+// UploadingImages uploads multiple photos to AWS S3.
+func UploadingImages(w http.ResponseWriter, r *http.Request) {
 	// Set CORS
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 	w.Header().Set(utils.Cors, utils.CorsWildCard)
@@ -41,9 +43,22 @@ func ChangeIcon(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
-	// create an AWS session which can be
-	// reused if we're uploading many files
-	s, err := session.NewSession(&aws.Config{
+	// Get article id from URL query parameter with string type and convert it to int.
+	atlID := "article_id"
+	atlIDStr := r.URL.Query().Get(atlID)
+	articleID, _ := strconv.Atoi(atlIDStr)
+	var maxSize int64 = 200000
+	err := r.ParseMultipartForm(maxSize)
+	if err != nil {
+		fmt.Fprintln(w, err)
+		return
+	}
+	formdata := r.MultipartForm
+
+	var fieldName = "multiplefiles"
+	files := formdata.File[fieldName]
+
+	session, err := session.NewSession(&aws.Config{
 		Region: aws.String(os.Getenv("REGION")),
 		Credentials: credentials.NewStaticCredentials(
 			os.Getenv("ID"),
@@ -53,7 +68,7 @@ func ChangeIcon(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,
-			ErrorCode: utils.NoIconSelected,
+			ErrorCode: utils.FailedGenerateAWSSession,
 		}
 		// convert structs to json
 		res, err := json.Marshal(resultjson)
@@ -65,16 +80,54 @@ func ChangeIcon(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
-	// Get user's icon url.
-	var ProfileIcon dto.ProfileIcon
-	// TODO: delete baseURL
-	iconURL := ProfileIcon.Icon
-	// TODO: delete user's icon
-	deleteIcon := utils.DeleteIcon(s, iconURL)
-	if !deleteIcon {
+
+	// Array for image path
+	urlArray := []dto.UploadImage{}
+
+	for i := range files {
+		file, err := files[i].Open()
+		defer file.Close()
+		if err != nil {
+			fmt.Fprintln(w, err)
+			return
+		}
+
+		fileHead := files[i]
+
+		// Uploading icon to AWS S3.
+		imagePath, uploadError := utils.UploadingToS3(session, file, fileHead)
+		if uploadError != nil {
+			resultjson := dto.SimpleResutlJSON{
+				Status:    false,
+				ErrorCode: utils.FailedUploadImages,
+			}
+			// convert structs to json
+			res, err := json.Marshal(resultjson)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write(res)
+			return
+		}
+
+		imageData := dto.UploadImage{
+			ImageURL:  imagePath,
+			UserID:    userID,
+			ArticleID: articleID,
+		}
+
+		// Push generated path to slice
+		urlArray = append(urlArray, imageData)
+	}
+	// Insert DB
+	RegisterImages := model.UploadImage(urlArray)
+
+	if !RegisterImages {
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,
-			ErrorCode: utils.FailedDeleteIconFromS3,
+			ErrorCode: utils.FailedUploadImages,
 		}
 		// convert structs to json
 		res, err := json.Marshal(resultjson)
@@ -86,45 +139,7 @@ func ChangeIcon(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
-	// Field name of profile icon.
-	fieldName := "profile_icon"
-	file, fileHeader, err := r.FormFile(fieldName)
-	// Uploading icon to AWS S3.
-	iconPath, uploadError := utils.UploadingToS3(s, file, fileHeader)
-	if uploadError != nil {
-		resultjson := dto.SimpleResutlJSON{
-			Status:    false,
-			ErrorCode: utils.NoIconSelected,
-		}
-		// convert structs to json
-		res, err := json.Marshal(resultjson)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write(res)
-		return
-	}
-	// Icon URL
-	newIconURL := os.Getenv("S3_URL") + iconPath
-	// Delete icon url from DB.
-	deleteIconFromDB := model.UpdateIcon(newIconURL, userID)
-	if !deleteIconFromDB {
-		resultjson := dto.SimpleResutlJSON{
-			Status:    false,
-			ErrorCode: utils.FailedUpdateIcon,
-		}
-		// convert structs to json
-		res, err := json.Marshal(resultjson)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write(res)
-		return
-	}
+
 	resultjson := dto.SimpleResutlJSON{
 		Status:    true,
 		ErrorCode: utils.SuccessCode,
