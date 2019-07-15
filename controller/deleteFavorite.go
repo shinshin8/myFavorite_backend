@@ -42,23 +42,9 @@ func DeleteFavoritePost(w http.ResponseWriter, r *http.Request) {
 	atlIDStr := r.URL.Query().Get(atlID)
 	articleID, _ := strconv.Atoi(atlIDStr)
 	// Execute delete resouce.
-	res := model.DeleteFavoritePost(userID, articleID)
+	deleteFavoriteFromDB := model.DeleteFavoritePost(userID, articleID)
 
-	if res {
-		// set values in structs
-		resultjson := dto.SimpleResutlJSON{
-			Status:    true,
-			ErrorCode: utils.SuccessCode,
-		}
-		// convert structs to json
-		res, err := json.Marshal(resultjson)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-		w.Write(res)
-	} else {
+	if !deleteFavoriteFromDB {
 		// set values in structs
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,
@@ -72,5 +58,20 @@ func DeleteFavoritePost(w http.ResponseWriter, r *http.Request) {
 		}
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(res)
+		return
 	}
+	// set values in structs
+	resultjson := dto.SimpleResutlJSON{
+		Status:    true,
+		ErrorCode: utils.SuccessCode,
+	}
+	// convert structs to json
+	res, err := json.Marshal(resultjson)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
+	return
 }

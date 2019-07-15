@@ -43,3 +43,10 @@ type EditPostBody struct {
 	Title   string
 	Content string
 }
+
+// UploadImage is a stuct for image url data for DB.
+type UploadImage struct {
+	ImageURL  string
+	UserID    int
+	ArticleID int
+}

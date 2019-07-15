@@ -39,21 +39,7 @@ func DeleteAccount(w http.ResponseWriter, r *http.Request) {
 	// Execute delete user's account
 	deleteAccount := model.DeleteAccount(userID)
 
-	if deleteAccount {
-		// set values in structs
-		resultjson := dto.SimpleResutlJSON{
-			Status:    true,
-			ErrorCode: utils.SuccessCode,
-		}
-		// convert structs to json
-		res, err := json.Marshal(resultjson)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-		w.Write(res)
-	} else {
+	if !deleteAccount {
 		// set values in structs
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,
@@ -67,5 +53,20 @@ func DeleteAccount(w http.ResponseWriter, r *http.Request) {
 		}
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(res)
+		return
 	}
+	// set values in structs
+	resultjson := dto.SimpleResutlJSON{
+		Status:    true,
+		ErrorCode: utils.SuccessCode,
+	}
+	// convert structs to json
+	res, err := json.Marshal(resultjson)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
+	return
 }

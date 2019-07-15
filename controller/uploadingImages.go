@@ -2,8 +2,10 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -14,8 +16,8 @@ import (
 	"github.com/shinshin8/myFavorite_backend/utils"
 )
 
-// UploadingIcon is a function that uploading images to AWS S3.
-func UploadingIcon(w http.ResponseWriter, r *http.Request) {
+// UploadingImages uploads multiple photos to AWS S3.
+func UploadingImages(w http.ResponseWriter, r *http.Request) {
 	// Set CORS
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 	w.Header().Set(utils.Cors, utils.CorsWildCard)
@@ -41,46 +43,21 @@ func UploadingIcon(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
-	// allow only 1MB of file size
-	maxSize := int64(1024000)
+	// Get article id from URL query parameter with string type and convert it to int.
+	atlID := "article_id"
+	atlIDStr := r.URL.Query().Get(atlID)
+	articleID, _ := strconv.Atoi(atlIDStr)
+	var maxSize int64 = 200000
 	err := r.ParseMultipartForm(maxSize)
 	if err != nil {
-		// set values in structs
-		resultjson := dto.SimpleResutlJSON{
-			Status:    false,
-			ErrorCode: utils.OverSizeIcon,
-		}
-		// convert structs to json
-		res, err := json.Marshal(resultjson)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusNotAcceptable)
-		w.Write(res)
+		fmt.Fprintln(w, err)
 		return
 	}
-	// Field name of profile icon.
-	fieldName := "profile_icon"
-	file, fileHeader, err := r.FormFile(fieldName)
-	if err != nil {
-		resultjson := dto.SimpleResutlJSON{
-			Status:    false,
-			ErrorCode: utils.NoIconSelected,
-		}
-		// convert structs to json
-		res, err := json.Marshal(resultjson)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write(res)
-		return
-	}
-	defer file.Close()
-	// create an AWS session which can be
-	// reused if we're uploading many files
+	formdata := r.MultipartForm
+
+	var fieldName = "multiplefiles"
+	files := formdata.File[fieldName]
+
 	session, err := session.NewSession(&aws.Config{
 		Region: aws.String(os.Getenv("REGION")),
 		Credentials: credentials.NewStaticCredentials(
@@ -103,30 +80,54 @@ func UploadingIcon(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
-	// Uploading icon to AWS S3.
-	iconPath, uploadError := utils.UploadingToS3(session, file, fileHeader)
-	if uploadError != nil {
-		resultjson := dto.SimpleResutlJSON{
-			Status:    false,
-			ErrorCode: utils.NoIconSelected,
-		}
-		// convert structs to json
-		res, err := json.Marshal(resultjson)
+
+	// Array for image path
+	urlArray := []dto.UploadImage{}
+
+	for i := range files {
+		file, err := files[i].Open()
+		defer file.Close()
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			fmt.Fprintln(w, err)
 			return
 		}
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write(res)
-		return
-	}
-	//Insert DB
-	RegisterIconInDB := model.RegisterIcon(iconPath, userID)
 
-	if !RegisterIconInDB {
+		fileHead := files[i]
+
+		// Uploading icon to AWS S3.
+		imagePath, uploadError := utils.UploadingToS3(session, file, fileHead)
+		if uploadError != nil {
+			resultjson := dto.SimpleResutlJSON{
+				Status:    false,
+				ErrorCode: utils.FailedUploadImages,
+			}
+			// convert structs to json
+			res, err := json.Marshal(resultjson)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write(res)
+			return
+		}
+
+		imageData := dto.UploadImage{
+			ImageURL:  imagePath,
+			UserID:    userID,
+			ArticleID: articleID,
+		}
+
+		// Push generated path to slice
+		urlArray = append(urlArray, imageData)
+	}
+	// Insert DB
+	RegisterImages := model.UploadImage(urlArray)
+
+	if !RegisterImages {
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,
-			ErrorCode: utils.FailedRegisterIcon,
+			ErrorCode: utils.FailedUploadImages,
 		}
 		// convert structs to json
 		res, err := json.Marshal(resultjson)

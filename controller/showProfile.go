@@ -37,8 +37,22 @@ func ShowProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Get profile.
-	userProfile := model.ShowProfile(userID)
-
+	userProfile, err := model.ShowProfile(userID)
+	if err != nil {
+		resultjson := dto.SimpleResutlJSON{
+			Status:    false,
+			ErrorCode: utils.FailedGetProfile,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write(res)
+		return
+	}
 	resStruct := dto.ProfileResult{
 		Status:    true,
 		ErrorCode: utils.SuccessCode,
@@ -54,4 +68,5 @@ func ShowProfile(w http.ResponseWriter, r *http.Request) {
 	// Response JSON
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
+	return
 }

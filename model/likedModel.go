@@ -37,7 +37,10 @@ func LikePost(userID int, articleID int) bool {
 		log.Fatal(err)
 	}
 
-	rows.Exec(userID, articleID)
+	res, err := rows.Exec(userID, articleID)
+	if res == nil || err != nil {
+		return false
+	}
 	return true
 }
 
@@ -70,6 +73,9 @@ func DeleteLikedPost(userID int, articleID int) bool {
 		log.Fatal(err)
 	}
 
-	rows.Exec(userID, articleID)
+	res, executeErr := rows.Exec(userID, articleID)
+	if res == nil || executeErr != nil {
+		return false
+	}
 	return true
 }

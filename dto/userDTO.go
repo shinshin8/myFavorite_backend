@@ -45,3 +45,8 @@ type Profile struct {
 	MailAddress string `json:"mail_address"`
 	Comment     string `json:"comment"`
 }
+
+// ProfileIcon is a stuct for user's icon
+type ProfileIcon struct {
+	Icon string `json:"string"`
+}

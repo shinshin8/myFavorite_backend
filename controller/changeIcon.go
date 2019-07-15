@@ -3,14 +3,19 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"os"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
 
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/model"
 	"github.com/shinshin8/myFavorite_backend/utils"
 )
 
-// EditProfile edits user's profile.
-func EditProfile(w http.ResponseWriter, r *http.Request) {
+// ChangeIcon changes a picture of user's profile
+func ChangeIcon(w http.ResponseWriter, r *http.Request) {
 	// Set CORS
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 	w.Header().Set(utils.Cors, utils.CorsWildCard)
@@ -36,140 +41,21 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
-
-	var editProfileBody dto.EditProfileBody
-
-	er := json.NewDecoder(r.Body).Decode(&editProfileBody)
-
-	if er != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	// Get user name
-	userName := editProfileBody.UserName
-	// Get birthday
-	birthday := editProfileBody.Birthday
-	//Get mail address
-	mailAddress := editProfileBody.MailAddress
-	// Get comment
-	comment := editProfileBody.Comment
-	// Check user name
-	if !utils.IsName(userName) {
-		profile := dto.Profile{
-			UserID:      userID,
-			Birthday:    birthday,
-			MailAddress: mailAddress,
-			Comment:     comment,
-		}
-		// Set values into the struct
-		resStruct := dto.ProfileResult{
-			Status:    false,
-			ErrorCode: utils.InvalidEditProfileUserName,
-			Profile:   profile,
-		}
-
-		// convert struct to JSON
-		res, err := json.Marshal(resStruct)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		// Response JSON
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write(res)
-		return
-	}
-	// Check birthday
-	if !utils.IsBirthday(birthday) {
-		// Set values into the struct
-		profile := dto.Profile{
-			UserID:      userID,
-			Birthday:    birthday,
-			MailAddress: mailAddress,
-			Comment:     comment,
-		}
-		resStruct := dto.ProfileResult{
-			Status:    false,
-			ErrorCode: utils.InvalidEditProfileBirthday,
-			Profile:   profile,
-		}
-		// convert struct to JSON
-		res, err := json.Marshal(resStruct)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		// Response JSON
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write(res)
-		return
-	}
-	// Check mail address
-	if !utils.IsEmailAddress(mailAddress) {
-		// Set values into the struct
-		profile := dto.Profile{
-			UserID:      userID,
-			Birthday:    birthday,
-			MailAddress: mailAddress,
-			Comment:     comment,
-		}
-		resStruct := dto.ProfileResult{
-			Status:    false,
-			ErrorCode: utils.InvalidEditProfileMailAddress,
-			Profile:   profile,
-		}
-		// convert struct to JSON
-		res, err := json.Marshal(resStruct)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		// Response JSON
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write(res)
-		return
-	}
-	// Check comment
-	if !utils.IsComment(comment) {
-		// Set values into the struct
-		profile := dto.Profile{
-			UserID:      userID,
-			Birthday:    birthday,
-			MailAddress: mailAddress,
-			Comment:     comment,
-		}
-		resStruct := dto.ProfileResult{
-			Status:    false,
-			ErrorCode: utils.InvalidEditProfileComment,
-			Profile:   profile,
-		}
-		// convert struct to JSON
-		res, err := json.Marshal(resStruct)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		// Response JSON
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write(res)
-		return
-	}
-	// Execute edit user's profile.
-	editProfile := model.EditProfile(userID, userName, birthday, mailAddress, comment)
-
-	if !editProfile {
-		// set values in structs
+	// Generate AWS session
+	session, err := session.NewSession(&aws.Config{
+		Region: aws.String(os.Getenv("REGION")),
+		Credentials: credentials.NewStaticCredentials(
+			os.Getenv("ID"),
+			os.Getenv("KEY"),
+			""),
+	})
+	if err != nil {
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,
-			ErrorCode: utils.FailedEditProfile,
+			ErrorCode: utils.NoIconSelected,
 		}
 		// convert structs to json
 		res, err := json.Marshal(resultjson)
-
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -178,14 +64,103 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
-	// set values in structs
+	// Get target icon url form DB.
+	getIconURLFromDB, err := model.GetIcon(userID)
+	if err != nil {
+		resultjson := dto.SimpleResutlJSON{
+			Status:    false,
+			ErrorCode: utils.FailedGetIconFromDB,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(res)
+		return
+	}
+	// Delete record from DB.
+	deleteIconFromDB := model.DeleteIcon(userID)
+	if !deleteIconFromDB {
+		resultjson := dto.SimpleResutlJSON{
+			Status:    false,
+			ErrorCode: utils.FailedDeleteIconFromDB,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(res)
+		return
+	}
+	// Delete bucket from S3.
+	deleteIcon := utils.DeleteBucket(session, getIconURLFromDB)
+	if !deleteIcon {
+		resultjson := dto.SimpleResutlJSON{
+			Status:    false,
+			ErrorCode: utils.FailedDeleteIconFromS3,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(res)
+		return
+	}
+	// Upload icon to S3.
+	// Field name of profile icon.
+	fieldName := "profile_icon"
+	file, fileHeader, err := r.FormFile(fieldName)
+	// Uploading icon to AWS S3.
+	iconPath, uploadError := utils.UploadingToS3(session, file, fileHeader)
+	if uploadError != nil {
+		resultjson := dto.SimpleResutlJSON{
+			Status:    false,
+			ErrorCode: utils.NoIconSelected,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(res)
+		return
+	}
+	// Register icon url to DB.
+	//Insert DB
+	RegisterIconInDB := model.RegisterIcon(iconPath, userID)
+
+	if !RegisterIconInDB {
+		resultjson := dto.SimpleResutlJSON{
+			Status:    false,
+			ErrorCode: utils.FailedRegisterIcon,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(res)
+		return
+	}
 	resultjson := dto.SimpleResutlJSON{
 		Status:    true,
 		ErrorCode: utils.SuccessCode,
 	}
 	// convert structs to json
 	res, err := json.Marshal(resultjson)
-
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
