@@ -42,8 +42,8 @@ func UploadingToS3(s *session.Session, file multipart.File, fileHeader *multipar
 	return tempFileName, err
 }
 
-// DeleteIcon delete icon from aws bucket.
-func DeleteIcon(s *session.Session, icon string) bool {
+// DeleteBucket delete icon from aws bucket.
+func DeleteBucket(s *session.Session, icon string) bool {
 	_, deleteErr := s3.New(s).DeleteObject(&s3.DeleteObjectInput{
 		Bucket: aws.String(os.Getenv("BUCKET_NAME")),
 		Key:    aws.String(icon),

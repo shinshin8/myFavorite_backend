@@ -120,10 +120,8 @@ func UploadingIcon(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
-	// Icon URL
-	iconURL := os.Getenv("S3_URL") + iconPath
 	//Insert DB
-	RegisterIconInDB := model.RegisterIcon(iconURL, userID)
+	RegisterIconInDB := model.RegisterIcon(iconPath, userID)
 
 	if !RegisterIconInDB {
 		resultjson := dto.SimpleResutlJSON{

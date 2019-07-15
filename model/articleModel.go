@@ -327,7 +327,7 @@ func SinglePost(articleID int) dto.Posts {
 // At first parameter, user id is set in int type.
 // At second paramter, title is set in string type.
 // At third parameter, content is set in string type.
-func CreateNewPost(userID int, title string, content string) dto.SimpleResutlJSON {
+func CreateNewPost(userID int, title string, content string) bool {
 	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
@@ -350,14 +350,12 @@ func CreateNewPost(userID int, title string, content string) dto.SimpleResutlJSO
 		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
 	}
-	rows.Exec(userID, title, content)
-	successStatus := 0
 
-	res := dto.SimpleResutlJSON{
-		Status:    true,
-		ErrorCode: successStatus,
+	res, executeErr := rows.Exec(userID, title, content)
+	if res == nil || executeErr != nil {
+		return false
 	}
-	return res
+	return true
 }
 
 // EditPost updates specific post data and return the result in JSON.

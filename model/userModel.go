@@ -83,7 +83,7 @@ func SignUp(username string, emailAddress string, password string) int {
 
 // ShowProfile gets a user's profile from user_table and return its result in JSON.
 // At the first parameter, user id is set in int type.
-func ShowProfile(userID int) dto.Profile {
+func ShowProfile(userID int) (dto.Profile, error) {
 	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
@@ -115,7 +115,7 @@ func ShowProfile(userID int) dto.Profile {
 		log.Fatal(err)
 	}
 
-	return profile
+	return profile, err
 }
 
 // EditProfile updates user_table and return the result in JSON.
@@ -183,7 +183,9 @@ func DeleteAccount(userID int) bool {
 		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
 	}
-	rows.Exec(userID)
-
+	res, executeErr := rows.Exec(userID)
+	if res == nil || executeErr != nil {
+		return false
+	}
 	return true
 }

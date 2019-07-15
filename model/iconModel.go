@@ -35,7 +35,10 @@ func RegisterIcon(iconURL string, userID int) bool {
 		log.Fatal(err)
 	}
 
-	rows.Exec(iconURL, userID)
+	res, executeErr := rows.Exec(iconURL, userID)
+	if res == nil || executeErr != nil {
+		return false
+	}
 	return true
 }
 
@@ -66,6 +69,71 @@ func UpdateIcon(newIconURL string, userID int) bool {
 		log.Fatal(err)
 	}
 
-	rows.Exec(newIconURL, userID)
+	res, executeErr := rows.Exec(newIconURL, userID)
+	if res == nil || executeErr != nil {
+		return false
+	}
+	return true
+}
+
+// GetIcon gets icon url from DB.
+func GetIcon(userID int) (string, error) {
+	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+	// Initalize DB Connection
+	sql := utils.DBInit()
+	// Close DB connection at the end.
+	defer sql.Close()
+	// SQL syntax
+	query := `SELECT 
+					icon_url 
+				FROM 
+					icon_table 
+				WHERE 
+					user_id = ?`
+
+	var iconURL string
+
+	err := sql.QueryRow(query, userID).Scan(&iconURL)
+
+	if err != nil {
+		return "", err
+	}
+
+	return iconURL, err
+}
+
+// DeleteIcon delete target record from DB.
+func DeleteIcon(userID int) bool {
+	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+	// Initalize DB Connection
+	sql := utils.DBInit()
+	// Close DB connection at the end.
+	defer sql.Close()
+	// SQL syntax
+	delRec := `DELETE FROM 
+					photo_table 
+				WHERE 
+					user_id = ?`
+
+	rows, err := sql.Prepare(delRec)
+
+	if err != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(err)
+	}
+
+	res, dbExecuteErr := rows.Exec(userID)
+	if res == nil || dbExecuteErr != nil {
+		return false
+	}
 	return true
 }

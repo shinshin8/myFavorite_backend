@@ -82,4 +82,8 @@ const (
 	FailedUpdateIcon              = 27
 	FailedGenerateAWSSession      = 28
 	FailedUploadImages            = 29
+	FailedGetIconFromDB           = 30
+	FailedDeleteIconFromDB        = 31
+	FailedGetProfile              = 32
+	FailedCreateNewPost           = 33
 )

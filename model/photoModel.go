@@ -38,8 +38,8 @@ func UploadImage(imageData []dto.UploadImage) bool {
 		log.SetFlags(log.Ldate | log.Ltime)
 		log.Fatal(err)
 	}
-	_, insertErr := rows.Exec(vals...)
-	if insertErr != nil {
+	res, insertErr := rows.Exec(vals...)
+	if res == nil || insertErr != nil {
 		return false
 	}
 	return true

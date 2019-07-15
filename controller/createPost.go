@@ -93,13 +93,33 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	}
 	// Execute insert data to DB.
 	result := model.CreateNewPost(userID, title, content)
-	// convert struct to JSON
-	res, err := json.Marshal(result)
+	if !result {
+		// set values in structs
+		resultjson := dto.SimpleResutlJSON{
+			Status:    false,
+			ErrorCode: utils.FailedCreateNewPost,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(res)
+		return
+	}
+	// set values in structs
+	resultjson := dto.SimpleResutlJSON{
+		Status:    true,
+		ErrorCode: utils.SuccessCode,
+	}
+	// convert structs to json
+	res, err := json.Marshal(resultjson)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// Response JSON
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 	return
