@@ -51,7 +51,7 @@ func main() {
 	// Uploading icon
 	r.HandleFunc(utils.UploadingIcon, controller.UploadingIcon).Methods(utils.Post)
 	// Change icon
-	r.HandleFunc(utils.ChangeIcon, controller.ChangeIcon).Methods(utils.Put)
+	r.HandleFunc(utils.ChangeIcon, controller.ChangeIcon).Methods(utils.Post)
 	// Uploading photos
 	r.HandleFunc(utils.UploadingImages, controller.UploadingImages).Methods(utils.Post)
 
