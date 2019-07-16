@@ -54,7 +54,8 @@ func main() {
 	r.HandleFunc(utils.ChangeIcon, controller.ChangeIcon).Methods(utils.Post)
 	// Uploading photos
 	r.HandleFunc(utils.UploadingImages, controller.UploadingImages).Methods(utils.Post)
-
+	// Delete images
+	r.HandleFunc(utils.DeleteImages, controller.DeleteImages).Methods(utils.Post)
 	c := cors.New(cors.Options{
 		AllowCredentials: true,
 		AllowedMethods:   []string{utils.Get, utils.Post, utils.Put, utils.Delete, utils.Options},

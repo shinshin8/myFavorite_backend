@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -16,8 +17,8 @@ import (
 	"github.com/shinshin8/myFavorite_backend/utils"
 )
 
-// UploadingImages uploads multiple photos to AWS S3.
-func UploadingImages(w http.ResponseWriter, r *http.Request) {
+// DeleteImages delete user posts' images.
+func DeleteImages(w http.ResponseWriter, r *http.Request) {
 	// Set CORS
 	w.Header().Set(utils.ContentType, utils.ApplicationJSON)
 	w.Header().Set(utils.Cors, utils.CorsWildCard)
@@ -29,6 +30,7 @@ func UploadingImages(w http.ResponseWriter, r *http.Request) {
 	// Check if jwt is verified.
 	userID := utils.VerifyToken(reqToken)
 	if userID == 0 {
+		// set values in structs
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,
 			ErrorCode: utils.InvalidToken,
@@ -47,17 +49,38 @@ func UploadingImages(w http.ResponseWriter, r *http.Request) {
 	atlID := "article_id"
 	atlIDStr := r.URL.Query().Get(atlID)
 	articleID, _ := strconv.Atoi(atlIDStr)
-	var maxSize int64 = 200000
-	err := r.ParseMultipartForm(maxSize)
-	if err != nil {
-		fmt.Fprintln(w, err)
+
+	var deleteImagePostBody dto.DeleteImage
+
+	er := json.NewDecoder(r.Body).Decode(&deleteImagePostBody)
+
+	if er != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	formdata := r.MultipartForm
 
-	var fieldName = "multiplefiles"
-	files := formdata.File[fieldName]
+	// Get URL
+	imageURL := deleteImagePostBody.ImageURL
+	// Validate URL
+	if !utils.IsImageURL(imageURL) {
+		// set values in structs
+		resultjson := dto.SimpleResutlJSON{
+			Status:    false,
+			ErrorCode: utils.InvalidDeleteImageURL,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
 
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(res)
+		return
+	}
+
+	// Create an AWS session
 	session, err := session.NewSession(&aws.Config{
 		Region: aws.String(os.Getenv("REGION")),
 		Credentials: credentials.NewStaticCredentials(
@@ -80,26 +103,19 @@ func UploadingImages(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
-
-	// Array for image path
-	urlArray := []dto.ImageStruct{}
-
-	for i := range files {
-		file, err := files[i].Open()
-		defer file.Close()
-		if err != nil {
-			fmt.Fprintln(w, err)
-			return
-		}
-
-		fileHead := files[i]
-
-		// Uploading icon to AWS S3.
-		imagePath, uploadError := utils.UploadingToS3(session, file, fileHead)
-		if uploadError != nil {
+	// Array for data for delete from DB.
+	deleteArray := []dto.ImageStruct{}
+	for _, str := range imageURL {
+		// Get base url part.
+		baseURL := os.Getenv("S3_URL")
+		// Trim base url from url.
+		targetBucket := strings.Trim(str, baseURL)
+		// Delete bucket from S3.
+		deleteIcon := utils.DeleteBucket(session, targetBucket)
+		if !deleteIcon {
 			resultjson := dto.SimpleResutlJSON{
 				Status:    false,
-				ErrorCode: utils.FailedUploadImages,
+				ErrorCode: utils.FailedDeleteImages,
 			}
 			// convert structs to json
 			res, err := json.Marshal(resultjson)
@@ -113,21 +129,21 @@ func UploadingImages(w http.ResponseWriter, r *http.Request) {
 		}
 
 		imageData := dto.ImageStruct{
-			ImageURL:  imagePath,
+			ImageURL:  targetBucket,
 			UserID:    userID,
 			ArticleID: articleID,
 		}
 
-		// Push generated path to slice
-		urlArray = append(urlArray, imageData)
+		deleteArray = append(deleteArray, imageData)
 	}
-	// Insert DB
-	RegisterImages := model.UploadImage(urlArray)
+	fmt.Println(deleteArray)
+	// Delete data from DB.
+	deleteImagesFromDB := model.DeleteImage(deleteArray)
 
-	if !RegisterImages {
+	if !deleteImagesFromDB {
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,
-			ErrorCode: utils.FailedUploadImages,
+			ErrorCode: utils.FailedDeleteImageFromDB,
 		}
 		// convert structs to json
 		res, err := json.Marshal(resultjson)

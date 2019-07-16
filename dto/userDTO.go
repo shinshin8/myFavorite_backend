@@ -2,16 +2,16 @@ package dto
 
 // LoginBody is a struct for request body of login.
 type LoginBody struct {
-	UserName string
-	Password string
+	UserName string `json:"username"`
+	Password string `json:"password"`
 }
 
 // SingUpBody is a sturct for request body of sign up.
 type SingUpBody struct {
-	UserName        string
-	EmailAddress    string
-	Password        string
-	ConfirmPassword string
+	UserName        string `json:"username"`
+	EmailAddress    string `json:"mail_address"`
+	Password        string `json:"password"`
+	ConfirmPassword string `json:"confirm_password"`
 }
 
 // SignUpResultJSON struct
@@ -24,10 +24,10 @@ type SignUpResultJSON struct {
 
 // EditProfileBody is a struct for request body of edit profile.
 type EditProfileBody struct {
-	UserName    string
-	Birthday    string
-	MailAddress string
-	Comment     string
+	UserName    string `json:"username"`
+	Birthday    string `json:"birthday"`
+	MailAddress string `json:"mail_address"`
+	Comment     string `json:"comment"`
 }
 
 // ProfileResult saves user profile result.
@@ -46,7 +46,7 @@ type Profile struct {
 	Comment     string `json:"comment"`
 }
 
-// ProfileIcon is a stuct for user's icon
-type ProfileIcon struct {
-	Icon string `json:"string"`
+// DeleteImage is a strict for image urls' for deleting.
+type DeleteImage struct {
+	ImageURL []string `json:"delete_url"`
 }
