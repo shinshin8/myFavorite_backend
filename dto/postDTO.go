@@ -44,8 +44,8 @@ type EditPostBody struct {
 	Content string
 }
 
-// UploadImage is a stuct for image url data for DB.
-type UploadImage struct {
+// ImageStruct is a stuct for image url data for DB.
+type ImageStruct struct {
 	ImageURL  string
 	UserID    int
 	ArticleID int

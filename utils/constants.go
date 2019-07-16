@@ -45,6 +45,7 @@ const (
 	UploadingIcon      = "/uploadIcon"
 	ChangeIcon         = "/changeIcon"
 	UploadingImages    = "/uploadingImages"
+	DeleteImages       = "/deleteImages"
 )
 
 // LogFile is the Log file path
@@ -86,4 +87,7 @@ const (
 	FailedDeleteIconFromDB        = 31
 	FailedGetProfile              = 32
 	FailedCreateNewPost           = 33
+	InvalidDeleteImageURL         = 34
+	FailedDeleteImages            = 35
+	FailedDeleteImageFromDB       = 36
 )

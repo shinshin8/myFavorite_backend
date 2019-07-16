@@ -81,3 +81,8 @@ func IsBirthday(birthday string) bool {
 	return true
 
 }
+
+// IsImageURL is a validation method that tests if string get from request is empty.
+func IsImageURL(imageURL []string) bool {
+	return len(imageURL) >= 0
+}

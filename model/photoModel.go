@@ -10,7 +10,7 @@ import (
 )
 
 // UploadImage registers image path from s3 into DB.
-func UploadImage(imageData []dto.UploadImage) bool {
+func UploadImage(imageData []dto.ImageStruct) bool {
 	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
@@ -21,7 +21,13 @@ func UploadImage(imageData []dto.UploadImage) bool {
 	// Close DB connection at the end.
 	defer sql.Close()
 
-	insertSyntax := `INSERT INTO photo_table(photo_url, user_id, article_id) VALUES`
+	insertSyntax := `INSERT INTO 
+						photo_table(
+							photo_url, 
+							user_id, 
+							article_id
+							) 
+					VALUES`
 
 	vals := []interface{}{}
 
@@ -31,6 +37,50 @@ func UploadImage(imageData []dto.UploadImage) bool {
 	}
 	//trim the last ,
 	insertSyntax = insertSyntax[0 : len(insertSyntax)-1]
+
+	rows, err := sql.Prepare(insertSyntax)
+	if err != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(err)
+	}
+	res, insertErr := rows.Exec(vals...)
+	if res == nil || insertErr != nil {
+		return false
+	}
+	return true
+}
+
+// DeleteImage delete serveral image records from DB.
+func DeleteImage(imageData []dto.ImageStruct) bool {
+	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+	// Initalize DB Connection
+	sql := utils.DBInit()
+	// Close DB connection at the end.
+	defer sql.Close()
+
+	insertSyntax := `DELETE FROM 
+							photo_table 
+					WHERE (
+						photo_url, 
+						user_id, 
+						article_id
+						) 
+					IN (`
+
+	vals := []interface{}{}
+
+	for _, row := range imageData {
+		insertSyntax += "(?, ?, ?),"
+		vals = append(vals, row.ImageURL, row.UserID, row.ArticleID)
+	}
+	//trim the last ,
+	insertSyntax = insertSyntax[0 : len(insertSyntax)-1]
+	insertSyntax += ")"
 
 	rows, err := sql.Prepare(insertSyntax)
 	if err != nil {
