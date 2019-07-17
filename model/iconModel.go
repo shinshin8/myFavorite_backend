@@ -77,7 +77,7 @@ func UpdateIcon(newIconURL string, userID int) bool {
 }
 
 // GetIcon gets icon url from DB.
-func GetIcon(userID int) (string, error) {
+func GetIcon(userID int) string {
 	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
@@ -100,10 +100,10 @@ func GetIcon(userID int) (string, error) {
 	err := sql.QueryRow(query, userID).Scan(&iconURL)
 
 	if err != nil {
-		return "", err
+		return ""
 	}
 
-	return iconURL, err
+	return iconURL
 }
 
 // DeleteIcon delete target record from DB.
@@ -119,7 +119,7 @@ func DeleteIcon(userID int) bool {
 	defer sql.Close()
 	// SQL syntax
 	delRec := `DELETE FROM 
-					photo_table 
+					icon_table 
 				WHERE 
 					user_id = ?`
 

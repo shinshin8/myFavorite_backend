@@ -47,6 +47,23 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 	}
 	// Get user name
 	userName := editProfileBody.UserName
+	// Get icon_url
+	iconURL := model.GetIcon(userID)
+	if len(iconURL) == 0 {
+		resultjson := dto.SimpleResutlJSON{
+			Status:    false,
+			ErrorCode: utils.GetEmptyIconURL,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(res)
+		return
+	}
 	// Get birthday
 	birthday := editProfileBody.Birthday
 	//Get mail address
@@ -57,6 +74,8 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 	if !utils.IsName(userName) {
 		profile := dto.Profile{
 			UserID:      userID,
+			IconURL:     iconURL,
+			UserName:    userName,
 			Birthday:    birthday,
 			MailAddress: mailAddress,
 			Comment:     comment,
@@ -85,6 +104,8 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		// Set values into the struct
 		profile := dto.Profile{
 			UserID:      userID,
+			IconURL:     iconURL,
+			UserName:    userName,
 			Birthday:    birthday,
 			MailAddress: mailAddress,
 			Comment:     comment,
@@ -111,6 +132,8 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		// Set values into the struct
 		profile := dto.Profile{
 			UserID:      userID,
+			IconURL:     iconURL,
+			UserName:    userName,
 			Birthday:    birthday,
 			MailAddress: mailAddress,
 			Comment:     comment,
@@ -137,6 +160,8 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		// Set values into the struct
 		profile := dto.Profile{
 			UserID:      userID,
+			IconURL:     iconURL,
+			UserName:    userName,
 			Birthday:    birthday,
 			MailAddress: mailAddress,
 			Comment:     comment,

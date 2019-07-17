@@ -43,10 +43,3 @@ type EditPostBody struct {
 	Title   string
 	Content string
 }
-
-// ImageStruct is a stuct for image url data for DB.
-type ImageStruct struct {
-	ImageURL  string
-	UserID    int
-	ArticleID int
-}

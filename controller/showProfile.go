@@ -36,6 +36,8 @@ func ShowProfile(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
+	// Get icon.
+	userIcon := model.GetIcon(userID)
 	// Get profile.
 	userProfile, err := model.ShowProfile(userID)
 	if err != nil {
@@ -53,10 +55,19 @@ func ShowProfile(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
+	// Set values into the struct
+	profile := dto.Profile{
+		UserID:      userID,
+		IconURL:     userIcon,
+		UserName:    userProfile.UserName,
+		Birthday:    userProfile.Birthday,
+		MailAddress: userProfile.MailAddress,
+		Comment:     userProfile.Comment,
+	}
 	resStruct := dto.ProfileResult{
 		Status:    true,
 		ErrorCode: utils.SuccessCode,
-		Profile:   userProfile,
+		Profile:   profile,
 	}
 
 	res, err := json.Marshal(resStruct)
