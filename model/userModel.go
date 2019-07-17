@@ -83,7 +83,7 @@ func SignUp(username string, emailAddress string, password string) int {
 
 // ShowProfile gets a user's profile from user_table and return its result in JSON.
 // At the first parameter, user id is set in int type.
-func ShowProfile(userID int) (dto.Profile, error) {
+func ShowProfile(userID int) (dto.ProfileDB, error) {
 	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
@@ -105,7 +105,7 @@ func ShowProfile(userID int) (dto.Profile, error) {
 						WHERE 
 							user_id = ?`
 
-	var profile dto.Profile
+	var profile dto.ProfileDB
 
 	err := sql.QueryRow(selectProfile, userID).Scan(&profile.UserID, &profile.UserName, &profile.MailAddress, &profile.Birthday, &profile.Comment)
 

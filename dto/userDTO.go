@@ -40,13 +40,30 @@ type ProfileResult struct {
 // Profile saves user profile data.
 type Profile struct {
 	UserID      int    `json:"user_id"`
+	IconURL     string `json:"icon_url"`
 	UserName    string `json:"user_name"`
 	Birthday    string `json:"birthday"`
 	MailAddress string `json:"mail_address"`
 	Comment     string `json:"comment"`
 }
 
+// ProfileDB is a struct for data from DB.
+type ProfileDB struct {
+	UserID      int
+	UserName    string
+	Birthday    string
+	MailAddress string
+	Comment     string
+}
+
 // DeleteImage is a strict for image urls' for deleting.
 type DeleteImage struct {
 	ImageURL []string `json:"delete_url"`
+}
+
+// ImageStruct is a stuct for image url data for DB.
+type ImageStruct struct {
+	ImageURL  string
+	UserID    int
+	ArticleID int
 }

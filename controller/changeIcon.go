@@ -65,11 +65,11 @@ func ChangeIcon(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Get target icon url form DB.
-	getIconURLFromDB, err := model.GetIcon(userID)
-	if err != nil {
+	getIconURLFromDB := model.GetIcon(userID)
+	if len(getIconURLFromDB) == 0 {
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,
-			ErrorCode: utils.FailedGetIconFromDB,
+			ErrorCode: utils.GetEmptyIconURL,
 		}
 		// convert structs to json
 		res, err := json.Marshal(resultjson)
