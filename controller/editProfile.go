@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/model"
@@ -74,7 +75,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 	if !utils.IsName(userName) {
 		profile := dto.Profile{
 			UserID:      userID,
-			IconURL:     iconURL,
+			IconURL:     os.Getenv("S3_URL") + iconURL,
 			UserName:    userName,
 			Birthday:    birthday,
 			MailAddress: mailAddress,
@@ -104,7 +105,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		// Set values into the struct
 		profile := dto.Profile{
 			UserID:      userID,
-			IconURL:     iconURL,
+			IconURL:     os.Getenv("S3_URL") + iconURL,
 			UserName:    userName,
 			Birthday:    birthday,
 			MailAddress: mailAddress,
@@ -132,7 +133,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		// Set values into the struct
 		profile := dto.Profile{
 			UserID:      userID,
-			IconURL:     iconURL,
+			IconURL:     os.Getenv("S3_URL") + iconURL,
 			UserName:    userName,
 			Birthday:    birthday,
 			MailAddress: mailAddress,
@@ -160,7 +161,7 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		// Set values into the struct
 		profile := dto.Profile{
 			UserID:      userID,
-			IconURL:     iconURL,
+			IconURL:     os.Getenv("S3_URL") + iconURL,
 			UserName:    userName,
 			Birthday:    birthday,
 			MailAddress: mailAddress,

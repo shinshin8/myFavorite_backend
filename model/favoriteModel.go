@@ -12,7 +12,7 @@ import (
 // ShowFavoritePosts returns the list of specific user's favorite posts in JSON.
 // At the first parameter, user id will be set with int type.
 // At the second paramtere, article id will be set with int type.
-func ShowFavoritePosts(userID int, articleID int) []dto.Posts {
+func ShowFavoritePosts(userID int) []dto.Article {
 	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
@@ -52,10 +52,10 @@ func ShowFavoritePosts(userID int, articleID int) []dto.Posts {
 		log.Fatal(err)
 	}
 	// Prepare an array which save JSON results.
-	var favoritePostArray []dto.Posts
+	var favoritePostArray []dto.Article
 
 	for row.Next() {
-		posts := dto.Posts{}
+		posts := dto.Article{}
 		if err := row.Scan(&posts.ArticleID, &posts.UserName, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
 			log.SetOutput(io.MultiWriter(logfile, os.Stdout))
 			log.SetFlags(log.Ldate | log.Ltime)

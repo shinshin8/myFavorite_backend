@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/model"
@@ -58,7 +59,7 @@ func ShowProfile(w http.ResponseWriter, r *http.Request) {
 	// Set values into the struct
 	profile := dto.Profile{
 		UserID:      userID,
-		IconURL:     userIcon,
+		IconURL:     os.Getenv("S3_URL") + userIcon,
 		UserName:    userProfile.UserName,
 		Birthday:    userProfile.Birthday,
 		MailAddress: userProfile.MailAddress,

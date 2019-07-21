@@ -8,15 +8,15 @@ type PostList struct {
 	Posts     []Posts `json:"posts"`
 }
 
-// Posts is a struct for showing a trending post.
-type Posts struct {
-	ArticleID    int    `json:"article_id"`
-	LikedSum     int    `json:"liked_sum"`
-	UserName     string `json:"user_name"`
-	Title        string `json:"title"`
-	Content      string `json:"content"`
-	CreatedTime  string `json:"created_time"`
-	ModifiedTime string `json:"modified_time"`
+// Article is a struct for article data from DB.
+type Article struct {
+	ArticleID    int
+	LikedSum     int
+	UserName     string
+	Title        string
+	Content      string
+	CreatedTime  string
+	ModifiedTime string
 }
 
 // SiglePost saves a single post data in JSON.
@@ -42,4 +42,23 @@ type NewPost struct {
 type EditPostBody struct {
 	Title   string
 	Content string
+}
+
+// Posts is a struct for post data.
+type Posts struct {
+	ArticleID    int      `json:"article_id"`
+	LikedSum     int      `json:"liked_sum"`
+	ImageURL     []string `json:"image_url"`
+	UserName     string   `json:"user_name"`
+	Title        string   `json:"title"`
+	Content      string   `json:"content"`
+	CreatedTime  string   `json:"created_time"`
+	ModifiedTime string   `json:"modified_time"`
+}
+
+// PostImage is a struct for images.
+type PostImage struct {
+	ImageURL  []string
+	UserID    int
+	ArticleID int
 }

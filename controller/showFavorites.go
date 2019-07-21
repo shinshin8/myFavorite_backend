@@ -3,7 +3,6 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/model"
@@ -37,18 +36,39 @@ func ShowFavoritePosts(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
-	// Get article id from the URL query parameter in string type and conver it to int type.
-	atlID := "article_id"
-	articleIDStr := r.URL.Query().Get(atlID)
-	articleID, _ := strconv.Atoi(articleIDStr)
 
-	favoritePosts := model.ShowFavoritePosts(userID, articleID)
+	favoritePosts := model.ShowFavoritePosts(userID)
+	// Get images
+	favoriteImages := model.GetFavoriteListImage(userID)
+	// Struct for Posts data
+	var postsData []dto.Posts
+	// Looping article data
+	for _, article := range favoritePosts {
+		for _, imageData := range favoriteImages {
+			if article.ArticleID == imageData.ArticleID {
+				var image []string
+				firstImage := imageData.ImageURL[0]
+				image = append(image, firstImage)
+				post := dto.Posts{
+					ArticleID:    article.ArticleID,
+					LikedSum:     article.LikedSum,
+					ImageURL:     image,
+					UserName:     article.UserName,
+					Title:        article.Title,
+					Content:      article.Content,
+					CreatedTime:  article.CreatedTime,
+					ModifiedTime: article.ModifiedTime,
+				}
+				postsData = append(postsData, post)
+			}
+		}
+	}
 
 	resStruct := dto.PostList{
 		Status:    true,
 		ErrorCode: utils.SuccessCode,
 		UserID:    userID,
-		Posts:     favoritePosts,
+		Posts:     postsData,
 	}
 
 	res, err := json.Marshal(resStruct)
