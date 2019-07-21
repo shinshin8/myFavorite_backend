@@ -10,7 +10,7 @@ import (
 )
 
 // Timeline is a function that returns an array which includes DB results with JSON format.
-func Timeline() []dto.Posts {
+func Timeline() []dto.Article {
 	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
@@ -23,10 +23,7 @@ func Timeline() []dto.Posts {
 	// SQL syntax
 	getPosts := `SELECT 
 					article_table.article_id, 
-				COALESCE(
-					COUNT(liked_table.user_id), 0) 
-				AS 
-					liked_sum, 
+				COALESCE(COUNT(liked_table.user_id), 0) AS liked_sum, 
 					user_table.user_name, 
 					article_table.title, 
 					article_table.content, 
@@ -57,10 +54,10 @@ func Timeline() []dto.Posts {
 	}
 
 	// Prepare an array which save JSON results.
-	var postArray []dto.Posts
+	var postArray []dto.Article
 
 	for row.Next() {
-		posts := dto.Posts{}
+		posts := dto.Article{}
 		if err := row.Scan(&posts.ArticleID, &posts.LikedSum, &posts.UserName, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
 			log.SetOutput(io.MultiWriter(logfile, os.Stdout))
 			log.SetFlags(log.Ldate | log.Ltime)
@@ -75,7 +72,7 @@ func Timeline() []dto.Posts {
 }
 
 // Trending returns an array which includes DB results with JSON format.
-func Trending() []dto.Posts {
+func Trending() []dto.Article {
 	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
@@ -121,10 +118,10 @@ func Trending() []dto.Posts {
 		log.Fatal(err)
 	}
 	// Prepare an array which save JSON results.
-	var postArray []dto.Posts
+	var postArray []dto.Article
 
 	for row.Next() {
-		posts := dto.Posts{}
+		posts := dto.Article{}
 		if err := row.Scan(&posts.ArticleID, &posts.LikedSum, &posts.UserName, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
 			log.SetOutput(io.MultiWriter(logfile, os.Stdout))
 			log.SetFlags(log.Ldate | log.Ltime)
@@ -139,7 +136,7 @@ func Trending() []dto.Posts {
 
 // UserPostsList gets a specific user's posts list from DB and convert its result into JSON.
 // At the parameter, user id will be put in and its type is int.
-func UserPostsList(userID int) []dto.Posts {
+func UserPostsList(userID int) []dto.Article {
 	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
@@ -185,10 +182,10 @@ func UserPostsList(userID int) []dto.Posts {
 		log.Fatal(err)
 	}
 	// Prepare an array which save JSON results.
-	var postArray []dto.Posts
+	var postArray []dto.Article
 
 	for row.Next() {
-		posts := dto.Posts{}
+		posts := dto.Article{}
 		if err := row.Scan(&posts.ArticleID, &posts.LikedSum, &posts.UserName, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
 			log.SetOutput(io.MultiWriter(logfile, os.Stdout))
 			log.SetFlags(log.Ldate | log.Ltime)
@@ -270,7 +267,7 @@ func FavoriteOrNot(userID int, articleID int) bool {
 // SinglePost returns the result of a single post in JSON.
 // At the first parameter, user id will be set with int type.
 // At the second parameter, article id will be set with int type.
-func SinglePost(articleID int) dto.Posts {
+func SinglePost(articleID int) dto.Article {
 	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
@@ -310,7 +307,7 @@ func SinglePost(articleID int) dto.Posts {
 					GROUP BY 
 						article_table.article_id`
 
-	var post dto.Posts
+	var post dto.Article
 
 	err := sql.QueryRow(signlePost, articleID).Scan(&post.ArticleID, &post.LikedSum, &post.UserName, &post.Title, &post.Content, &post.CreatedTime, &post.ModifiedTime)
 

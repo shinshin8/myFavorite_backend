@@ -1,0 +1,1 @@
+2019/07/21 20:30:34 sql: Scan error on column index 0, name "photo_url": unsupported Scan, storing driver.Value type []uint8 into type *[]string

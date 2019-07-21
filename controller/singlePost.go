@@ -22,14 +22,27 @@ func SinglePost(w http.ResponseWriter, r *http.Request) {
 	reqToken := r.Header.Get(utils.Authorization)
 	// Check if jwt is verified.
 	userID := utils.VerifyToken(reqToken)
+	// Get article id from the URL query parameter in string type and conver it to int type.
+	atlID := "article_id"
+	articleIDStr := r.URL.Query().Get(atlID)
+	articleID, _ := strconv.Atoi(articleIDStr)
+	// Get user's single post
+	singlePost := model.SinglePost(articleID)
+	// Get user's images
+	singleImages := model.GetSiglePostImages(articleID)
+
+	post := dto.Posts{
+		ArticleID:    singlePost.ArticleID,
+		LikedSum:     singlePost.LikedSum,
+		ImageURL:     singleImages,
+		UserName:     singlePost.UserName,
+		Title:        singlePost.Title,
+		Content:      singlePost.Content,
+		CreatedTime:  singlePost.CreatedTime,
+		ModifiedTime: singlePost.ModifiedTime,
+	}
 
 	if userID == 0 {
-		// Get article id from the URL query parameter in string type and conver it to int type.
-		atlID := "article_id"
-		articleIDStr := r.URL.Query().Get(atlID)
-		articleID, _ := strconv.Atoi(articleIDStr)
-
-		singlePost := model.SinglePost(articleID)
 
 		resStruct := dto.SiglePost{
 			Status:      true,
@@ -37,7 +50,7 @@ func SinglePost(w http.ResponseWriter, r *http.Request) {
 			UserID:      0,
 			LikedFlg:    false,
 			FavoriteFlg: false,
-			Post:        singlePost,
+			Post:        post,
 		}
 
 		res, err := json.Marshal(resStruct)
@@ -51,10 +64,6 @@ func SinglePost(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
-	// Get article id from the URL query parameter in string type and conver it to int type.
-	atlID := "article_id"
-	articleIDStr := r.URL.Query().Get(atlID)
-	articleID, _ := strconv.Atoi(articleIDStr)
 	// Get a result if this post is liked by a user.
 	// this method returns the result in boolean.
 	// If the result is true, it means this post is liked.
@@ -65,8 +74,6 @@ func SinglePost(w http.ResponseWriter, r *http.Request) {
 	// If the result is true, it means this post is favorited.
 	// Otherwise, it means this post is not favorited.
 	favoriteResult := model.FavoriteOrNot(userID, articleID)
-	// Post result
-	singlePost := model.SinglePost(articleID)
 
 	resStruct := dto.SiglePost{
 		Status:      true,
@@ -74,7 +81,7 @@ func SinglePost(w http.ResponseWriter, r *http.Request) {
 		UserID:      userID,
 		LikedFlg:    likedResult,
 		FavoriteFlg: favoriteResult,
-		Post:        singlePost,
+		Post:        post,
 	}
 
 	res, err := json.Marshal(resStruct)
