@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/model"
@@ -48,7 +49,7 @@ func ShowFavoritePosts(w http.ResponseWriter, r *http.Request) {
 			if article.ArticleID == imageData.ArticleID {
 				var image []string
 				firstImage := imageData.ImageURL[0]
-				image = append(image, firstImage)
+				image = append(image, os.Getenv("S3_URL")+firstImage)
 				post := dto.Posts{
 					ArticleID:    article.ArticleID,
 					LikedSum:     article.LikedSum,

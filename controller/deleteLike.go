@@ -41,7 +41,6 @@ func DeleteLikedPost(w http.ResponseWriter, r *http.Request) {
 	atlID := "article_id"
 	atlIDStr := r.URL.Query().Get(atlID)
 	articleID, _ := strconv.Atoi(atlIDStr)
-
 	// Execute delete resouce.
 	deleteLikePostFromDB := model.DeleteLikedPost(userID, articleID)
 

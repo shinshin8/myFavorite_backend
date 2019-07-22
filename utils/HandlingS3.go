@@ -13,22 +13,17 @@ import (
 	"github.com/globalsign/mgo/bson"
 )
 
-// UploadingToS3 saves a file to aws bucket and returns the url to the file and an error if there's any
+// UploadingToS3 saves a file to aws bucket
 func UploadingToS3(s *session.Session, file multipart.File, fileHeader *multipart.FileHeader) (string, error) {
-	// get the file size and read
-	// the file content into a buffer
 	size := fileHeader.Size
 	buffer := make([]byte, size)
 	file.Read(buffer)
-	// create a unique file name for the file
 	tempFileName := bson.NewObjectId().Hex() + filepath.Ext(fileHeader.Filename)
-	// config settings: this is where you choose the bucket,
-	// filename, content-type and storage class of the file
-	// you're uploading
+
 	_, err := s3.New(s).PutObject(&s3.PutObjectInput{
 		Bucket:               aws.String(os.Getenv("BUCKET_NAME")),
 		Key:                  aws.String(tempFileName),
-		ACL:                  aws.String(os.Getenv("ACL_SETTING")), // could be private if you want it to be access by only authorized users
+		ACL:                  aws.String(os.Getenv("ACL_SETTING")),
 		Body:                 bytes.NewReader(buffer),
 		ContentLength:        aws.Int64(int64(size)),
 		ContentType:          aws.String(http.DetectContentType(buffer)),

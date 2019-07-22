@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/model"
@@ -48,11 +49,8 @@ func UserPostsList(w http.ResponseWriter, r *http.Request) {
 		for _, imageData := range getUserPostImages {
 			if article.ArticleID == imageData.ArticleID {
 				var image []string
-				if len(imageData.ImageURL) >= 2 {
-					firstImage := imageData.ImageURL[0]
-					image = append(image, firstImage)
-
-				}
+				firstImage := imageData.ImageURL[0]
+				image = append(image, os.Getenv("S3_URL")+firstImage)
 				post := dto.Posts{
 					ArticleID:    article.ArticleID,
 					LikedSum:     article.LikedSum,
