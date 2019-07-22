@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/shinshin8/myFavorite_backend/dto"
@@ -30,11 +31,13 @@ func SinglePost(w http.ResponseWriter, r *http.Request) {
 	singlePost := model.SinglePost(articleID)
 	// Get user's images
 	singleImages := model.GetSiglePostImages(articleID)
-
-	post := dto.Posts{
+	// Get an icon
+	singleIcon := model.GetIcon(singlePost.UserID)
+	post := dto.SinglePostDetail{
 		ArticleID:    singlePost.ArticleID,
 		LikedSum:     singlePost.LikedSum,
 		ImageURL:     singleImages,
+		IconURL:      os.Getenv("S3_URL") + singleIcon,
 		UserName:     singlePost.UserName,
 		Title:        singlePost.Title,
 		Content:      singlePost.Content,

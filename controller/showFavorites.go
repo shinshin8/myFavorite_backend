@@ -41,6 +41,8 @@ func ShowFavoritePosts(w http.ResponseWriter, r *http.Request) {
 	favoritePosts := model.ShowFavoritePosts(userID)
 	// Get images
 	favoriteImages := model.GetFavoriteListImage(userID)
+	// Get Icon
+	iconDataArray := model.GetAllIcon()
 	// Struct for Posts data
 	var postsData []dto.Posts
 	// Looping article data
@@ -52,14 +54,19 @@ func ShowFavoritePosts(w http.ResponseWriter, r *http.Request) {
 					firstImage := imageData.ImageURL[0]
 					image = append(image, os.Getenv("S3_URL")+firstImage)
 				}
+				var icon []string
+				for _, eachIcon := range iconDataArray {
+					if eachIcon.UserID == article.UserID {
+						icon = append(icon, os.Getenv("S3_URL")+eachIcon.ImageURL)
+					}
+				}
 				post := dto.Posts{
 					ArticleID:    article.ArticleID,
 					LikedSum:     article.LikedSum,
-					ImageURL:     image,
+					ImageURL:     image[0],
+					IconURL:      icon[0],
 					UserName:     article.UserName,
 					Title:        article.Title,
-					Content:      article.Content,
-					CreatedTime:  article.CreatedTime,
 					ModifiedTime: article.ModifiedTime,
 				}
 				postsData = append(postsData, post)

@@ -26,6 +26,8 @@ func Trending(w http.ResponseWriter, r *http.Request) {
 	articleDataArray := model.Trending()
 	// Get imgage Data
 	imageDataArray := model.GetAllImages()
+	// Get Icon
+	iconDataArray := model.GetAllIcon()
 	// Struct for Posts data
 	var postsData []dto.Posts
 	// Looping article data
@@ -39,14 +41,19 @@ func Trending(w http.ResponseWriter, r *http.Request) {
 					firstImage := imageArray[0]
 					image = append(image, firstImage)
 				}
+				var icon []string
+				for _, eachIcon := range iconDataArray {
+					if eachIcon.UserID == article.UserID {
+						icon = append(icon, os.Getenv("S3_URL")+eachIcon.ImageURL)
+					}
+				}
 				post := dto.Posts{
 					ArticleID:    article.ArticleID,
 					LikedSum:     article.LikedSum,
-					ImageURL:     image,
+					ImageURL:     image[0],
+					IconURL:      icon[0],
 					UserName:     article.UserName,
 					Title:        article.Title,
-					Content:      article.Content,
-					CreatedTime:  article.CreatedTime,
 					ModifiedTime: article.ModifiedTime,
 				}
 				postsData = append(postsData, post)

@@ -27,6 +27,7 @@ func Timeline() []dto.Article {
 	defer sql.Close()
 	// SQL syntax
 	getPosts := `SELECT 
+					article_table.user_id,
 					article_table.article_id, 
 				COALESCE(COUNT(liked_table.user_id), 0) AS liked_sum, 
 					user_table.user_name, 
@@ -63,7 +64,7 @@ func Timeline() []dto.Article {
 
 	for row.Next() {
 		posts := dto.Article{}
-		if err := row.Scan(&posts.ArticleID, &posts.LikedSum, &posts.UserName, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
+		if err := row.Scan(&posts.UserID, &posts.ArticleID, &posts.LikedSum, &posts.UserName, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
 			log.SetOutput(io.MultiWriter(logfile, os.Stdout))
 			log.SetFlags(log.Ldate | log.Ltime)
 			log.Fatal(err)
@@ -94,6 +95,7 @@ func Trending() []dto.Article {
 	defer sql.Close()
 	// SQL syntax
 	getPosts := `SELECT 
+					article_table.user_id,
 					article_table.article_id, 
 				COALESCE(
 					COUNT(liked_table.user_id), 0) 
@@ -132,7 +134,7 @@ func Trending() []dto.Article {
 
 	for row.Next() {
 		posts := dto.Article{}
-		if err := row.Scan(&posts.ArticleID, &posts.LikedSum, &posts.UserName, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
+		if err := row.Scan(&posts.UserID, &posts.ArticleID, &posts.LikedSum, &posts.UserName, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
 			log.SetOutput(io.MultiWriter(logfile, os.Stdout))
 			log.SetFlags(log.Ldate | log.Ltime)
 			log.Fatal(err)
@@ -163,6 +165,7 @@ func UserPostsList(userID int) []dto.Article {
 	defer sql.Close()
 	// SQL syntax
 	getPosts := `SELECT 
+						article_table.user_id,
 						article_table.article_id, 
 					COALESCE(
 						COUNT(liked_table.user_id), 0) 
@@ -201,7 +204,7 @@ func UserPostsList(userID int) []dto.Article {
 
 	for row.Next() {
 		posts := dto.Article{}
-		if err := row.Scan(&posts.ArticleID, &posts.LikedSum, &posts.UserName, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
+		if err := row.Scan(&posts.UserID, &posts.ArticleID, &posts.LikedSum, &posts.UserName, &posts.Title, &posts.Content, &posts.CreatedTime, &posts.ModifiedTime); err != nil {
 			log.SetOutput(io.MultiWriter(logfile, os.Stdout))
 			log.SetFlags(log.Ldate | log.Ltime)
 			log.Fatal(err)
@@ -309,6 +312,7 @@ func SinglePost(articleID int) dto.Article {
 	defer sql.Close()
 	// SQL syntax
 	signlePost := `SELECT 
+						article_table.user_id,
 						article_table.article_id, 
 					COALESCE(
 						COUNT(liked_table.user_id), 0) 
@@ -339,7 +343,7 @@ func SinglePost(articleID int) dto.Article {
 
 	var post dto.Article
 
-	err := sql.QueryRow(signlePost, articleID).Scan(&post.ArticleID, &post.LikedSum, &post.UserName, &post.Title, &post.Content, &post.CreatedTime, &post.ModifiedTime)
+	err := sql.QueryRow(signlePost, articleID).Scan(&post.UserID, &post.ArticleID, &post.LikedSum, &post.UserName, &post.Title, &post.Content, &post.CreatedTime, &post.ModifiedTime)
 
 	if err != nil {
 		log.SetOutput(io.MultiWriter(logfile, os.Stdout))

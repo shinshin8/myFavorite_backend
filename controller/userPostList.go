@@ -44,6 +44,8 @@ func UserPostsList(w http.ResponseWriter, r *http.Request) {
 	getUserPostImages := model.GetUserPostImageList(userID)
 	// Struct for Posts data
 	var postsData []dto.Posts
+	// Get Icon
+	iconDataArray := model.GetAllIcon()
 	// Looping article data
 	for _, article := range postList {
 		for _, imageData := range getUserPostImages {
@@ -53,14 +55,19 @@ func UserPostsList(w http.ResponseWriter, r *http.Request) {
 					firstImage := imageData.ImageURL[0]
 					image = append(image, os.Getenv("S3_URL")+firstImage)
 				}
+				var icon []string
+				for _, eachIcon := range iconDataArray {
+					if eachIcon.UserID == article.UserID {
+						icon = append(icon, os.Getenv("S3_URL")+eachIcon.ImageURL)
+					}
+				}
 				post := dto.Posts{
 					ArticleID:    article.ArticleID,
 					LikedSum:     article.LikedSum,
-					ImageURL:     image,
+					ImageURL:     image[0],
+					IconURL:      icon[0],
 					UserName:     article.UserName,
 					Title:        article.Title,
-					Content:      article.Content,
-					CreatedTime:  article.CreatedTime,
 					ModifiedTime: article.ModifiedTime,
 				}
 				postsData = append(postsData, post)
