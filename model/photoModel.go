@@ -17,7 +17,12 @@ func UploadImage(imageData []dto.ImageStruct) bool {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 
@@ -59,7 +64,12 @@ func DeleteImage(imageData []dto.ImageStruct) bool {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 
@@ -103,7 +113,12 @@ func GetAllImages() []dto.ImageStruct {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax
@@ -145,7 +160,12 @@ func GetUserPostImageList(userID int) []dto.PostImage {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax
@@ -189,7 +209,12 @@ func GetSiglePostImages(articleID int) []string {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax
@@ -231,7 +256,12 @@ func GetFavoriteListImage(userID int) []dto.PostImage {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax

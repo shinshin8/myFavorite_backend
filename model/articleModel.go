@@ -17,7 +17,12 @@ func Timeline() []dto.Article {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax
@@ -79,7 +84,12 @@ func Trending() []dto.Article {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax
@@ -143,7 +153,12 @@ func UserPostsList(userID int) []dto.Article {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax
@@ -208,7 +223,12 @@ func LikedOrNot(userID int, articleID int) bool {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax
@@ -241,7 +261,12 @@ func FavoriteOrNot(userID int, articleID int) bool {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax
@@ -274,7 +299,12 @@ func SinglePost(articleID int) dto.Article {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax
@@ -331,7 +361,12 @@ func CreateNewPost(userID int, title string, content string) bool {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax
@@ -367,7 +402,12 @@ func EditPost(userID int, articleID int, title string, content string) bool {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// Update sql syntax
@@ -404,7 +444,12 @@ func DeletePost(userID int, articleID int) bool {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// delete sql syntax

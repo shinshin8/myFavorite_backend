@@ -19,9 +19,13 @@ func LoginUser(username string, hashedPassword string) int {
 		panic(er.Error())
 	}
 	defer logfile.Close()
-
-	sql := utils.DBInit()
-
+	// Initalize DB Connection
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// at the end, sql will be closed.
 	defer sql.Close()
 
@@ -55,7 +59,12 @@ func SignUp(username string, emailAddress string, password string) int {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax
@@ -90,7 +99,12 @@ func ShowProfile(userID int) (dto.ProfileDB, error) {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax
@@ -131,7 +145,12 @@ func EditProfile(userID int, userName, birthday, mailAddress, comment string) bo
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax
@@ -169,7 +188,12 @@ func DeleteAccount(userID int) bool {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax
