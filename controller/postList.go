@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 
 	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/model"
@@ -32,7 +33,7 @@ func Timeline(w http.ResponseWriter, r *http.Request) {
 		for _, imageData := range imageDataArray {
 			if article.ArticleID == imageData.ArticleID {
 				var imageArray []string
-				imageArray = append(imageArray, imageData.ImageURL)
+				imageArray = append(imageArray, os.Getenv("S3_URL")+imageData.ImageURL)
 				var image []string
 				firstImage := imageArray[0]
 				image = append(image, firstImage)

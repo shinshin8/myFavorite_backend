@@ -50,12 +50,10 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
 	// Get title
 	title := editPostBody.Title
 	//Get content
 	content := editPostBody.Content
-
 	// Check title
 	if !utils.IsTitle(title) {
 		// Set values into the struct
@@ -78,7 +76,6 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 		return
 	}
-
 	// Check content
 	if !utils.IsContent(content) {
 		// Set values into the struct
