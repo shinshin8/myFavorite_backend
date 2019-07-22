@@ -32,11 +32,13 @@ func Trending(w http.ResponseWriter, r *http.Request) {
 	for _, article := range articleDataArray {
 		for _, imageData := range imageDataArray {
 			if article.ArticleID == imageData.ArticleID {
-				var imageArray []string
-				imageArray = append(imageArray, os.Getenv("S3_URL")+imageData.ImageURL)
 				var image []string
-				firstImage := imageArray[0]
-				image = append(image, firstImage)
+				if len(imageData.ImageURL) >= 1 {
+					var imageArray []string
+					imageArray = append(imageArray, os.Getenv("S3_URL")+imageData.ImageURL)
+					firstImage := imageArray[0]
+					image = append(image, firstImage)
+				}
 				post := dto.Posts{
 					ArticleID:    article.ArticleID,
 					LikedSum:     article.LikedSum,

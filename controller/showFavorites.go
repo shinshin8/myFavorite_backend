@@ -48,8 +48,10 @@ func ShowFavoritePosts(w http.ResponseWriter, r *http.Request) {
 		for _, imageData := range favoriteImages {
 			if article.ArticleID == imageData.ArticleID {
 				var image []string
-				firstImage := imageData.ImageURL[0]
-				image = append(image, os.Getenv("S3_URL")+firstImage)
+				if len(imageData.ImageURL) >= 1 {
+					firstImage := imageData.ImageURL[0]
+					image = append(image, os.Getenv("S3_URL")+firstImage)
+				}
 				post := dto.Posts{
 					ArticleID:    article.ArticleID,
 					LikedSum:     article.LikedSum,

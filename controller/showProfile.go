@@ -39,6 +39,9 @@ func ShowProfile(w http.ResponseWriter, r *http.Request) {
 	}
 	// Get icon.
 	userIcon := model.GetIcon(userID)
+	if len(userIcon) != 0 {
+		userIcon = os.Getenv("S3_URL") + userIcon
+	}
 	// Get profile.
 	userProfile, err := model.ShowProfile(userID)
 	if err != nil {
@@ -59,7 +62,7 @@ func ShowProfile(w http.ResponseWriter, r *http.Request) {
 	// Set values into the struct
 	profile := dto.Profile{
 		UserID:      userID,
-		IconURL:     os.Getenv("S3_URL") + userIcon,
+		IconURL:     userIcon,
 		UserName:    userProfile.UserName,
 		Birthday:    userProfile.Birthday,
 		MailAddress: userProfile.MailAddress,
