@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/shinshin8/myFavorite_backend/dto"
 	"github.com/shinshin8/myFavorite_backend/utils"
 )
 
@@ -156,4 +157,50 @@ func DeleteIcon(userID int) bool {
 		return false
 	}
 	return true
+}
+
+// GetAllIcon gets all icons saved in DB.
+func GetAllIcon() []dto.ImageStruct {
+	logfile, er := os.OpenFile(utils.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if er != nil {
+		panic(er.Error())
+	}
+	defer logfile.Close()
+	// Initalize DB Connection
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
+	// Close DB connection at the end.
+	defer sql.Close()
+	// SQL syntax
+	getImages := `SELECT 
+						icon_url, 
+						user_id, 
+					FROM 
+						icon_table;`
+
+	row, err := sql.Query(getImages)
+
+	if err != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(err)
+	}
+	// Prepare an array which save JSON results.
+	var imageArray []dto.ImageStruct
+
+	for row.Next() {
+		posts := dto.ImageStruct{}
+		if err := row.Scan(&posts.ImageURL, &posts.UserID); err != nil {
+			log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+			log.SetFlags(log.Ldate | log.Ltime)
+			log.Fatal(err)
+		}
+		// Appending JSON in array.
+		imageArray = append(imageArray, posts)
+	}
+	return imageArray
 }

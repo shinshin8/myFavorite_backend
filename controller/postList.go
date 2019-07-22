@@ -28,6 +28,8 @@ func Timeline(w http.ResponseWriter, r *http.Request) {
 	imageDataArray := model.GetAllImages()
 	// Struct for Posts data
 	var postsData []dto.Posts
+	// Get Icon
+	iconDataArray := model.GetAllIcon()
 	// Looping article data
 	for _, article := range articleDataArray {
 		for _, imageData := range imageDataArray {
@@ -39,14 +41,19 @@ func Timeline(w http.ResponseWriter, r *http.Request) {
 					firstImage := imageArray[0]
 					image = append(image, firstImage)
 				}
+				var icon []string
+				for _, eachIcon := range iconDataArray {
+					if eachIcon.UserID == article.UserID {
+						icon = append(icon, os.Getenv("S3_URL")+eachIcon.ImageURL)
+					}
+				}
 				post := dto.Posts{
 					ArticleID:    article.ArticleID,
 					LikedSum:     article.LikedSum,
-					ImageURL:     image,
+					ImageURL:     image[0],
+					IconURL:      icon[0],
 					UserName:     article.UserName,
 					Title:        article.Title,
-					Content:      article.Content,
-					CreatedTime:  article.CreatedTime,
 					ModifiedTime: article.ModifiedTime,
 				}
 				postsData = append(postsData, post)

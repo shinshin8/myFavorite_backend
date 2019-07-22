@@ -10,6 +10,7 @@ type PostList struct {
 
 // Article is a struct for article data from DB.
 type Article struct {
+	UserID       int
 	ArticleID    int
 	LikedSum     int
 	UserName     string
@@ -21,12 +22,12 @@ type Article struct {
 
 // SiglePost saves a single post data in JSON.
 type SiglePost struct {
-	Status      bool  `json:"status"`
-	ErrorCode   int   `json:"error_code"`
-	UserID      int   `json:"user_id"`
-	LikedFlg    bool  `json:"liked_flg"`
-	FavoriteFlg bool  `json:"favorite_flg"`
-	Post        Posts `json:"post"`
+	Status      bool             `json:"status"`
+	ErrorCode   int              `json:"error_code"`
+	UserID      int              `json:"user_id"`
+	LikedFlg    bool             `json:"liked_flg"`
+	FavoriteFlg bool             `json:"favorite_flg"`
+	Post        SinglePostDetail `json:"post"`
 }
 
 // NewPost is a struct for a new post.
@@ -46,9 +47,21 @@ type EditPostBody struct {
 
 // Posts is a struct for post data.
 type Posts struct {
+	ArticleID    int    `json:"article_id"`
+	LikedSum     int    `json:"liked_sum"`
+	ImageURL     string `json:"image_url"`
+	IconURL      string `json:"icon_url"`
+	UserName     string `json:"user_name"`
+	Title        string `json:"title"`
+	ModifiedTime string `json:"modified_time"`
+}
+
+// SinglePost is a struct for single post.
+type SinglePostDetail struct {
 	ArticleID    int      `json:"article_id"`
 	LikedSum     int      `json:"liked_sum"`
 	ImageURL     []string `json:"image_url"`
+	IconURL      string   `json:"icon_url"`
 	UserName     string   `json:"user_name"`
 	Title        string   `json:"title"`
 	Content      string   `json:"content"`
