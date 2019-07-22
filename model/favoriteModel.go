@@ -19,7 +19,12 @@ func ShowFavoritePosts(userID int) []dto.Article {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax
@@ -78,7 +83,12 @@ func FavoritePost(userID int, articleID int) bool {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 
@@ -114,7 +124,12 @@ func DeleteFavoritePost(userID int, articleID int) bool {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax

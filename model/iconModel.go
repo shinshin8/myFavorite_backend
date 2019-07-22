@@ -16,7 +16,12 @@ func RegisterIcon(iconURL string, userID int) bool {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 
@@ -50,7 +55,12 @@ func UpdateIcon(newIconURL string, userID int) bool {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 
@@ -84,7 +94,12 @@ func GetIcon(userID int) string {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax
@@ -114,7 +129,12 @@ func DeleteIcon(userID int) bool {
 	}
 	defer logfile.Close()
 	// Initalize DB Connection
-	sql := utils.DBInit()
+	sql, sqlErr := utils.DBInit()
+	if sqlErr != nil {
+		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
+		log.SetFlags(log.Ldate | log.Ltime)
+		log.Fatal(sqlErr)
+	}
 	// Close DB connection at the end.
 	defer sql.Close()
 	// SQL syntax

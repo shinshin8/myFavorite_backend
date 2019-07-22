@@ -2,15 +2,13 @@ package utils
 
 import (
 	"database/sql"
-	"io"
-	"log"
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 // DBInit initialize MySQL connection.
-func DBInit() *sql.DB {
+func DBInit() (*sql.DB, error) {
 	logfile, er := os.OpenFile(LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if er != nil {
 		panic(er.Error())
@@ -28,11 +26,5 @@ func DBInit() *sql.DB {
 
 	sql, err := sql.Open(dbDriver, dataSourceName)
 
-	if err != nil {
-		log.SetOutput(io.MultiWriter(logfile, os.Stdout))
-		log.SetFlags(log.Ldate | log.Ltime)
-		log.Fatal(err)
-	}
-
-	return sql
+	return sql, err
 }
