@@ -47,31 +47,32 @@ func ShowFavoritePosts(w http.ResponseWriter, r *http.Request) {
 	var postsData []dto.Posts
 	// Looping article data
 	for _, article := range favoritePosts {
+		var image string
 		for _, imageData := range favoriteImages {
-			if article.ArticleID == imageData.ArticleID {
-				var image []string
-				if len(imageData.ImageURL) >= 1 {
-					firstImage := imageData.ImageURL[0]
-					image = append(image, os.Getenv("S3_URL")+firstImage)
-				}
-				var icon []string
-				for _, eachIcon := range iconDataArray {
-					if eachIcon.UserID == article.UserID {
-						icon = append(icon, os.Getenv("S3_URL")+eachIcon.ImageURL)
-					}
-				}
-				post := dto.Posts{
-					ArticleID:   article.ArticleID,
-					LikedSum:    article.LikedSum,
-					ImageURL:    image[0],
-					IconURL:     icon[0],
-					UserName:    article.UserName,
-					Title:       article.Title,
-					CreatedTime: article.CreatedTime,
-				}
-				postsData = append(postsData, post)
+			if len(imageData.ImageURL) >= 1 {
+				image = os.Getenv("S3_URL") + imageData.ImageURL[0]
+			} else {
+				image = ""
 			}
 		}
+		var icon string
+		for _, eachIcon := range iconDataArray {
+			if eachIcon.UserID == article.UserID {
+				icon = os.Getenv("S3_URL") + eachIcon.ImageURL
+			} else {
+				icon = ""
+			}
+		}
+		post := dto.Posts{
+			ArticleID:   article.ArticleID,
+			LikedSum:    article.LikedSum,
+			ImageURL:    image,
+			IconURL:     icon,
+			UserName:    article.UserName,
+			Title:       article.Title,
+			CreatedTime: article.CreatedTime,
+		}
+		postsData = append(postsData, post)
 	}
 
 	resStruct := dto.PostList{

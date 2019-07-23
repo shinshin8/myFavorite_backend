@@ -50,22 +50,25 @@ func UserPostsList(w http.ResponseWriter, r *http.Request) {
 	for _, article := range postList {
 		for _, imageData := range getUserPostImages {
 			if article.ArticleID == imageData.ArticleID {
-				var image []string
+				var image string
 				if len(imageData.ImageURL) >= 1 {
-					firstImage := imageData.ImageURL[0]
-					image = append(image, os.Getenv("S3_URL")+firstImage)
+					image = os.Getenv("S3_URL") + imageData.ImageURL[0]
+				} else {
+					image = ""
 				}
-				var icon []string
+				var icon string
 				for _, eachIcon := range iconDataArray {
 					if eachIcon.UserID == article.UserID {
-						icon = append(icon, os.Getenv("S3_URL")+eachIcon.ImageURL)
+						icon = os.Getenv("S3_URL") + eachIcon.ImageURL
+					} else {
+						icon = ""
 					}
 				}
 				post := dto.Posts{
 					ArticleID:   article.ArticleID,
 					LikedSum:    article.LikedSum,
-					ImageURL:    image[0],
-					IconURL:     icon[0],
+					ImageURL:    image,
+					IconURL:     icon,
 					UserName:    article.UserName,
 					Title:       article.Title,
 					CreatedTime: article.CreatedTime,

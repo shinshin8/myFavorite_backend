@@ -178,7 +178,7 @@ func GetAllIcon() []dto.ImageStruct {
 	// SQL syntax
 	getImages := `SELECT 
 						icon_url, 
-						user_id, 
+						user_id 
 					FROM 
 						icon_table;`
 
