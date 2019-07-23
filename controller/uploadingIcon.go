@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -67,6 +68,32 @@ func UploadingIcon(w http.ResponseWriter, r *http.Request) {
 		resultjson := dto.SimpleResutlJSON{
 			Status:    false,
 			ErrorCode: utils.NoIconSelected,
+		}
+		// convert structs to json
+		res, err := json.Marshal(resultjson)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(res)
+		return
+	}
+	// Get file name.
+	fileName := fileHeader.Filename
+	// Get file extension.
+	fileExtension := filepath.Ext(fileName)
+	// Acceptable extensions
+	var (
+		jpg  = ".jpg"
+		jpeg = ".jpeg"
+		png  = ".png"
+	)
+	// Check extensions
+	if fileExtension != jpeg && fileExtension != jpg && fileExtension != png {
+		resultjson := dto.SimpleResutlJSON{
+			Status:    false,
+			ErrorCode: utils.InvalidExtension,
 		}
 		// convert structs to json
 		res, err := json.Marshal(resultjson)
