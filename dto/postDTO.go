@@ -47,16 +47,16 @@ type EditPostBody struct {
 
 // Posts is a struct for post data.
 type Posts struct {
-	ArticleID    int    `json:"article_id"`
-	LikedSum     int    `json:"liked_sum"`
-	ImageURL     string `json:"image_url"`
-	IconURL      string `json:"icon_url"`
-	UserName     string `json:"user_name"`
-	Title        string `json:"title"`
-	ModifiedTime string `json:"modified_time"`
+	ArticleID   int    `json:"article_id"`
+	LikedSum    int    `json:"liked_sum"`
+	ImageURL    string `json:"image_url"`
+	IconURL     string `json:"icon_url"`
+	UserName    string `json:"user_name"`
+	Title       string `json:"title"`
+	CreatedTime string `json:"created_time"`
 }
 
-// SinglePost is a struct for single post.
+// SinglePostDetail is a struct for single post.
 type SinglePostDetail struct {
 	ArticleID    int      `json:"article_id"`
 	LikedSum     int      `json:"liked_sum"`

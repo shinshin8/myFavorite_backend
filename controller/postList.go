@@ -48,13 +48,13 @@ func Timeline(w http.ResponseWriter, r *http.Request) {
 					}
 				}
 				post := dto.Posts{
-					ArticleID:    article.ArticleID,
-					LikedSum:     article.LikedSum,
-					ImageURL:     image[0],
-					IconURL:      icon[0],
-					UserName:     article.UserName,
-					Title:        article.Title,
-					ModifiedTime: article.ModifiedTime,
+					ArticleID:   article.ArticleID,
+					LikedSum:    article.LikedSum,
+					ImageURL:    image[0],
+					IconURL:     icon[0],
+					UserName:    article.UserName,
+					Title:       article.Title,
+					CreatedTime: article.CreatedTime,
 				}
 				postsData = append(postsData, post)
 			}
