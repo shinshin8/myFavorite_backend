@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -93,7 +94,20 @@ func UploadingImages(w http.ResponseWriter, r *http.Request) {
 		}
 
 		fileHead := files[i]
-
+		// Get file name
+		fileName := fileHead.Filename
+		// Get file extension.
+		fileExtension := filepath.Ext(fileName)
+		// Acceptable extensions
+		var (
+			jpg  = ".jpg"
+			jpeg = ".jpeg"
+			png  = ".png"
+		)
+		// Check extensions
+		if fileExtension != jpeg && fileExtension != jpg && fileExtension != png {
+			break
+		}
 		// Uploading icon to AWS S3.
 		imagePath, uploadError := utils.UploadingToS3(session, file, fileHead)
 		if uploadError != nil {

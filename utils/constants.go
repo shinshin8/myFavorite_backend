@@ -90,4 +90,5 @@ const (
 	InvalidDeleteImageURL         = 34
 	FailedDeleteImages            = 35
 	FailedDeleteImageFromDB       = 36
+	InvalidExtension              = 37
 )
