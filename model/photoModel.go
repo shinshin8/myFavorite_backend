@@ -219,11 +219,11 @@ func GetSiglePostImages(articleID int) []string {
 	defer sql.Close()
 	// SQL syntax
 	getImages := `SELECT 
-						photo_url, 
+						photo_url 
 					FROM 
-						photo_table
-					WHERE
-						article_id = ?;`
+						photo_table 
+					WHERE 
+						article_id = ?`
 
 	row, err := sql.Query(getImages, articleID)
 
@@ -243,7 +243,8 @@ func GetSiglePostImages(articleID int) []string {
 			log.Fatal(err)
 		}
 		// Appending JSON in array.
-		imageArray = append(imageArray, image)
+		imageURL := os.Getenv("S3_URL") + image
+		imageArray = append(imageArray, imageURL)
 	}
 	return imageArray
 }
