@@ -119,7 +119,7 @@ func GetIcon(userID int) string {
 		return ""
 	}
 
-	return iconURL
+	return os.Getenv("S3_URL") + iconURL
 }
 
 // DeleteIcon delete target record from DB.

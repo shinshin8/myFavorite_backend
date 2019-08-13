@@ -1,0 +1,3 @@
+2019/08/12 15:34:46 Error 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FROM photo_table WHERE article_id = ?' at line 1
+2019/08/12 21:56:09 sql: no rows in result set
+2019/08/12 22:02:43 sql: no rows in result set

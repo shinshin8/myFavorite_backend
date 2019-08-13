@@ -312,35 +312,29 @@ func SinglePost(articleID int) dto.Article {
 	defer sql.Close()
 	// SQL syntax
 	signlePost := `SELECT 
-						article_table.user_id,
+						article_table.user_id, 
 						article_table.article_id, 
 					COALESCE(
-						COUNT(liked_table.user_id), 0) 
-					AS 
-						liked_sum, 
+						COUNT(liked_table.user_id), 0
+						) AS liked_sum, 
 						user_table.user_name, 
 						article_table.title, 
 						article_table.content, 
 						article_table.created_time, 
 						article_table.modified_time 
-					FROM(
+					FROM (
 							article_table 
 						INNER JOIN 
 							user_table 
 						ON 
 							article_table.user_id = user_table.user_id
-						) 
-					LEFT JOIN 
+						) LEFT JOIN 
 						liked_table 
 					ON 
 						article_table.article_id = liked_table.article_id 
 					WHERE 
-						user_table.user_id = ? 
-					AND 
 						article_table.article_id = ? 
-					GROUP BY 
-						article_table.article_id`
-
+					GROUP BY article_table.article_id`
 	var post dto.Article
 
 	err := sql.QueryRow(signlePost, articleID).Scan(&post.UserID, &post.ArticleID, &post.LikedSum, &post.UserName, &post.Title, &post.Content, &post.CreatedTime, &post.ModifiedTime)
